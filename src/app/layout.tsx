@@ -25,7 +25,7 @@ export default function RootLayout({
       <head>
         <link rel="shortcut icon" href="/logo.svg" />
       </head>
-      <body className={poppins.className}>
+      <body className={`${poppins.className} flex flex-col`}>
         <Providers>{children}</Providers>
       </body>
     </html>

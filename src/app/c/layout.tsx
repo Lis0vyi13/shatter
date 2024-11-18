@@ -1,23 +1,11 @@
-"use client";
-
-import { ReactNode, Suspense, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import useAuth from "@/hooks/useAuth";
+import { ReactNode, Suspense } from "react";
 
 import ChatLayout from "./ChatLayout";
+import Loader from "@/components/ui/Loader";
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const { replace } = useRouter();
-  const isLogin = useAuth();
-
-  useEffect(() => {
-    if (isLogin === false) {
-      replace("/login");
-    }
-  }, [isLogin, replace]);
-
   return (
-    <Suspense>
+    <Suspense fallback={<Loader />}>
       <ChatLayout>{children}</ChatLayout>
     </Suspense>
   );

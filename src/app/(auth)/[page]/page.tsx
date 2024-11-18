@@ -1,11 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 import Login from "@/components/Authentication/Login";
 import SignUp from "@/components/Authentication/SignUp";
 import Block from "@/components/ui/Block";
-import { usePathname } from "next/navigation";
+import Loader from "@/components/ui/Loader";
 
 const variants = {
   hidden: { opacity: 0, y: "100%" },
@@ -43,21 +45,23 @@ export default function AuthPage() {
         variants={variants}
       >
         <Block className="min-h-full px-0 py-0" color="dark">
-          <motion.video
-            className="min-h-full object-cover opacity-100"
-            autoPlay
-            loop
-            muted
-            src="/login-video.mp4"
-            initial="hidden"
-            animate="visible"
-            transition={{
-              duration: 0.9,
-              delay: 0.4,
-            }}
-            variants={videoVariants}
-            style={{ width: "100%", height: "100%", originX: 0, originY: 0 }}
-          />
+          <Suspense fallback={<Loader />}>
+            <motion.video
+              className="min-h-full object-cover opacity-100"
+              autoPlay
+              loop
+              muted
+              src="/login-video.mp4"
+              initial="hidden"
+              animate="visible"
+              transition={{
+                duration: 0.9,
+                delay: 0.4,
+              }}
+              variants={videoVariants}
+              style={{ width: "100%", height: "100%", originX: 0, originY: 0 }}
+            />
+          </Suspense>
         </Block>
       </motion.div>
     </section>

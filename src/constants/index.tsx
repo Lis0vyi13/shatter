@@ -48,7 +48,6 @@ export const logOutIcon: ILogoutIcon = {
   Icon: <BiLogOut />,
   title: "Log out",
   isActive: false,
-  href: "/auth/login",
 };
 
 export const AUTH_SERVICES = [

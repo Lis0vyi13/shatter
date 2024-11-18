@@ -63,7 +63,7 @@ const ChatBlock = ({ id }: { id?: string }) => {
       {activeChat ? (
         <>
           <div className={`flex bg-white rounded-3xl w-full gap-2 pl-4`}>
-            <div className="chat-list-wrapper w-[min(300px,_100%)] h-full py-4">
+            <div className="chat-list-wrapper min-w-[300px] h-full py-4">
               <ChatList data={chats} />
             </div>
             <div className="chat flex flex-col px-3 py-4 flex-1">

@@ -81,7 +81,7 @@ const SignUpForm = () => {
         <div>
           <Button
             type="button"
-            onClick={() => changeUrlWithoutReload("/auth/login")}
+            onClick={() => changeUrlWithoutReload("/login")}
             className="border inline-block text-[12px] bg-dark hover:bg-[#464646] w-fit px-[10px] py-[2px] rounded-2xl border-gray"
           >
             Log In

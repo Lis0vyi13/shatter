@@ -5,6 +5,7 @@ import { toast } from "sonner";
 const useLoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,9 +27,19 @@ const useLoginForm = () => {
       } else {
         toast.error("An unexpected error occurred during sign-in.");
       }
+      console.log(123);
+      setIsLoading(false);
     }
   };
-  return { email, setEmail, password, setPassword, handleSubmit };
+  return {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    handleSubmit,
+    isLoading,
+    setIsLoading,
+  };
 };
 
 export default useLoginForm;

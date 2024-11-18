@@ -37,7 +37,7 @@ const Login = ({ pathname }: { pathname: string | null }) => {
         className="pt-4"
       >
         <Logo
-          onClick={() => changeUrlWithoutReload("/auth/sign-up")}
+          onClick={() => changeUrlWithoutReload("/sign-up")}
           className="logo pt-4 cursor-pointer"
           width={28}
           height={28}

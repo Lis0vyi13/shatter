@@ -5,19 +5,20 @@ import useFolders from "@/hooks/useFolders";
 import useSidebar from "./useSidebar";
 
 import Loader from "@/components/ui/Loader";
+import CircleLoader from "../ui/CircleLoader";
 import SidebarIcon from "./SidebarIcon";
 
 import { logOutIcon } from "@/constants";
 
 const Sidebar = () => {
   const folders = useFolders();
-  const { icons, handleIconClick, handleLogout } = useSidebar(folders);
+  const { icons, handleIconClick, handleLogout, loading } = useSidebar(folders);
   const [chats, settings] = [icons.slice(0, -2), icons.slice(-2)];
 
   return (
     <section className="flex min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
       <Link className="mt-1" href={"/c"}>
-        <Image width={27} height={27} src="/logo.svg" alt="Logo" />
+        <Image priority width={27} height={27} src="/logo.svg" alt="Logo" />
       </Link>
       <div className="flex flex-col gap-3 justify-center">
         {folders ? (
@@ -49,7 +50,15 @@ const Sidebar = () => {
       <div
         className={`w-full ${folders ? "" : "opacity-0 pointer-events-none"}`}
       >
-        <SidebarIcon onClick={handleLogout} {...logOutIcon} />
+        {loading ? (
+          <SidebarIcon
+            onClick={handleLogout}
+            {...logOutIcon}
+            Icon={<CircleLoader className="-mt-2" />}
+          />
+        ) : (
+          <SidebarIcon onClick={handleLogout} {...logOutIcon} />
+        )}
       </div>
     </section>
   );

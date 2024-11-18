@@ -18,7 +18,7 @@ const useSignUpForm = () => {
         password,
         username,
         setProgressValue,
-        setIsSubmitted,
+        setIsSubmitted
       );
     } catch (error) {
       console.error("An error occurred:", error);

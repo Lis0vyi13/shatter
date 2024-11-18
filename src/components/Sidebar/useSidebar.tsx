@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 
 import { ref, set } from "firebase/database";
@@ -18,6 +20,7 @@ const useSidebar = (folders: IFolder[] | null) => {
   const [icons, setIcons] =
     useState<(IFolder | IUserEditIcons)[]>(sidebarIcons);
   const user = useUser();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user?.uid) {
@@ -76,6 +79,7 @@ const useSidebar = (folders: IFolder[] | null) => {
   }, []);
 
   const handleLogout = async () => {
+    setLoading(true);
     logout();
     signOut(auth);
 
@@ -100,7 +104,7 @@ const useSidebar = (folders: IFolder[] | null) => {
     }
   };
 
-  return { icons, handleIconClick, handleLogout };
+  return { icons, handleIconClick, handleLogout, loading };
 };
 
 export default useSidebar;

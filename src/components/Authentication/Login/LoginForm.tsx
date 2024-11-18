@@ -6,13 +6,22 @@ import { changeUrlWithoutReload, cn } from "@/utils";
 import useLoginForm from "./useLoginForm";
 
 import Input from "@/components/ui/Input";
+import CircleLoader from "@/components/ui/CircleLoader";
 import Button from "@/components/ui/Button";
 
 import { FaArrowRightLong } from "react-icons/fa6";
 
 const LoginForm = () => {
-  const { email, setEmail, password, setPassword, handleSubmit } =
-    useLoginForm();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    handleSubmit,
+    isLoading,
+    setIsLoading,
+  } = useLoginForm();
+
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const inputClassName =
@@ -20,7 +29,10 @@ const LoginForm = () => {
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => {
+        handleSubmit(e);
+        setIsLoading(true);
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           if (submitButtonRef.current) {
@@ -54,9 +66,11 @@ const LoginForm = () => {
       />
       <Button
         ref={submitButtonRef}
+        disabled={isLoading}
         className="text-dark flex justify-center hover:bg-gray text-[12px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
       >
-        <span>Log In</span> <FaArrowRightLong className="mt-[2px]" />
+        <span>{isLoading ? <CircleLoader /> : "Log In"}</span>
+        {!isLoading && <FaArrowRightLong className="mt-[2px]" />}
       </Button>
 
       <div className="flex gap-1 items-center justify-center text-[12px]">
@@ -64,7 +78,7 @@ const LoginForm = () => {
         <div>
           <Button
             type="button"
-            onClick={() => changeUrlWithoutReload("/auth/sign-up")}
+            onClick={() => changeUrlWithoutReload("/sign-up")}
             className="border inline-block text-[12px] bg-dark hover:bg-[#464646] w-fit px-[10px] py-[2px] rounded-2xl border-gray"
           >
             Sign Up

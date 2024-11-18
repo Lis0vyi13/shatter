@@ -24,7 +24,7 @@ export const socialSignIn = async (props: ISocialSignInProps) => {
     console.log(user, hasPasswordProvider);
     if (user && !hasPasswordProvider) {
       localStorage.setItem("googleUserData", JSON.stringify(user));
-      router.push("/auth/create-password");
+      router.push("/create-password");
     }
   } catch (error) {
     if (error instanceof Error) {
