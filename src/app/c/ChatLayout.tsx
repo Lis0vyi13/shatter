@@ -8,7 +8,7 @@ import useEmailVerification from "@/hooks/useEmailVerification";
 import Loader from "@/components/ui/Loader";
 import Sidebar from "@/components/Sidebar";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   useEmailVerification();
   useApp();
 
@@ -38,4 +38,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
-export default Layout;
+export default ChatLayout;

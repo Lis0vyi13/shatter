@@ -1,6 +1,8 @@
 import Image, { ImageProps } from "next/image";
 
-const Logo = (props: ImageProps) => {
+type LogoProps = Omit<ImageProps, "src" | "alt">;
+
+const Logo = (props: LogoProps) => {
   return <Image {...props} src="/logo.svg" alt="logo" />;
 };
 

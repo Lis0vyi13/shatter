@@ -11,6 +11,7 @@ import ChatBlock from "@/components/Chat/ChatBlock";
 const Chat = () => {
   const params = useParams();
   const pathname = usePathname();
+  
   useEffect(() => {
     const handleAuthStateChanged = async (user: User | null) => {
       if (user && pathname?.includes("/c")) {
