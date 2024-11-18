@@ -22,6 +22,6 @@ export const dbRealtime = getDatabase();
 export const db = getFirestore(app);
 
 export const actionCodeSettings = {
-  url: process.env.NEXT_PUBLIC_APP_URL + "c",
+  url: "https://shatter-web.vercel.app/c",
   handleCodeInApp: true,
 };
