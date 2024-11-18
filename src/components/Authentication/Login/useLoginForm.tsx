@@ -15,11 +15,17 @@ const useLoginForm = () => {
         if (user.emailVerified) {
           toast.success("You have successfully signed in!");
         } else {
-          toast.error("Account verification is required before you can continue.");
+          toast.error(
+            "Account verification is required before you can continue."
+          );
         }
       }
     } catch (error) {
-      toast.error("An unexpected error occurred during sign-in.");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred during sign-in.");
+      }
     }
   };
   return { email, setEmail, password, setPassword, handleSubmit };

@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import { changeUrlWithoutReload } from "@/utils";
+import { changeUrlWithoutReload, cn } from "@/utils";
 import useLoginForm from "./useLoginForm";
 
 import Input from "@/components/ui/Input";
@@ -38,7 +38,7 @@ const LoginForm = () => {
         isDark
         value={email}
         setValue={setEmail}
-        className={`${inputClassName} ${email ? "outline-white/55" : ""}`}
+        className={cn(inputClassName, email && "outline-white/55")}
         autoComplete="email"
       />
       <Input
@@ -49,7 +49,7 @@ const LoginForm = () => {
         required
         value={password}
         setValue={setPassword}
-        className={`${inputClassName} ${password ? "outline-white/55" : ""}`}
+        className={cn(inputClassName, password && "outline-white/55")}
         autoComplete="new-password"
       />
       <Button
@@ -60,7 +60,7 @@ const LoginForm = () => {
       </Button>
 
       <div className="flex gap-1 items-center justify-center text-[12px]">
-        <span>Don't have an account?</span>
+        <span>Don&apos;t have an account?</span>
         <div>
           <Button
             type="button"

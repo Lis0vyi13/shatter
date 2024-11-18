@@ -21,7 +21,7 @@ const ChatBlock = ({ id }: { id?: string }) => {
   const chats = useChats();
   const { setChats } = useActions();
   console.log(user);
-  
+
   useEffect(() => {
     if (user?.uid) {
       const chatsRef = doc(db, "chats", user.uid);
@@ -32,9 +32,11 @@ const ChatBlock = ({ id }: { id?: string }) => {
 
           const { pinnedChats, regularChats } = data.chats.reduce(
             (acc, chat) => {
-              chat.isPin
-                ? acc.pinnedChats.push(chat)
-                : acc.regularChats.push(chat);
+              if (chat.isPin) {
+                acc.pinnedChats.push(chat);
+              } else {
+                acc.regularChats.push(chat);
+              }
               return acc;
             },
             { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
@@ -49,7 +51,7 @@ const ChatBlock = ({ id }: { id?: string }) => {
 
       return () => unsubscribe();
     }
-  }, [user?.uid]);
+  }, [setChats, user?.uid]);
 
   useEffect(() => {
     const chat = chats?.find((chat) => chat.id == id);

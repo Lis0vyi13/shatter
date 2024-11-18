@@ -6,7 +6,6 @@ import AuthLoader from "../AuthLoader";
 
 import { FaArrowRightLong } from "react-icons/fa6";
 import useSignUpForm from "./useSignUpForm";
-import Link from "next/link";
 import { changeUrlWithoutReload } from "@/utils";
 
 const SignUpForm = () => {

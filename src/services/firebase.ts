@@ -170,7 +170,7 @@ export const togglePinChat = async (
     const chatData = chatDocSnap.data();
     const chats = chatData?.chats || [];
 
-    const updatedChats = chats.map((chat: any) =>
+    const updatedChats = chats.map((chat: IChat) =>
       chat.id === chatId ? { ...chat, isPin: !chat.isPin } : chat
     );
 

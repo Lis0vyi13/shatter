@@ -1,7 +1,7 @@
-import { ImgHTMLAttributes } from "react";
+import Image, { ImageProps } from "next/image";
 
-const Logo = (props: ImgHTMLAttributes<HTMLImageElement>) => {
-  return <img {...props} src="/logo.svg" alt="logo" />;
+const Logo = (props: ImageProps) => {
+  return <Image {...props} src="/logo.svg" alt="logo" />;
 };
 
 export default Logo;

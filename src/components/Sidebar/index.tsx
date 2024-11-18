@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+
 import useFolders from "@/hooks/useFolders";
 import useSidebar from "./useSidebar";
 
@@ -15,7 +17,7 @@ const Sidebar = () => {
   return (
     <section className="flex min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
       <Link className="mt-1" href={"/c"}>
-        <img width={27} height={27} src="/logo.svg" alt="Logo" />
+        <Image width={27} height={27} src="/logo.svg" alt="Logo" />
       </Link>
       <div className="flex flex-col gap-3 justify-center">
         {folders ? (

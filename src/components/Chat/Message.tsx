@@ -21,7 +21,7 @@ const Message = ({ data }: IMessageProps) => {
   useEffect(() => {
     const fetchSender = async () => {
       if (isOwnMessage) {
-        setSender(currentUser);
+        setSender(currentUser as UserData);
       } else {
         const fetchedSender = await getUserById(data.uid);
         setSender(fetchedSender);
@@ -29,7 +29,7 @@ const Message = ({ data }: IMessageProps) => {
     };
 
     fetchSender();
-  }, [data.uid, currentUser]);
+  }, [data.uid, currentUser, isOwnMessage]);
 
   return (
     <div

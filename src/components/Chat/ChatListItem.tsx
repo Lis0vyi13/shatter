@@ -35,7 +35,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
 
   return (
     <Link
-      href={`/a/${props.id}`}
+      href={`${props.id}`}
       onClick={props.setChat}
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         props.isActive && !hideIndicators
@@ -71,5 +71,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     </Link>
   );
 });
+
+ChatListItem.displayName = "ChatListItem";
 
 export default ChatListItem;

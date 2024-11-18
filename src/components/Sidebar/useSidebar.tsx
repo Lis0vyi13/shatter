@@ -15,7 +15,8 @@ import { FaFolder } from "react-icons/fa";
 
 const useSidebar = (folders: IFolder[] | null) => {
   const { logout, setFolders } = useActions();
-  const [icons, setIcons] = useState<(IFolder | IUserEditIcons)[]>(sidebarIcons);
+  const [icons, setIcons] =
+    useState<(IFolder | IUserEditIcons)[]>(sidebarIcons);
   const user = useUser();
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const useSidebar = (folders: IFolder[] | null) => {
 
       return () => unsubscribe();
     }
-  }, [user?.uid]);
+  }, [setFolders, user?.uid]);
 
   useEffect(() => {
     const updateIcons = async () => {
@@ -46,7 +47,11 @@ const useSidebar = (folders: IFolder[] | null) => {
         }));
 
         setIcons(() => {
-          const addedChats = [sidebarIcons[0], ...updatedFolders, sidebarIcons[1]];
+          const addedChats = [
+            sidebarIcons[0],
+            ...updatedFolders,
+            sidebarIcons[1],
+          ];
           const userSettingsIcons = userEditIcons.map((icon, i) => ({
             ...icon,
             id: (i + addedChats.length).toString(),
@@ -65,8 +70,8 @@ const useSidebar = (folders: IFolder[] | null) => {
       prevIcons.map((icon) =>
         icon.id === index && !icon.isActive
           ? { ...icon, isActive: true }
-          : { ...icon, isActive: false },
-      ),
+          : { ...icon, isActive: false }
+      )
     );
   }, []);
 

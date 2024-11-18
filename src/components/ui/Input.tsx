@@ -1,4 +1,10 @@
-import { InputHTMLAttributes, useEffect, forwardRef, useState, ChangeEvent } from "react";
+import {
+  InputHTMLAttributes,
+  useEffect,
+  forwardRef,
+  useState,
+  ChangeEvent,
+} from "react";
 
 import Icon from "./Icon";
 import Delete from "./Delete";
@@ -27,7 +33,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       ...props
     },
-    ref,
+    ref
   ) => {
     const [passwordHidden, setPasswordHidden] = useState<boolean>(true);
 
@@ -40,7 +46,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           clearTimeout(handler);
         };
       }
-    }, [value]);
+    }, [setDebouncedValue, value]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
       setValue(e.target.value);
@@ -71,7 +77,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {value && !noDeleteIcon && (
-          <Delete isDark={isDark} handler={handleClearInput} position="center-right" />
+          <Delete
+            isDark={isDark}
+            handler={handleClearInput}
+            position="center-right"
+          />
         )}
         {type === "password" && (
           <button
@@ -79,12 +89,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             onClick={togglePasswordVisibility}
             className="absolute right-2 top-1/2 -translate-y-1/2 leading-[0.7]"
           >
-            <Icon className="hover:bg-white">{passwordHidden ? <FaEyeSlash /> : <FaEye />}</Icon>
+            <Icon className="hover:bg-white">
+              {passwordHidden ? <FaEyeSlash /> : <FaEye />}
+            </Icon>
           </button>
         )}
       </div>
     );
-  },
+  }
 );
+
+Input.displayName = "Input";
 
 export default Input;

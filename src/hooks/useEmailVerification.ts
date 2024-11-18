@@ -25,7 +25,7 @@ const useEmailVerification = () => {
           toast.error(`Error verifying email: ${error}`);
         });
     }
-  }, [auth, searchParams, router]);
+  }, [searchParams, router]);
 };
 
 export default useEmailVerification;

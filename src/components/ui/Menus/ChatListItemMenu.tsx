@@ -67,7 +67,7 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
         action: () => {},
       },
     ],
-    [data, data.id]
+    [data.id, data.isPin, doTogglePinChat, openChat, user]
   );
 
   return (

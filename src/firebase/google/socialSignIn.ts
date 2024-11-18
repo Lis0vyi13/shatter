@@ -27,6 +27,10 @@ export const socialSignIn = async (props: ISocialSignInProps) => {
       router.push("/auth/create-password");
     }
   } catch (error) {
-    toast.error("An error occurred during sign-in. Please try again.");
+    if (error instanceof Error) {
+      toast.error(error.message);
+    } else {
+      toast.error("An unexpected error occurred during sign-in.");
+    }
   }
 };

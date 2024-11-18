@@ -13,7 +13,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     if (isLogin) {
       replace("/c");
     }
-  }, [isLogin]);
+  }, [isLogin, replace]);
 
   return children;
 };

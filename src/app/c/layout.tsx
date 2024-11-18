@@ -14,7 +14,7 @@ const ChatLayout = ({ children }: { children: ReactNode }) => {
     if (isLogin === false) {
       replace("/login");
     }
-  }, [isLogin]);
+  }, [isLogin, replace]);
 
   return <Layout>{children}</Layout>;
 };

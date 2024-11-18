@@ -4,7 +4,6 @@ import Providers from "./providers";
 import "./globals.css";
 
 import { Poppins } from "next/font/google";
-import Layout from "@/layouts";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,6 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="shortcut icon" href="/logo.svg" />
+      </head>
       <body className={poppins.className}>
         <Providers>{children}</Providers>
       </body>
