@@ -42,7 +42,7 @@ const CreatePassword = () => {
         variants={variants}
         className="pt-4"
       >
-        <Link href={"/sign-up"} className="logo pt-4">
+        <Link href={"/"} className="logo pt-4">
           <Logo width={28} height={28} />
         </Link>
       </motion.div>

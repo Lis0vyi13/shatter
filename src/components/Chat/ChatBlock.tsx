@@ -10,17 +10,16 @@ import useChats from "@/hooks/useChats";
 
 import Block from "@/components/ui/Block";
 import ChatList from "./ChatList";
+import ChatDetails from "./ChatDetails";
 import Chat from "./Chat";
 
 import { IChat } from "@/types/chat";
-import ChatDetails from "./ChatDetails";
 
 const ChatBlock = ({ id }: { id?: string }) => {
   const [activeChat, setActiveChat] = useState<IChat | null>(null);
   const user = useUser();
   const chats = useChats();
   const { setChats } = useActions();
-  console.log(user);
 
   useEffect(() => {
     if (user?.uid) {

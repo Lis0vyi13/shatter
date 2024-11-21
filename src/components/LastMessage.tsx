@@ -6,8 +6,7 @@ interface ILastMessageProps {
 
 const LastMessage = ({ data }: ILastMessageProps) => {
   const findUserById = (id: string) => {
-    console.log(id);
-    return "Test user";
+    return id;
   };
   const isSender = data.by === data.id;
   const isAction = data.type === "action";

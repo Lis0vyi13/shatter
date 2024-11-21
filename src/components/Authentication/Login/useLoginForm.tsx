@@ -14,7 +14,7 @@ const useLoginForm = () => {
       const user = await doSignInWithEmailAndPassword(email, password);
       if (user) {
         if (user.emailVerified) {
-          toast.success("You have successfully signed in!");
+          toast.success("You have successfully logged in!");
         } else {
           toast.error(
             "Account verification is required before you can continue."

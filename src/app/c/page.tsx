@@ -1,7 +1,11 @@
-import Chat from "./Chat";
+import ChatBlock from "@/components/Chat/ChatBlock";
 
 const ChatPage = () => {
-  return <Chat />;
+  return (
+    <div className="chat-page overflow-hidden flex flex-1">
+      <ChatBlock />
+    </div>
+  );
 };
 
 export default ChatPage;

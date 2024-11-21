@@ -1,6 +1,8 @@
 "use client";
 
 import { memo } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { formatTimestamp } from "@/utils";
 
@@ -11,7 +13,7 @@ import LastMessage from "../LastMessage";
 
 import { TiPin } from "react-icons/ti";
 import { IChat } from "@/types/chat";
-import Link from "next/link";
+import useUser from "@/hooks/useUser";
 
 interface IChatListItemProps extends IChat {
   isActive: boolean;
@@ -32,10 +34,13 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     hideIndicators,
   } = props;
   const duration = formatTimestamp(updatedAt);
+  const pathname = usePathname();
+  const user = useUser();
 
+  const root = pathname.split("/")[1];
   return (
     <Link
-      href={`${props.id}`}
+      href={`/${root}/${props.id}?uid=${user?.uid}`}
       onClick={props.setChat}
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         props.isActive && !hideIndicators

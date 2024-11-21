@@ -7,7 +7,6 @@ import { BiLogOut } from "react-icons/bi";
 import { ILogoutIcon, IFolder, IUserEditIcons } from "@/types/sidebar";
 
 // import { FaFolder } from "react-icons/fa";
-
 export const sidebarIcons: IFolder[] = [
   {
     id: "0",

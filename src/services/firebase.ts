@@ -126,6 +126,22 @@ export const getUserById = async (uid: string): Promise<UserData | null> => {
   return userDoc.data() as UserData;
 };
 
+export const getChatById = async (
+  uid: string,
+  chatId: string
+): Promise<IChat | null> => {
+  const chatDocRef = doc(db, "chats", uid);
+  const chatDoc = await getDoc(chatDocRef);
+
+  if (!chatDoc.exists()) {
+    return null;
+  }
+
+  const data = chatDoc.data();
+  const chats: IChat[] = data.chats;
+  return chats.find((chat) => chat.id === chatId) || null;
+};
+
 export const searchByDisplayName = async (
   searchTerm: string
 ): Promise<UserData[]> => {

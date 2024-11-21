@@ -3,7 +3,7 @@ import AuthLayout from "./AuthLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Auth | Shatter",
+  title: "Auth",
   description: "Shatter authentication",
 };
 

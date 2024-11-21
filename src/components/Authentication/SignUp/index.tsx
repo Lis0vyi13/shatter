@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { handleGoogleSignIn } from "@/hooks/handleGoogleSignIn";
-import { changeUrlWithoutReload, cn } from "@/utils";
+import { cn } from "@/utils";
 
 import SignUpForm from "./SignUpForm";
 import Block from "@/components/ui/Block";
@@ -36,12 +37,9 @@ const SignUp = ({ pathname }: { pathname: string | null }) => {
         variants={variants}
         className="pt-4"
       >
-        <Logo
-          onClick={() => changeUrlWithoutReload("/sign-up")}
-          className="logo pt-4 cursor-pointer"
-          width={28}
-          height={28}
-        />
+        <Link href={"/"}>
+          <Logo className="logo pt-4 cursor-pointer" width={28} height={28} />
+        </Link>
       </motion.div>
 
       <motion.div
