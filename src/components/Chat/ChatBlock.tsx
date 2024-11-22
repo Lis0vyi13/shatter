@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import { useAppSelector } from "@/redux/app/hooks";
 
 import useUser from "@/hooks/useUser";
 import useActions from "@/hooks/useActions";
@@ -16,10 +17,10 @@ import Chat from "./Chat";
 import { IChat } from "@/types/chat";
 
 const ChatBlock = ({ id }: { id?: string }) => {
-  const [activeChat, setActiveChat] = useState<IChat | null>(null);
+  const activeChat = useAppSelector((store) => store.chat.activeChat);
   const user = useUser();
   const chats = useChats();
-  const { setChats } = useActions();
+  const { setChats, setActiveChat } = useActions();
 
   useEffect(() => {
     if (user?.uid) {
@@ -54,8 +55,8 @@ const ChatBlock = ({ id }: { id?: string }) => {
 
   useEffect(() => {
     const chat = chats?.find((chat) => chat.id == id);
-    setActiveChat(chat || null);
-  }, [chats, id]);
+    if (chat) setActiveChat(chat);
+  }, [chats, id, setActiveChat]);
 
   return (
     <Block color={"dark"} className={`chat-block flex gap-2 pr-2`}>

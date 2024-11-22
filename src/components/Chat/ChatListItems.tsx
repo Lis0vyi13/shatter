@@ -20,59 +20,62 @@ const ChatListItems = ({
   activeChat,
   setActiveChat,
   createNewChat,
-}: ChatListItemsProps) => (
-  <Droppable droppableId="chatListDroppable">
-    {(provided) => (
-      <ul
-        className="list flex flex-col"
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-      >
-        {chats ? (
-          chats.map((chat, index) => (
-            <ChatListItemMenu data={chat} key={chat.id}>
-              {chat.isPin ? (
-                <Draggable key={chat.id} draggableId={chat.id} index={index}>
-                  {(provided) => (
-                    <li
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <ChatListItem
-                        {...chat}
-                        isActive={chat.id == activeChat}
-                        setChat={
-                          chat.chatType === "none"
-                            ? () => createNewChat(chat)
-                            : () => setActiveChat(chat.id)
-                        }
-                      />
-                    </li>
-                  )}
-                </Draggable>
-              ) : (
-                <li key={chat.id}>
-                  <ChatListItem
-                    {...chat}
-                    isActive={chat.id == activeChat}
-                    setChat={
-                      chat.chatType === "none"
-                        ? () => createNewChat(chat)
-                        : () => setActiveChat(chat.id)
-                    }
-                  />
-                </li>
-              )}
-            </ChatListItemMenu>
-          ))
-        ) : (
-          <Loader isDefault />
-        )}
-        {provided.placeholder}
-      </ul>
-    )}
-  </Droppable>
-);
+}: ChatListItemsProps) => {
+  console.log(chats);
+  return (
+    <Droppable droppableId="chatListDroppable">
+      {(provided) => (
+        <ul
+          className="list flex flex-col"
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+        >
+          {chats ? (
+            chats.map((chat, index) => (
+              <ChatListItemMenu data={chat} key={chat.id}>
+                {chat.isPin ? (
+                  <Draggable key={chat.id} draggableId={chat.id} index={index}>
+                    {(provided) => (
+                      <li
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ChatListItem
+                          {...chat}
+                          isActive={chat.id == activeChat}
+                          setChat={
+                            chat.chatType === "none"
+                              ? () => createNewChat(chat)
+                              : () => setActiveChat(chat.id)
+                          }
+                        />
+                      </li>
+                    )}
+                  </Draggable>
+                ) : (
+                  <li key={chat.id}>
+                    <ChatListItem
+                      {...chat}
+                      isActive={chat.id == activeChat}
+                      setChat={
+                        chat.chatType === "none"
+                          ? () => createNewChat(chat)
+                          : () => setActiveChat(chat.id)
+                      }
+                    />
+                  </li>
+                )}
+              </ChatListItemMenu>
+            ))
+          ) : (
+            <Loader isDefault />
+          )}
+          {provided.placeholder}
+        </ul>
+      )}
+    </Droppable>
+  );
+};
 
 export default ChatListItems;

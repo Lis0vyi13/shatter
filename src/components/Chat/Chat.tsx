@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Title from "@/components/ui/Title";
 import Icon from "@/components/ui/Icon";
 import Input from "@/components/ui/Input";
+import Message from "./Message";
 
 import { IChat, IMessage } from "@/types/chat";
 
@@ -13,7 +14,6 @@ import { IoCallOutline } from "react-icons/io5";
 import { IoMdMore } from "react-icons/io";
 import { GrAttachment, GrMicrophone, GrSend } from "react-icons/gr";
 import { FaRegSmile } from "react-icons/fa";
-import Message from "./Message";
 
 const messages: IMessage[] = [
   {
@@ -39,7 +39,7 @@ const Chat = ({ data }: { data: IChat }) => {
           <Title className="text-[28px] leading-8">{data?.title}</Title>
           {data?.chatType === "individual" && data?.members?.length > 2 && (
             <p className="members mt-1 font-[400] text-[13px] text-dark text-opacity-70">
-              {data?.members?.length} members, {data?.onlineUsers?.length}{" "}
+              {data?.members?.length} members, {data?.onlineUsers?.length}
               online
             </p>
           )}
@@ -61,7 +61,12 @@ const Chat = ({ data }: { data: IChat }) => {
 
       <main className="chat-main overflow-y-auto overflow-x-hidden flex flex-col gap-3 flex-1">
         {messages.map((m) => (
-          <Message key={m.id} data={m} />
+          <Message
+            partnerTitle={data.title}
+            partnerAvatar={data.avatar as string}
+            key={m.id}
+            data={m}
+          />
         ))}
       </main>
       <footer className="chat-footer">

@@ -3,9 +3,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IChatState {
   chats: IChat[] | null;
+  activeChat: IChat | null;
 }
 
-const initialState: IChatState = { chats: null };
+const initialState: IChatState = { chats: null, activeChat: null };
 
 export const chatSlice = createSlice({
   name: "chat",
@@ -13,6 +14,9 @@ export const chatSlice = createSlice({
   reducers: {
     setChats(state, action: PayloadAction<IChat[]>) {
       state.chats = action.payload;
+    },
+    setActiveChat(state, action: PayloadAction<IChat>) {
+      state.activeChat = action.payload;
     },
   },
 });

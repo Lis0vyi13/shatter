@@ -13,7 +13,6 @@ import LastMessage from "../LastMessage";
 
 import { TiPin } from "react-icons/ti";
 import { IChat } from "@/types/chat";
-import useUser from "@/hooks/useUser";
 
 interface IChatListItemProps extends IChat {
   isActive: boolean;
@@ -35,12 +34,11 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   } = props;
   const duration = formatTimestamp(updatedAt);
   const pathname = usePathname();
-  const user = useUser();
 
   const root = pathname.split("/")[1];
   return (
     <Link
-      href={`/${root}/${props.id}?uid=${user?.uid}`}
+      href={`/${root}/${props.id}`}
       onClick={props.setChat}
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         props.isActive && !hideIndicators

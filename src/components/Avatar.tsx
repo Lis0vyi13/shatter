@@ -19,11 +19,12 @@ const Avatar = ({ avatar, title, className }: TAvatar) => {
           className="w-full bg-cover h-full object-cover"
           src={avatar}
           width={48}
+          title={title}
           height={48}
           alt="USER"
         />
       ) : (
-        getInitials(title as string)
+        <span title={title}>{getInitials(title as string)}</span>
       )}
     </div>
   );

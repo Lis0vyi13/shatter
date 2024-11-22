@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import useUser from "@/hooks/useUser";
-import { getUserById } from "@/services/firebase";
 
 import Avatar from "../Avatar";
 
@@ -11,25 +10,25 @@ import { IMessage } from "@/types/chat";
 
 interface IMessageProps {
   data: IMessage;
+  partnerTitle: string;
+  partnerAvatar: string;
 }
 
-const Message = ({ data }: IMessageProps) => {
-  const [sender, setSender] = useState<UserData | null>(null);
-  const currentUser = useUser();
+const Message = ({ data, partnerTitle, partnerAvatar }: IMessageProps) => {
+  const [title, setTitle] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const currentUser = useUser() as UserData;
   const isOwnMessage = currentUser?.uid === data.uid;
 
   useEffect(() => {
-    const fetchSender = async () => {
-      if (isOwnMessage) {
-        setSender(currentUser as UserData);
-      } else {
-        const fetchedSender = await getUserById(data.uid);
-        setSender(fetchedSender);
-      }
-    };
-
-    fetchSender();
-  }, [data.uid, currentUser, isOwnMessage]);
+    if (isOwnMessage) {
+      setTitle(currentUser.displayName || "");
+      setAvatar(currentUser.photoUrl || "");
+    } else {
+      setTitle(partnerTitle || "");
+      setAvatar(partnerAvatar || "");
+    }
+  }, [data.uid, currentUser, isOwnMessage, partnerTitle, partnerAvatar]);
 
   return (
     <div
@@ -38,8 +37,8 @@ const Message = ({ data }: IMessageProps) => {
       }`}
     >
       <Avatar
-        avatar={sender?.photoUrl}
-        title={sender?.displayName}
+        avatar={avatar}
+        title={title}
         className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] self-end"
       />
 

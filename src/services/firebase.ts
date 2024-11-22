@@ -138,6 +138,7 @@ export const getChatById = async (
   }
 
   const data = chatDoc.data();
+
   const chats: IChat[] = data.chats;
   return chats.find((chat) => chat.id === chatId) || null;
 };
