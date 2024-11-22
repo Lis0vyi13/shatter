@@ -2,7 +2,9 @@ import { AuthProvider, signInWithPopup, User } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { toast } from "sonner";
 
-export const doSignInWithPopup = async (provider: AuthProvider): Promise<User | null> => {
+export const doSignInWithPopup = async (
+  provider: AuthProvider
+): Promise<User | null> => {
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;

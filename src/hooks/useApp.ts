@@ -15,12 +15,12 @@ import useActions from "./useActions";
 import { generateFavoritesChatTemplate } from "@/templates";
 
 export const useApp = () => {
-  const { setUser, setFolders } = useActions();
+  const { setUser } = useActions();
 
   useEffect(() => {
     const handleUserAuth = async (user: User | null) => {
       if (!user || !user.emailVerified) return;
-      
+
       monitorUserConnection();
 
       try {
@@ -39,5 +39,5 @@ export const useApp = () => {
     const unsubscribe = onAuthStateChanged(auth, handleUserAuth);
 
     return () => unsubscribe();
-  }, [setUser, setFolders]);
+  }, [setUser]);
 };

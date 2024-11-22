@@ -21,7 +21,6 @@ const ChatListItems = ({
   setActiveChat,
   createNewChat,
 }: ChatListItemsProps) => {
-  console.log(chats);
   return (
     <Droppable droppableId="chatListDroppable">
       {(provided) => (
