@@ -4,8 +4,8 @@ import { IChat } from "@/types/chat";
 import { Metadata } from "next";
 
 interface IChatPage {
-  params: { id: string };
-  searchParams: { uid: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ uid: string }>;
 }
 
 export async function generateMetadata({
