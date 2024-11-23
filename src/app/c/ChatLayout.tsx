@@ -38,21 +38,20 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
       const unsubscribe = onSnapshot(chatsRef, (doc) => {
         if (doc.exists()) {
           const data = doc.data() as { chats: IChat[] };
+          // const { pinnedChats, regularChats } = data.chats.reduce(
+          //   (acc, chat) => {
+          //     if (chat.isPin) {
+          //       acc.pinnedChats.push(chat);
+          //     } else {
+          //       acc.regularChats.push(chat);
+          //     }
+          //     return acc;
+          //   },
+          //   { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
+          // );
 
-          const { pinnedChats, regularChats } = data.chats.reduce(
-            (acc, chat) => {
-              if (chat.isPin) {
-                acc.pinnedChats.push(chat);
-              } else {
-                acc.regularChats.push(chat);
-              }
-              return acc;
-            },
-            { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
-          );
-
-          const sortedChats = [...pinnedChats, ...regularChats];
-          setChats(sortedChats);
+          // const sortedChats = [...pinnedChats, ...regularChats];
+          setChats(data.chats);
         } else {
           setChats([]);
         }
