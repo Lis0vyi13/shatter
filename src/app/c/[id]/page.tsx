@@ -1,7 +1,6 @@
 import ChatBlock from "@/components/Chat/ChatBlock";
-
 interface IChatPage {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 // export async function generateMetadata({
@@ -20,10 +19,7 @@ interface IChatPage {
 
 const ChatPage = async ({ params }: IChatPage) => {
   const id = (await params).id;
-  // useEffect(() => {
-  //   const chat = chats?.find((chat) => chat.id == id);
-  //   if (chat) setActiveChat(chat);
-  // }, [chats, id, setActiveChat]);
+
   return (
     <div className="chat-page overflow-hidden flex flex-1">
       <ChatBlock id={id} />

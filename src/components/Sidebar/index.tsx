@@ -17,7 +17,7 @@ const Sidebar = () => {
 
   return (
     <section className="flex min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
-      <Link className="mt-1" href={"/c"}>
+      <Link shallow className="mt-1" href={"/c"}>
         <Image priority width={27} height={27} src="/logo.svg" alt="Logo" />
       </Link>
       <div className="flex flex-col gap-3 justify-center">

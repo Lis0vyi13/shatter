@@ -27,7 +27,7 @@ const SidebarIcon = ({
   });
 
   return href ? (
-    <Link onClick={onClick} href={href || ""} className={className}>
+    <Link shallow onClick={onClick} href={href || ""} className={className}>
       {iconWithClasses}
       <span className="text-[12px] max-w-[76px]">{title}</span>
     </Link>

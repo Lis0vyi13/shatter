@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@/firebase/firebaseConfig";
+import { db } from "@/firebase/firebaseConfig";
 
 import useActions from "@/hooks/useActions";
 import useChats from "@/hooks/useChats";
+import useUser from "@/hooks/useUser";
 
 import Block from "@/components/ui/Block";
 import ChatList from "./ChatList";
@@ -16,7 +17,7 @@ import { IChat } from "@/types/chat";
 
 const ChatBlock = ({ id }: { id?: string }) => {
   const [activeChat, setActiveChat] = useState<IChat | null>(null);
-  const user = auth.currentUser;
+  const user = useUser();
   const chats = useChats();
   const { setChats } = useActions();
 

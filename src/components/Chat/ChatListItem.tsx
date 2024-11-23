@@ -40,6 +40,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     <Link
       href={`/${root}/${props.id}`}
       onClick={props.setChat}
+      shallow
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         props.isActive && !hideIndicators
           ? "bg-lightBlue"
