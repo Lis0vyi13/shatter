@@ -1,6 +1,7 @@
 import ChatBlock from "@/components/Chat/ChatBlock";
+
 interface IChatPage {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 // export async function generateMetadata({
