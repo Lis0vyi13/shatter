@@ -43,6 +43,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
       href={`/${root}/${id}`}
       onClick={() => setChat()}
       shallow
+      prefetch
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         isActive && !hideIndicators
           ? "bg-lightBlue"
