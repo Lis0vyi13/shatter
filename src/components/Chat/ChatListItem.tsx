@@ -31,6 +31,8 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     title,
     avatar,
     hideIndicators,
+    isActive,
+    setChat,
   } = props;
   const duration = formatTimestamp(updatedAt);
   const pathname = usePathname();
@@ -38,11 +40,11 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const root = pathname.split("/")[1];
   return (
     <Link
-      href={`/${root}/${props.id}`}
-      onClick={props.setChat}
+      href={`/${root}/${id}`}
+      onClick={() => setChat()}
       shallow
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
-        props.isActive && !hideIndicators
+        isActive && !hideIndicators
           ? "bg-lightBlue"
           : "bg-white hover:bg-blue hover:bg-opacity-15"
       }`}

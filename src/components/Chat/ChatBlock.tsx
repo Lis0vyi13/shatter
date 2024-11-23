@@ -1,12 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
 
-import useActions from "@/hooks/useActions";
 import useChats from "@/hooks/useChats";
-import useUser from "@/hooks/useUser";
 
 import Block from "@/components/ui/Block";
 import ChatList from "./ChatList";
@@ -17,40 +13,7 @@ import { IChat } from "@/types/chat";
 
 const ChatBlock = ({ id }: { id?: string }) => {
   const [activeChat, setActiveChat] = useState<IChat | null>(null);
-  const user = useUser();
   const chats = useChats();
-  const { setChats } = useActions();
-
-  useEffect(() => {
-    if (user?.uid) {
-      const chatsRef = doc(db, "chats", user.uid);
-
-      const unsubscribe = onSnapshot(chatsRef, (doc) => {
-        if (doc.exists()) {
-          const data = doc.data() as { chats: IChat[] };
-
-          const { pinnedChats, regularChats } = data.chats.reduce(
-            (acc, chat) => {
-              if (chat.isPin) {
-                acc.pinnedChats.push(chat);
-              } else {
-                acc.regularChats.push(chat);
-              }
-              return acc;
-            },
-            { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
-          );
-
-          const sortedChats = [...pinnedChats, ...regularChats];
-          setChats(sortedChats);
-        } else {
-          setChats([]);
-        }
-      });
-
-      return () => unsubscribe();
-    }
-  }, [setChats, user?.uid]);
 
   useEffect(() => {
     const chat = chats?.find((chat) => chat.id == id);
