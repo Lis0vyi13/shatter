@@ -1,8 +1,7 @@
-import ChatBlock from "@/components/Chat/ChatBlock";
+"use client";
 
-interface IChatPage {
-  params: Promise<{ id: string }>;
-}
+import ChatBlock from "@/components/Chat/ChatBlock";
+import { useParams } from "next/navigation";
 
 // export async function generateMetadata({
 //   params,
@@ -18,12 +17,12 @@ interface IChatPage {
 //   };
 // }
 
-const ChatPage = async ({ params }: IChatPage) => {
-  const id = (await params).id;
+const ChatPage = () => {
+  const { id } = useParams();
 
   return (
     <div className="chat-page overflow-hidden flex flex-1">
-      <ChatBlock id={id} />
+      <ChatBlock id={id as string} />
     </div>
   );
 };
