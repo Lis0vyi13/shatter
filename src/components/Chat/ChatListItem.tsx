@@ -1,8 +1,8 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { formatTimestamp } from "@/utils";
 
@@ -36,14 +36,18 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   } = props;
   const duration = formatTimestamp(updatedAt);
   const pathname = usePathname();
-
+  const router = useRouter();
   const root = pathname.split("/")[1];
+
+  useEffect(() => {
+    router.prefetch(`/${root}/${id}`);
+  }, [root, id, router]);
+
   return (
     <Link
       href={`/${root}/${id}`}
       onClick={setChat}
       shallow
-      prefetch
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         isActive && !hideIndicators
           ? "bg-lightBlue"
