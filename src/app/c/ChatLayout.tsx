@@ -14,6 +14,7 @@ import useActions from "@/hooks/useActions";
 import useUser from "@/hooks/useUser";
 
 import { IChat } from "@/types/chat";
+import Loader from "@/components/ui/Loader";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   useEmailVerification();
@@ -62,7 +63,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [setChats, user?.uid]);
 
-  return (
+  return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">
       <section className="wrapper flex-1 bg-dark rounded-[26px] flex">
         <aside className="flex justify-center min-w-[96px]">
@@ -73,6 +74,8 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
         </main>
       </section>
     </div>
+  ) : (
+    <Loader />
   );
 };
 
