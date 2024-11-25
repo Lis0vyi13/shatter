@@ -1,7 +1,8 @@
 "use client";
 
-import ChatBlock from "@/components/Chat/ChatBlock";
 import { useParams } from "next/navigation";
+
+import ChatBlock from "@/components/Chat/ChatBlock";
 
 // export async function generateMetadata({
 //   params,
