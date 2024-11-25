@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
@@ -10,11 +10,11 @@ import { useApp } from "@/hooks/useApp";
 import useEmailVerification from "@/hooks/useEmailVerification";
 
 import Sidebar from "@/components/Sidebar";
+import Loader from "@/components/ui/Loader";
 import useActions from "@/hooks/useActions";
 import useUser from "@/hooks/useUser";
 
 import { IChat } from "@/types/chat";
-import Loader from "@/components/ui/Loader";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   useEmailVerification();
@@ -22,15 +22,16 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
 
   const mainRef = useRef(null);
   const isLogin = useAuth();
-  const { replace } = useRouter();
+  const router = useRouter();
   const { setChats } = useActions();
   const user = useUser();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isLogin === false) {
-      replace("/login");
+      router.replace("/login");
     }
-  }, [isLogin, replace]);
+  }, [isLogin, router]);
 
   useEffect(() => {
     if (user?.uid) {
@@ -62,6 +63,10 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
       return () => unsubscribe();
     }
   }, [setChats, user?.uid]);
+
+  useEffect(() => {
+    router.prefetch(pathname);
+  }, [pathname, router]);
 
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">

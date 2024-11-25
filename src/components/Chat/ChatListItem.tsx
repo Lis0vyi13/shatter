@@ -38,10 +38,12 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const pathname = usePathname();
 
   const root = pathname.split("/")[1];
+
   return (
     <Link
       href={`/${root}/${id}`}
       onClick={setChat}
+      shallow
       prefetch
       className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
         isActive && !hideIndicators
