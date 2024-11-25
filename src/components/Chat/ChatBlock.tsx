@@ -10,20 +10,15 @@ import ChatDetails from "./ChatDetails";
 import Chat from "./Chat";
 
 import { IChat } from "@/types/chat";
-import useActions from "@/hooks/useActions";
 
 const ChatBlock = ({ id }: { id?: string }) => {
   const [activeChat, setActiveChat] = useState<IChat | null>(null);
   const chats = useChats();
-  const { setChats } = useActions();
 
   useEffect(() => {
     const chat = chats?.find((chat) => chat.id == id);
-    if (chats && chat) {
-      setActiveChat(chat);
-      setChats(chats);
-    }
-  }, [chats, id, setChats]);
+    setActiveChat(chat || null);
+  }, [chats, id]);
 
   return (
     <Block color={"dark"} className={`chat-block flex gap-2 pr-2`}>
