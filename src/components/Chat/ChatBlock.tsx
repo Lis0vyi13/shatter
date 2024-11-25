@@ -9,7 +9,7 @@ import Chat from "./Chat";
 
 import { IChat } from "@/types/chat";
 
-const ChatBlock = ({ chat }: { chat: IChat | null }) => {
+const ChatBlock = ({ chat }: { chat?: IChat | null }) => {
   const chats = useChats();
   return (
     <Block color={"dark"} className={`chat-block flex gap-2 pr-2`}>
