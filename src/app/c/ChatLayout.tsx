@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
@@ -25,7 +25,6 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { setChats } = useActions();
   const user = useUser();
-  const pathname = usePathname();
 
   useEffect(() => {
     if (isLogin === false) {
@@ -63,10 +62,6 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
       return () => unsubscribe();
     }
   }, [setChats, user?.uid]);
-
-  useEffect(() => {
-    router.prefetch(pathname);
-  }, [pathname, router]);
 
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">

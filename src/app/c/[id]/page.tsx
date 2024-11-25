@@ -2,8 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-import dynamic from "next/dynamic";
-import { useEffect } from "react";
+import ChatBlock from "@/components/Chat/ChatBlock";
 
 // export async function generateMetadata({
 //   params,
@@ -19,16 +18,8 @@ import { useEffect } from "react";
 //   };
 // }
 
-const ChatBlock = dynamic(() => import("@/components/Chat/ChatBlock"), {
-  ssr: false,
-});
-
 const ChatPage = () => {
   const { id } = useParams();
-
-  useEffect(() => {
-    console.log("chat");
-  }, []);
 
   return (
     <div className="chat-page overflow-hidden flex flex-1">
