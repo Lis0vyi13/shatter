@@ -1,8 +1,9 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 import ChatBlock from "@/components/Chat/ChatBlock";
+import { useEffect } from "react";
 
 // export async function generateMetadata({
 //   params,
@@ -20,6 +21,12 @@ import ChatBlock from "@/components/Chat/ChatBlock";
 
 const ChatPage = () => {
   const { id } = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    router.prefetch(pathname);
+  }, [pathname, router]);
 
   return (
     <div className="chat-page overflow-hidden flex flex-1">
