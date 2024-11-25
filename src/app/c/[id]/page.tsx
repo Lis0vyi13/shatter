@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense, useEffect } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
 import ChatBlock from "@/components/Chat/ChatBlock";
-import { useEffect } from "react";
+import Loader from "@/components/ui/Loader";
 
 // export async function generateMetadata({
 //   params,
@@ -29,9 +30,11 @@ const ChatPage = () => {
   }, [pathname, router]);
 
   return (
-    <div className="chat-page overflow-hidden flex flex-1">
-      <ChatBlock id={id as string} />
-    </div>
+    <Suspense fallback={<Loader />}>
+      <div className="chat-page overflow-hidden flex flex-1">
+        <ChatBlock id={id as string} />
+      </div>
+    </Suspense>
   );
 };
 
