@@ -11,7 +11,7 @@ const Block = ({ color = "white", className, children }: IBlockProps) => {
 
   return (
     <section
-      className={`block relative w-full h-full overflow-hidden rounded-[24px] ${colorClass} ${className}`}
+      className={`block relative w-full h-full rounded-[24px] ${colorClass} ${className}`}
     >
       {children}
     </section>

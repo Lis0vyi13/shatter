@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
-import favoritesLogo from "/public/favorites.png";
+import favoritesLogo from "@/assets/favorites.png";
 import {
   createFavoritesChat,
   getUserById,

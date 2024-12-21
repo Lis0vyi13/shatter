@@ -9,6 +9,7 @@ const useLoginForm = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const user = await doSignInWithEmailAndPassword(email, password);
@@ -27,8 +28,6 @@ const useLoginForm = () => {
       } else {
         toast.error("An unexpected error occurred during sign-in.");
       }
-      console.log(123);
-      setIsLoading(false);
     }
   };
   return {

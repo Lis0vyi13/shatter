@@ -57,7 +57,7 @@ const Home = () => {
           learn at the same time wrapped in one user-friendly application
         </motion.h2>
         <motion.div
-          className="buttons mt-8 text-[14px] flex items-center gap-3"
+          className="buttons mt-8 mb-4 text-[14px] flex items-center gap-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}

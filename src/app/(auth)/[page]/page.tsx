@@ -38,13 +38,13 @@ export default function AuthPage() {
         <Login pathname={currentPageName || null} />
       </motion.div>
       <motion.div
-        className="text-white h-full hidden mdLg:block"
+        className="text-white h-full mb-4 hidden mdLg:block"
         initial="hiddenReverse"
         animate="visibleReverse"
         transition={{ duration: 0.9 }}
         variants={variants}
       >
-        <Block className="min-h-full px-0 py-0" color="dark">
+        <Block className="min-h-full px-0 py-0 overflow-hidden" color="dark">
           <Suspense fallback={<Loader />}>
             <motion.video
               className="min-h-full object-cover opacity-100"

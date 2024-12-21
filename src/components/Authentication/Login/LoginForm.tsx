@@ -12,15 +12,8 @@ import Button from "@/components/ui/Button";
 import { FaArrowRightLong } from "react-icons/fa6";
 
 const LoginForm = () => {
-  const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    handleSubmit,
-    isLoading,
-    setIsLoading,
-  } = useLoginForm();
+  const { email, setEmail, password, setPassword, handleSubmit, isLoading } =
+    useLoginForm();
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -29,10 +22,7 @@ const LoginForm = () => {
 
   return (
     <form
-      onSubmit={(e) => {
-        handleSubmit(e);
-        setIsLoading(true);
-      }}
+      onSubmit={handleSubmit}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           if (submitButtonRef.current) {

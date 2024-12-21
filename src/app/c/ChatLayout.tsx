@@ -36,24 +36,26 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     const fetchChats = async () => {
       if (user?.chats) {
         try {
-          const chats = await getAllChats(user.chats);
-          const favoriteChat = await getFavoriteChat(user.favorites);
-          const allChats = [...chats, favoriteChat];
+          if (user?.favorites) {
+            const chats = await getAllChats(user.chats);
+            const favoriteChat = await getFavoriteChat(user.favorites);
+            const allChats = [...chats, favoriteChat];
 
-          const { pinnedChats, regularChats } = allChats.reduce(
-            (acc, chat) => {
-              if (chat.isPin.includes(user?.uid)) {
-                acc.pinnedChats.push(chat);
-              } else {
-                acc.regularChats.push(chat);
-              }
-              return acc;
-            },
-            { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
-          );
+            const { pinnedChats, regularChats } = allChats.reduce(
+              (acc, chat) => {
+                if (chat.isPin.includes(user?.uid)) {
+                  acc.pinnedChats.push(chat);
+                } else {
+                  acc.regularChats.push(chat);
+                }
+                return acc;
+              },
+              { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
+            );
 
-          const sortedChats = [...pinnedChats, ...regularChats];
-          setChats(sortedChats);
+            const sortedChats = [...pinnedChats, ...regularChats];
+            setChats(sortedChats);
+          }
         } catch (error) {
           console.error("Error fetching chats:", error);
           setChats([]);
@@ -62,7 +64,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     };
 
     fetchChats();
-  }, [setChats, user, user?.chats]);
+  }, [setChats, user, user?.chats, user?.favorites]);
 
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">

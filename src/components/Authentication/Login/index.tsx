@@ -26,7 +26,7 @@ const Login = ({ pathname }: { pathname: string | null }) => {
   return (
     <Block
       color="dark"
-      className={`flex transition-all duration-700 flex-col relative min-w-full items-center text-center text-white ${
+      className={`flex overflow-auto transition-all duration-700 flex-col relative min-w-full items-center text-center text-white ${
         isLoginPage ? "-ml-[100%]" : ""
       }`}
     >

@@ -2,14 +2,18 @@
 
 import { useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "@/firebase/firebaseConfig";
+import { auth, db } from "@/firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import {
   createTestFolder,
   createUser,
   monitorUserConnection,
 } from "@/services/firebase";
-import useActions from "./useActions";
 import { generateFavoritesChatTemplate } from "@/templates";
+
+import useActions from "./useActions";
+
+import { IUser } from "@/types/user";
 
 export const useApp = () => {
   const { setUser } = useActions();
@@ -29,14 +33,16 @@ export const useApp = () => {
       try {
         monitorUserConnection();
 
-        const userData = await createUser(user);
+        await createUser(user);
 
         await Promise.all([
           generateFavoritesChatTemplate(user.uid),
           createTestFolder(),
         ]);
 
-        setUser(userData);
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        setUser(userDoc.data() as IUser);
       } catch (error) {
         console.error("Error handling user authentication:", error);
       }

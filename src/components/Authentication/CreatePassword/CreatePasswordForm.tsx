@@ -7,11 +7,18 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
 import { FaArrowRightLong } from "react-icons/fa6";
+import CircleLoader from "@/components/ui/CircleLoader";
 
 const CreatePasswordForm = () => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const { username, setUsername, password, setPassword, handleSubmit } =
-    useCreatePasswordForm();
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    handleSubmit,
+    isLoading,
+  } = useCreatePasswordForm();
   const inputClassName =
     "bg-dark pl-3 py-3 text-white text-[12px] placeholder:text-[12px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";
 
@@ -52,7 +59,13 @@ const CreatePasswordForm = () => {
         ref={submitButtonRef}
         className="text-dark flex justify-center hover:bg-gray text-[12px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
       >
-        <span>Log In</span> <FaArrowRightLong className="mt-[2px]" />
+        {isLoading ? (
+          <CircleLoader />
+        ) : (
+          <>
+            <span>Log In</span> <FaArrowRightLong className="mt-[2px]" />
+          </>
+        )}
       </Button>
     </form>
   );

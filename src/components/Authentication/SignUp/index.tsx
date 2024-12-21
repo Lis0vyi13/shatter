@@ -26,7 +26,7 @@ const SignUp = ({ pathname }: { pathname: string | null }) => {
   return (
     <Block
       color="dark"
-      className={`flex transition-all duration-700 relative flex-col min-w-full items-center text-center text-white ${
+      className={`flex overflow-auto transition-all duration-700 relative flex-col min-w-full items-center text-center text-white ${
         isLoginPage ? "translate-x-full" : ""
       }`}
     >
