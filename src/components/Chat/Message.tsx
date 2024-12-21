@@ -5,7 +5,7 @@ import useUser from "@/hooks/useUser";
 
 import Avatar from "../Avatar";
 
-import { UserData } from "@/types/user";
+import { IUser } from "@/types/user";
 import { IMessage } from "@/types/chat";
 
 interface IMessageProps {
@@ -17,7 +17,7 @@ interface IMessageProps {
 const Message = ({ data, partnerTitle, partnerAvatar }: IMessageProps) => {
   const [title, setTitle] = useState("");
   const [avatar, setAvatar] = useState("");
-  const currentUser = useUser() as UserData;
+  const currentUser = useUser() as IUser;
   const isOwnMessage = currentUser?.uid === data.uid;
 
   useEffect(() => {
