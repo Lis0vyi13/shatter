@@ -1,6 +1,8 @@
 import { ReactNode, useMemo } from "react";
 
 import useUser from "@/hooks/useUser";
+import { useChatActions } from "./useChatActions";
+import useActions from "@/hooks/useActions";
 
 import {
   ContextMenu,
@@ -16,7 +18,7 @@ import { RiInboxUnarchiveLine } from "react-icons/ri";
 import { MdOutlineCleaningServices, MdDeleteOutline } from "react-icons/md";
 
 import { IChat } from "@/types/chat";
-import { useChatActions } from "./useChatActions";
+import useChats from "@/hooks/useChats";
 
 interface IChatListItemMenu {
   data: IChat;
@@ -27,6 +29,9 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
   const labelWithIconClassName =
     "absolute left-[2rem] top-1/2 -translate-y-1/2";
   const user = useUser();
+  const chats = useChats();
+  const { setChats } = useActions();
+
   const { openChat, doTogglePinChat } = useChatActions();
 
   const menuItems = useMemo(
@@ -39,11 +44,28 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
       },
       {
         icon: <TiPin className="text-[16px]" />,
-        label: data.isPin ? "Unpin" : "Pin",
+        label: user && data.isPin.includes(user.uid) ? "Unpin" : "Pin",
         separator: false,
         action: async () => {
-          if (user) {
-            await doTogglePinChat(user.uid, data.id);
+          if (user && chats) {
+            const updatedChats: IChat[] = chats.map((chat) => {
+              if (chat.id === data.id) {
+                const isPinned = chat.isPin.includes(user.uid);
+
+                const updatedIsPin = isPinned
+                  ? chat.isPin.filter((pinnedUid) => pinnedUid !== user.uid)
+                  : [...chat.isPin, user.uid];
+                return { ...chat, isPin: updatedIsPin };
+              }
+              return chat;
+            });
+            setChats(updatedChats);
+
+            await doTogglePinChat(
+              user.uid,
+              data.id,
+              data.id === user.favorites ? "favorites" : "chats"
+            );
           }
         },
       },
@@ -67,7 +89,7 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
         action: () => {},
       },
     ],
-    [data.id, data.isPin, doTogglePinChat, openChat, user]
+    [chats, data.id, data.isPin, doTogglePinChat, openChat, setChats, user]
   );
 
   return (

@@ -1,5 +1,4 @@
 import { StaticImageData } from "next/image";
-import { IFolder } from "./sidebar";
 
 type TMessageType = "text" | "action";
 export type TChatType = "individual" | "group" | "none";
@@ -41,9 +40,8 @@ export interface IChat {
   avatar: string | StaticImageData;
   updatedAt: number;
   unreadedMessages: number;
-  isPin: boolean;
+  isPin: string[];
   chatType: TChatType;
   info: IChatInfo;
-  folders: IFolder[];
   order?: number;
 }

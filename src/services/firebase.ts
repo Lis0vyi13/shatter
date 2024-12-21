@@ -21,68 +21,91 @@ import {
 
 import { v4 as uuidv4 } from "uuid";
 
-import { UserData } from "@/types/user";
+import { IUser } from "@/types/user";
 import { IChat } from "@/types/chat";
+import { IFolder } from "@/types/sidebar";
 
-export const createOrUpdateUser = async (user: User) => {
+export const createUser = async (user: User) => {
   const userDocRef = doc(db, "users", user.uid);
   const userDoc = await getDoc(userDocRef);
 
-  const userData: UserData = {
+  const userData: IUser = {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName || "Anonymous",
     photoUrl: "",
     emailVerified: user.emailVerified,
+    chats: [],
+    folders: [],
     createdAt: Date.now(),
+    favorites: "",
   };
 
   if (!userDoc.exists()) {
     await setDoc(userDocRef, userData);
-  } else {
-    await updateDoc(userDocRef, {
-      email: userData.email,
-      displayName: userData.displayName,
-      // searchableTokens: user.displayName?.toLowerCase().split(" ") || [],
-      photoUrl: userData.photoUrl,
-      emailVerified: userData.emailVerified,
-    });
   }
-
-  return userDoc.exists() ? (userDoc.data() as UserData) : userData;
+  // else {
+  //   await updateDoc(userDocRef, {
+  //     email: userData.email,
+  //     displayName: userData.displayName,
+  //     // searchableTokens: user.displayName?.toLowerCase().split(" ") || [],
+  //     photoUrl: userData.photoUrl,
+  //     emailVerified: userData.emailVerified,
+  //   });
+  return userDoc.exists() ? (userDoc.data() as IUser) : userData;
 };
 
-export const createFavoritesChat = async (chatData: IChat, uid: string) => {
-  const chatDocRef = doc(db, "chats", uid);
-  const chatDoc = await getDoc(chatDocRef);
+export const updateUser = async (uid: string, updatedData: Partial<IUser>) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
 
-  if (!chatDoc.exists()) {
-    await setDoc(chatDocRef, {
-      chats: [chatData],
-    });
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      console.error(`User with uid ${uid} does not exist.`);
+      return;
+    }
+
+    await updateDoc(userDocRef, updatedData);
+
+    console.log(`User with uid ${uid} successfully updated.`);
+  } catch (error) {
+    console.error("Error updating user:", error);
   }
-  const updatedChatDoc = await getDoc(chatDocRef);
-
-  return updatedChatDoc.data();
 };
 
-export const createChat = async (chatData: IChat, uid: string) => {
-  const chatDocRef = doc(db, "chats", uid);
-  const chatDoc = await getDoc(chatDocRef);
+export const createFavoritesChat = async (data: IChat | null) => {
+  if (data) {
+    const chatDocRef = doc(db, "favorites", data.id);
+    const chatDoc = await getDoc(chatDocRef);
 
-  await updateDoc(chatDocRef, {
-    chats: [...chatDoc.data()?.chats, chatData],
-  });
+    if (!chatDoc.exists()) {
+      await setDoc(chatDocRef, data);
+    }
+    const updatedChatDoc = await getDoc(chatDocRef);
 
-  const updatedChatDoc = await getDoc(chatDocRef);
-  return updatedChatDoc.data() as IChat;
+    return updatedChatDoc.data();
+  }
 };
 
-export const createTestFolder = async (user: User) => {
-  const folderDocRef = doc(db, "folders", user.uid);
+export const createChat = async (chatData: IChat) => {
+  try {
+    const chatDocRef = doc(db, "chats", chatData.id);
+
+    await setDoc(chatDocRef, chatData);
+
+    return { success: true, data: chatData };
+  } catch (error) {
+    console.error("Ошибка при создании чата:", error);
+    return { success: false, error };
+  }
+};
+
+export const createTestFolder = async () => {
+  const folderID = uuidv4();
+  const folderDocRef = doc(db, "folders", folderID);
   const folderDoc = await getDoc(folderDocRef);
   const testFolder = {
-    id: uuidv4(),
+    id: folderID,
     title: "Work",
     type: "all",
     isActive: false,
@@ -91,61 +114,78 @@ export const createTestFolder = async (user: User) => {
   };
 
   if (!folderDoc.exists()) {
-    await setDoc(folderDocRef, {
-      data: [testFolder],
-    });
+    await setDoc(folderDocRef, testFolder);
   }
 
   return folderDoc.data();
 };
 
-export const getSortedChats = async (uid: string): Promise<IChat[]> => {
-  const chatDocRef = doc(db, "chats", uid);
-  const chatDoc = await getDoc(chatDocRef);
-
-  if (!chatDoc.exists()) {
-    return [];
-  }
-
-  const chatData = chatDoc.data()?.chats || [];
-
-  const sortedChats = chatData.sort(
-    (a: IChat, b: IChat) => (b.updatedAt || 0) - (a.updatedAt || 0)
-  );
-
-  return sortedChats;
-};
-
-export const getUserById = async (uid: string): Promise<UserData | null> => {
+export const getUserById = async (uid: string): Promise<IUser | null> => {
   const userDocRef = doc(db, "users", uid);
   const userDoc = await getDoc(userDocRef);
 
   if (!userDoc.exists) {
     return null;
   }
-  return userDoc.data() as UserData;
+  return userDoc.data() as IUser;
 };
 
-export const getChatById = async (
-  uid: string,
-  chatId: string
-): Promise<IChat | null> => {
-  const chatDocRef = doc(db, "chats", uid);
+export const getChatById = async (chatId: string): Promise<IChat | null> => {
+  const chatDocRef = doc(db, "chats", chatId);
   const chatDoc = await getDoc(chatDocRef);
 
   if (!chatDoc.exists()) {
     return null;
   }
 
-  const data = chatDoc.data();
+  return chatDoc.data() as IChat;
+};
 
-  const chats: IChat[] = data.chats;
-  return chats.find((chat) => chat.id === chatId) || null;
+export const getFolderById = async (
+  folderId: string
+): Promise<IFolder | null> => {
+  const folderDocRef = doc(db, "folders", folderId);
+  const folderDoc = await getDoc(folderDocRef);
+
+  if (!folderDoc.exists()) {
+    return null;
+  }
+
+  return folderDoc.data() as IFolder;
+};
+
+export const getAllChats = async (chatsId: string[]): Promise<IChat[]> => {
+  const chats = await Promise.all(
+    chatsId.map(async (id) => {
+      const chat = await getChatById(id);
+      return chat;
+    })
+  );
+  return chats.filter((chat) => chat !== null);
+};
+
+export const getAllFolders = async (
+  foldersId: string[]
+): Promise<IFolder[]> => {
+  const folders = await Promise.all(
+    foldersId.map(async (id) => {
+      const chat = await getFolderById(id);
+      return chat;
+    })
+  );
+  return folders.filter((folder) => folder !== null);
+};
+
+export const getFavoriteChat = async (chatId: string): Promise<IChat> => {
+  const chatDocRef = doc(db, "favorites", chatId);
+  const chatDoc = await getDoc(chatDocRef);
+
+  return chatDoc.data() as IChat;
 };
 
 export const searchByDisplayName = async (
   searchTerm: string
-): Promise<UserData[]> => {
+): Promise<IUser[]> => {
   try {
     const usersRef = collection(db, "users");
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -153,9 +193,9 @@ export const searchByDisplayName = async (
     const q = query(usersRef);
     const querySnapshot = await getDocs(q);
 
-    const users: UserData[] = [];
+    const users: IUser[] = [];
     querySnapshot.forEach((doc) => {
-      const userData = doc.data() as UserData;
+      const userData = doc.data() as IUser;
       const isMatch = userData.displayName
         ?.toLowerCase()
         .includes(lowerSearchTerm);
@@ -172,30 +212,37 @@ export const searchByDisplayName = async (
 
 export const togglePinChat = async (
   uid: string,
-  chatId: string
-): Promise<void> => {
+  chatId: string,
+  collection: "favorites" | "chats" = "chats"
+): Promise<IChat | null> => {
   try {
-    const chatDocRef = doc(db, "chats", uid);
+    const chatDocRef = doc(db, collection, chatId);
 
     const chatDocSnap = await getDoc(chatDocRef);
 
     if (!chatDocSnap.exists()) {
       console.error("Chat document does not exist.");
-      return;
+      return null;
     }
 
-    const chatData = chatDocSnap.data();
-    const chats = chatData?.chats || [];
+    const chatData = chatDocSnap.data() as IChat;
 
-    const updatedChats = chats.map((chat: IChat) =>
-      chat.id === chatId ? { ...chat, isPin: !chat.isPin } : chat
-    );
+    const isPinned = chatData.isPin.includes(uid);
 
-    await updateDoc(chatDocRef, { chats: updatedChats });
+    const updatedIsPin = isPinned
+      ? chatData.isPin.filter((pinnedUid) => pinnedUid !== uid)
+      : [...chatData.isPin, uid];
 
-    console.log(`Chat was updated successfully.`);
+    await updateDoc(chatDocRef, { isPin: updatedIsPin });
+
+    const updatedChatDocSnap = await getDoc(chatDocRef);
+
+    return updatedChatDocSnap.exists()
+      ? (updatedChatDocSnap.data() as IChat)
+      : null;
   } catch (error) {
     console.error("Error toggling chat pin state:", error);
+    return null;
   }
 };
 

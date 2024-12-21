@@ -1,10 +1,9 @@
-import { UserData } from "@/types/user";
+import { IUser } from "@/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "firebase/auth";
 
 interface UserState {
   isAuth: boolean | null;
-  user: UserData | User | null;
+  user: IUser | null;
 }
 
 const initialState: UserState = { isAuth: null, user: null };
@@ -13,7 +12,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<UserData | User>) {
+    setUser(state, action: PayloadAction<IUser>) {
       state.isAuth = true;
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload));

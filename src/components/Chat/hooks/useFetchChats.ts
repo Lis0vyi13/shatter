@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { searchByDisplayName } from "@/services/firebase";
 import useUser from "@/hooks/useUser";
 
-import { userToChat } from "@/templates";
+import { createChatFromUser } from "@/templates";
 
 import { IChat } from "@/types/chat";
 
@@ -22,11 +22,14 @@ const useFetchChats = (data: IChat[] | null, searchValue: string) => {
         setCurrentChats(data || null);
       } else {
         const chatsByQuery =
-          data?.filter((chat) => chat.title.toLowerCase().includes(searchValue.toLowerCase())) ||
-          [];
+          data?.filter((chat) =>
+            chat.title.toLowerCase().includes(searchValue.toLowerCase())
+          ) || [];
 
         const usersByQuery = await searchUser(searchValue);
-        const usersChats: IChat[] = usersByQuery.map((user) => userToChat(user));
+        const usersChats: IChat[] = usersByQuery.map((user) =>
+          createChatFromUser(user)
+        );
 
         const combinedList = [...chatsByQuery, ...usersChats];
         if (user) {
@@ -35,8 +38,11 @@ const useFetchChats = (data: IChat[] | null, searchValue: string) => {
               (existingChat) =>
                 existingChat.id === chat.id ||
                 chat.id === user.uid ||
-                (new Set(existingChat.members).size === new Set(chat.members).size &&
-                  existingChat.members.every((member) => chat.members.includes(member))),
+                (new Set(existingChat.members).size ===
+                  new Set(chat.members).size &&
+                  existingChat.members.every((member) =>
+                    chat.members.includes(member)
+                  ))
             );
 
             if (!isDuplicate) {

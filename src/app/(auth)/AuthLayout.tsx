@@ -10,7 +10,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
   const isLogin = useAuth();
 
   useEffect(() => {
-    if (isLogin) {
+    if (isLogin && !localStorage.getItem("googleUserData")) {
       replace("/c");
     }
   }, [isLogin, replace]);

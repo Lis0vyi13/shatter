@@ -12,8 +12,13 @@ export const useChatActions = () => {
     router.push(`/${category}/${id}`);
   };
 
-  const doTogglePinChat = async (userId: string, chatId: string) => {
-    await togglePinChat(userId, chatId);
+  const doTogglePinChat = async (
+    userId: string,
+    chatId: string,
+    collection: "favorites" | "chats" = "chats"
+  ) => {
+    const chats = await togglePinChat(userId, chatId, collection);
+    return chats;
   };
 
   const archiveChat = () => {

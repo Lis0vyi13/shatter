@@ -43,8 +43,8 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
       const uid = currentUser?.uid;
       const data: IChat = { ...chatData, chatType: "individual" };
       if (uid) {
-        const chat = await createChat(data, uid);
-        if (chat?.id) setActiveChat(chat?.id);
+        const chat = await createChat(data);
+        if (chat.data?.id) setActiveChat(chat.data?.id);
         setSearchValue("");
       }
     } catch (error) {

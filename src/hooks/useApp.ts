@@ -3,15 +3,12 @@
 import { useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
-
 import {
-  createFavoritesChat,
-  createOrUpdateUser,
   createTestFolder,
+  createUser,
+  monitorUserConnection,
 } from "@/services/firebase";
-import { monitorUserConnection } from "@/services/firebase";
 import useActions from "./useActions";
-
 import { generateFavoritesChatTemplate } from "@/templates";
 
 export const useApp = () => {
@@ -19,16 +16,25 @@ export const useApp = () => {
 
   useEffect(() => {
     const handleUserAuth = async (user: User | null) => {
-      if (!user || !user.emailVerified) return;
+      if (!user) {
+        console.warn("No user authenticated.");
+        return;
+      }
 
-      monitorUserConnection();
+      if (!user.emailVerified) {
+        console.warn("User email is not verified.");
+        return;
+      }
 
       try {
-        const userData = await createOrUpdateUser(user);
+        monitorUserConnection();
 
-        const favoritesChat = generateFavoritesChatTemplate(user.uid);
-        await createFavoritesChat(favoritesChat, user.uid);
-        await createTestFolder(user);
+        const userData = await createUser(user);
+
+        await Promise.all([
+          generateFavoritesChatTemplate(user.uid),
+          createTestFolder(),
+        ]);
 
         setUser(userData);
       } catch (error) {
@@ -36,8 +42,12 @@ export const useApp = () => {
       }
     };
 
-    const unsubscribe = onAuthStateChanged(auth, handleUserAuth);
+    const unsubscribe = onAuthStateChanged(auth, (user) =>
+      handleUserAuth(user)
+    );
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, [setUser]);
 };

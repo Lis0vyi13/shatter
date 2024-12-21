@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { formatTimestamp } from "@/utils";
+import useUser from "@/hooks/useUser";
 
 import Title from "@/components/ui/Title";
 import Counter from "@/components/ui/Counter";
@@ -36,6 +37,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   } = props;
   const duration = formatTimestamp(updatedAt);
   const pathname = usePathname();
+  const user = useUser();
 
   const root = pathname.split("/")[1];
 
@@ -71,7 +73,9 @@ const ChatListItem = memo((props: IChatListItemProps) => {
 
             <div className="flex justify-center items-center gap-1 pt-[1px]">
               {unreadedMessages > 0 && <Counter>{unreadedMessages}</Counter>}
-              {isPin && <TiPin className="text-blue text-[20px]" />}
+              {user && isPin.includes(user.uid) && (
+                <TiPin className="text-blue text-[20px]" />
+              )}
             </div>
           </div>
         )}

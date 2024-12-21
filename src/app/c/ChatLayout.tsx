@@ -2,17 +2,17 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+
+import { getFavoriteChat, getAllChats } from "@/services/firebase";
 
 import useAuth from "@/hooks/useAuth";
 import { useApp } from "@/hooks/useApp";
 import useEmailVerification from "@/hooks/useEmailVerification";
+import useActions from "@/hooks/useActions";
+import useUser from "@/hooks/useUser";
 
 import Sidebar from "@/components/Sidebar";
 import Loader from "@/components/ui/Loader";
-import useActions from "@/hooks/useActions";
-import useUser from "@/hooks/useUser";
 
 import { IChat } from "@/types/chat";
 
@@ -33,16 +33,16 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isLogin, router]);
 
   useEffect(() => {
-    if (user?.uid) {
-      const chatsRef = doc(db, "chats", user.uid);
+    const fetchChats = async () => {
+      if (user?.chats) {
+        try {
+          const chats = await getAllChats(user.chats);
+          const favoriteChat = await getFavoriteChat(user.favorites);
+          const allChats = [...chats, favoriteChat];
 
-      const unsubscribe = onSnapshot(chatsRef, (doc) => {
-        if (doc.exists()) {
-          const data = doc.data() as { chats: IChat[] };
-
-          const { pinnedChats, regularChats } = data.chats.reduce(
+          const { pinnedChats, regularChats } = allChats.reduce(
             (acc, chat) => {
-              if (chat.isPin) {
+              if (chat.isPin.includes(user?.uid)) {
                 acc.pinnedChats.push(chat);
               } else {
                 acc.regularChats.push(chat);
@@ -54,14 +54,15 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
 
           const sortedChats = [...pinnedChats, ...regularChats];
           setChats(sortedChats);
-        } else {
+        } catch (error) {
+          console.error("Error fetching chats:", error);
           setChats([]);
         }
-      });
+      }
+    };
 
-      return () => unsubscribe();
-    }
-  }, [setChats, user?.uid]);
+    fetchChats();
+  }, [setChats, user, user?.chats]);
 
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">

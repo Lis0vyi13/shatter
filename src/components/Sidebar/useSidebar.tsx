@@ -4,8 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { ref, set } from "firebase/database";
 import { signOut } from "firebase/auth";
-import { auth, db, dbRealtime } from "@/firebase/firebaseConfig";
-import { doc, onSnapshot } from "firebase/firestore";
+import { auth, dbRealtime } from "@/firebase/firebaseConfig";
 
 import useActions from "@/hooks/useActions";
 import useUser from "@/hooks/useUser";
@@ -14,6 +13,7 @@ import { sidebarIcons, userEditIcons } from "@/constants";
 
 import { IFolder, IUserEditIcons } from "@/types/sidebar";
 import { FaFolder } from "react-icons/fa";
+import { getAllFolders } from "@/services/firebase";
 
 const useSidebar = (folders: IFolder[] | null) => {
   const { logout, setFolders } = useActions();
@@ -23,26 +23,18 @@ const useSidebar = (folders: IFolder[] | null) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.uid) {
-      const chatsRef = doc(db, "folders", user.uid);
-
-      const unsubscribe = onSnapshot(chatsRef, (doc) => {
-        if (doc.exists()) {
-          const folders = doc.data();
-          setFolders(folders.data);
-        } else {
-          setFolders([]);
-        }
-      });
-
-      return () => unsubscribe();
-    }
-  }, [setFolders, user?.uid]);
+    const fetchFolders = async () => {
+      if (user) {
+        const folders = await getAllFolders(user.folders);
+        setFolders(folders);
+      }
+    };
+    fetchFolders();
+  }, [setFolders, user]);
 
   useEffect(() => {
     const updateIcons = async () => {
       if (folders) {
-        console.log(folders);
         const updatedFolders: IFolder[] = folders.map((folder) => ({
           ...folder,
           to: "/" + folder.id,
@@ -100,7 +92,6 @@ const useSidebar = (folders: IFolder[] | null) => {
         console.error("Error updating status or signing out:", error);
       }
     } else {
-      console.log("No user is signed in.");
     }
   };
 
