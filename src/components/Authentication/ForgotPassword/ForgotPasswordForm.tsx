@@ -1,31 +1,22 @@
-"use client";
-
 import { useActionState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { createPasswordAction } from "./CreatePassword.action";
+
+import { forgotPasswordAction } from "./ForgotPassword.action";
 
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
+import Input from "@/components/ui/Input";
 
 import { FaArrowRightLong } from "react-icons/fa6";
 
-import { authInputClassName } from "@/constants";
-
-const CreatePasswordForm = () => {
+const ForgotPasswordForm = () => {
+  const [, action, isPending] = useActionState(forgotPasswordAction, "");
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const [, action, isPending] = useActionState(createPasswordAction, {
-    username: "",
-    password: "",
-  });
-  const { replace } = useRouter();
+  const inputClassName =
+    "bg-dark pl-3 py-3 text-white text-[14px] placeholder:text-[14px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";
 
   return (
     <form
-      action={(e) => {
-        action(e);
-        replace("/c");
-      }}
+      action={action}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           if (submitButtonRef.current) {
@@ -36,22 +27,14 @@ const CreatePasswordForm = () => {
       className="mt-4 w-full px-4 xs:px-0 xs:w-[270px] flex flex-col gap-3 max-w-full"
     >
       <Input
-        name="username"
-        placeholder="Username"
+        name="email"
+        placeholder="Email"
         required
         isDark
-        className={authInputClassName}
-        autoComplete="name"
+        className={inputClassName}
+        autoComplete="email"
       />
-      <Input
-        name="password"
-        type="password"
-        placeholder="Password"
-        minLength={6}
-        required
-        className={authInputClassName}
-        autoComplete="new-password"
-      />
+
       <Button
         ref={submitButtonRef}
         className="text-dark flex justify-center hover:bg-gray text-[14px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
@@ -60,7 +43,7 @@ const CreatePasswordForm = () => {
           <CircleLoader />
         ) : (
           <>
-            <span>Log In</span> <FaArrowRightLong className="mt-[1px]" />
+            <span>Reset</span> <FaArrowRightLong className="-mt-[1px]" />
           </>
         )}
       </Button>
@@ -68,4 +51,4 @@ const CreatePasswordForm = () => {
   );
 };
 
-export default CreatePasswordForm;
+export default ForgotPasswordForm;

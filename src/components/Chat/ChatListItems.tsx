@@ -7,6 +7,7 @@ import Loader from "@/components/ui/Loader";
 import { ChatListItemMenu } from "@/components/ui/Menus/ChatListItemMenu";
 
 import { IChat } from "@/types/chat";
+import useUser from "@/hooks/useUser";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -21,6 +22,7 @@ const ChatListItems = ({
   setActiveChat,
   createNewChat,
 }: ChatListItemsProps) => {
+  const user = useUser();
   return (
     <Droppable droppableId="chatListDroppable">
       {(provided) => (
@@ -32,7 +34,7 @@ const ChatListItems = ({
           {chats ? (
             chats.map((chat, index) => (
               <ChatListItemMenu data={chat} key={chat.id}>
-                {chat.isPin ? (
+                {user && chat.isPin.includes(user.uid) ? (
                   <Draggable key={chat.id} draggableId={chat.id} index={index}>
                     {(provided) => (
                       <li
@@ -42,6 +44,7 @@ const ChatListItems = ({
                       >
                         <ChatListItem
                           {...chat}
+                          index={index}
                           isActive={chat.id == activeChat}
                           setChat={
                             chat.chatType === "none"
@@ -56,6 +59,7 @@ const ChatListItems = ({
                   <li key={chat.id}>
                     <ChatListItem
                       {...chat}
+                      index={index}
                       isActive={chat.id == activeChat}
                       setChat={
                         chat.chatType === "none"

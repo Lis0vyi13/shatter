@@ -13,6 +13,9 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     if (isLogin && !localStorage.getItem("googleUserData")) {
       replace("/c");
     }
+    if (localStorage.getItem("googleUserData")) {
+      replace("/create-password");
+    }
   }, [isLogin, replace]);
 
   return children;

@@ -19,8 +19,6 @@ import {
   set,
 } from "firebase/database";
 
-import { v4 as uuidv4 } from "uuid";
-
 import { IUser } from "@/types/user";
 import { IChat } from "@/types/chat";
 import { IFolder } from "@/types/sidebar";
@@ -98,26 +96,6 @@ export const createChat = async (chatData: IChat) => {
     console.error("Ошибка при создании чата:", error);
     return { success: false, error };
   }
-};
-
-export const createTestFolder = async () => {
-  const folderID = uuidv4();
-  const folderDocRef = doc(db, "folders", folderID);
-  const folderDoc = await getDoc(folderDocRef);
-  const testFolder = {
-    id: folderID,
-    title: "Work",
-    type: "all",
-    isActive: false,
-    unreaded: 3,
-    to: "/c",
-  };
-
-  if (!folderDoc.exists()) {
-    await setDoc(folderDocRef, testFolder);
-  }
-
-  return folderDoc.data();
 };
 
 export const getUserById = async (uid: string): Promise<IUser | null> => {

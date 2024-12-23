@@ -4,11 +4,7 @@ import { useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-import {
-  createTestFolder,
-  createUser,
-  monitorUserConnection,
-} from "@/services/firebase";
+import { createUser, monitorUserConnection } from "@/services/firebase";
 import { generateFavoritesChatTemplate } from "@/templates";
 
 import useActions from "./useActions";
@@ -25,20 +21,12 @@ export const useApp = () => {
         return;
       }
 
-      if (!user.emailVerified) {
-        console.warn("User email is not verified.");
-        return;
-      }
-
       try {
         monitorUserConnection();
 
         await createUser(user);
 
-        await Promise.all([
-          generateFavoritesChatTemplate(user.uid),
-          createTestFolder(),
-        ]);
+        await generateFavoritesChatTemplate(user.uid);
 
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);

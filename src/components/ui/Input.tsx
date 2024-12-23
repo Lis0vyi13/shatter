@@ -13,8 +13,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  value?: string;
+  setValue?: React.Dispatch<React.SetStateAction<string>>;
   setDebouncedValue?: React.Dispatch<React.SetStateAction<string>>;
   noDeleteIcon?: boolean;
   isDark?: boolean;
@@ -35,10 +35,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const [passwordHidden, setPasswordHidden] = useState<boolean>(true);
+    const [passwordHidden, setPasswordHidden] = useState(true);
+    const [inputValue, setInputValue] = useState("");
+    const [isAutoCompleted, setIsAutoCompleted] = useState(false);
 
+    function checkIsAutoCompeted(e: React.ChangeEvent<HTMLInputElement>) {
+      const target = e.target as HTMLInputElement;
+      const computedStyle = getComputedStyle(target);
+
+      if (computedStyle.backgroundColor === "rgb(232, 240, 254)") {
+        setIsAutoCompleted(true);
+      } else {
+        setIsAutoCompleted(false);
+      }
+    }
     useEffect(() => {
-      if (setDebouncedValue) {
+      if (setDebouncedValue && value != null) {
         const handler = setTimeout(() => {
           setDebouncedValue(value);
         }, 300);
@@ -49,12 +61,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     }, [setDebouncedValue, value]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value);
+      if (setValue) setValue(e.target.value);
     };
 
     const handleClearInput = () => {
-      setValue("");
-
+      setInputValue("");
+      if (setValue) setValue("");
       if (setDebouncedValue) {
         setDebouncedValue("");
       }
@@ -71,12 +83,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           type={inputType}
-          value={value}
-          onChange={handleInputChange}
-          className={`relative focus:shadow-lg text-dark placeholder:text-dark placeholder:text-opacity-60 pr-4 py-2 font-[400] rounded-xl outline-none w-full transition duration-300 ${className}`}
+          value={value || inputValue}
+          onInput={checkIsAutoCompeted}
+          onChange={(e) => {
+            handleInputChange(e);
+            setInputValue(e.target.value);
+          }}
+          className={`relative focus:shadow-lg text-dark placeholder:text-dark placeholder:text-opacity-60 pr-4 py-2 font-[400] rounded-xl outline-none w-full transition duration-300 ${
+            inputValue ? "outline-white/55" : ""
+          } ${className}`}
           {...props}
         />
-        {value && !noDeleteIcon && (
+        {inputValue && !noDeleteIcon && (
           <Delete
             isDark={isDark}
             handler={handleClearInput}
@@ -89,8 +107,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             onClick={togglePasswordVisibility}
             className="absolute right-2 top-1/2 -translate-y-1/2 leading-[0.7]"
           >
-            <Icon className="hover:bg-white">
-              {passwordHidden ? <FaEyeSlash /> : <FaEye />}
+            <Icon
+              className={`${
+                isAutoCompleted ? "hover:bg-dark" : "hover:bg-white"
+              }`}
+            >
+              {passwordHidden ? (
+                <FaEyeSlash
+                  className={`${isAutoCompleted ? "text-dark" : ""}`}
+                />
+              ) : (
+                <FaEye className={`${isAutoCompleted ? "text-dark" : ""}`} />
+              )}
             </Icon>
           </button>
         )}

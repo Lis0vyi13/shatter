@@ -1,28 +1,31 @@
 "use client";
 
-import { useRef } from "react";
+import { useActionState, useRef } from "react";
+import Link from "next/link";
 
-import { changeUrlWithoutReload, cn } from "@/utils";
-import useLoginForm from "./useLoginForm";
+import { changeUrlWithoutReload } from "@/utils";
 
 import Input from "@/components/ui/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
 import Button from "@/components/ui/Button";
 
 import { FaArrowRightLong } from "react-icons/fa6";
+import { loginAction } from "./Login.action";
 
 const LoginForm = () => {
-  const { email, setEmail, password, setPassword, handleSubmit, isLoading } =
-    useLoginForm();
+  const [, action, isPending] = useActionState(loginAction, {
+    email: "",
+    password: "",
+  });
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const inputClassName =
-    "bg-dark pl-3 py-3 text-white text-[12px] placeholder:text-[12px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";
+    "bg-dark pl-3 py-3 text-white text-[14px] placeholder:text-[14px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";
 
   return (
     <form
-      onSubmit={handleSubmit}
+      action={action}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           if (submitButtonRef.current) {
@@ -38,9 +41,7 @@ const LoginForm = () => {
         placeholder="Email"
         required
         isDark
-        value={email}
-        setValue={setEmail}
-        className={cn(inputClassName, email && "outline-white/55")}
+        className={inputClassName}
         autoComplete="email"
       />
       <Input
@@ -49,27 +50,31 @@ const LoginForm = () => {
         placeholder="Password"
         minLength={6}
         required
-        value={password}
-        setValue={setPassword}
-        className={cn(inputClassName, password && "outline-white/55")}
-        autoComplete="new-password"
+        className={inputClassName}
+        autoComplete="current-password"
       />
+      <Link
+        href={"/forgot-password"}
+        className="text-[12px] text-gray hover:underline cursor-pointer text-right"
+      >
+        Forgot Password?
+      </Link>
       <Button
         ref={submitButtonRef}
-        disabled={isLoading}
-        className="text-dark flex justify-center hover:bg-gray text-[12px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
+        disabled={isPending}
+        className="text-dark flex justify-center hover:bg-gray text-[14px] py-3 items-center gap-1 mt-3 bg-white rounded-2xl"
       >
-        <span>{isLoading ? <CircleLoader /> : "Log In"}</span>
-        {!isLoading && <FaArrowRightLong className="mt-[2px]" />}
+        <span>{isPending ? <CircleLoader /> : "Log In"}</span>
+        {!isPending && <FaArrowRightLong className="mt-[2px]" />}
       </Button>
 
-      <div className="flex gap-1 items-center justify-center text-[12px]">
+      <div className="flex gap-3 items-center justify-center text-[13px]">
         <span>Don&apos;t have an account?</span>
         <div>
           <Button
             type="button"
             onClick={() => changeUrlWithoutReload("/sign-up")}
-            className="border inline-block text-[12px] bg-dark hover:bg-[#464646] w-fit px-[10px] py-[2px] rounded-2xl border-gray"
+            className="border inline-block text-[13px] bg-dark hover:bg-[#464646] w-fit px-[10px] py-[2px] rounded-2xl border-gray"
           >
             Sign Up
           </Button>

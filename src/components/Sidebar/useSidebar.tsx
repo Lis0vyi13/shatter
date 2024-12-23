@@ -21,7 +21,7 @@ const useSidebar = (folders: IFolder[] | null) => {
     useState<(IFolder | IUserEditIcons)[]>(sidebarIcons);
   const user = useUser();
   const [loading, setLoading] = useState(false);
-
+  console.log(user);
   useEffect(() => {
     const fetchFolders = async () => {
       if (user) {

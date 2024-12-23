@@ -1,0 +1,57 @@
+import { Dispatch, SetStateAction } from "react";
+import doCreateUserWithEmailAndPassword from "@/firebase/auth";
+
+type TSignUpAction = (
+  _: unknown,
+  formData: FormData,
+  setProgressValue: Dispatch<SetStateAction<number>>,
+  setIsSubmitted: Dispatch<SetStateAction<boolean>>
+) => Promise<{
+  username: string | null;
+  email: string | null;
+  password: string | null;
+}>;
+
+export const signUpAction: TSignUpAction = async (
+  _,
+  formData,
+  setProgressValue,
+  setIsSubmitted
+) => {
+  const data = {
+    username: formData.get("email") as string | null,
+    email: formData.get("email") as string | null,
+    password: formData.get("password") as string | null,
+  };
+
+  if (!data.username || !data.email || !data.password) {
+    console.error("Missing required fields!");
+    return data;
+  }
+
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      setProgressValue(10);
+      setIsSubmitted(true);
+      resolve(null);
+    }, 100);
+  });
+
+  try {
+    await doCreateUserWithEmailAndPassword(
+      data.email,
+      data.password,
+      data.username,
+      setProgressValue
+    );
+  } catch (error) {
+    console.error("Error during sign-up:", error);
+  } finally {
+    setIsSubmitted(false);
+    setTimeout(() => {
+      setProgressValue(0);
+    }, 500);
+  }
+
+  return data;
+};

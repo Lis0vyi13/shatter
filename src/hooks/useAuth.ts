@@ -7,7 +7,7 @@ const useAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user?.emailVerified) {
+      if (user) {
         setAuthState(true);
       } else {
         setAuthState(false);

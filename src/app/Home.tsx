@@ -16,6 +16,10 @@ const Home = () => {
   const isLogin = useAuth();
 
   useEffect(() => {
+    if (localStorage.getItem("googleUserData")) {
+      replace("/create-password");
+      return;
+    }
     if (isLogin) {
       replace("/c");
     }

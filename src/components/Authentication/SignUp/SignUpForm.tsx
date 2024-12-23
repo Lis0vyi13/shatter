@@ -1,33 +1,43 @@
-import { useRef } from "react";
+import { useActionState, useRef, useState } from "react";
+
+import { changeUrlWithoutReload } from "@/utils";
+import { signUpAction } from "./SignUp.action";
 
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import AuthLoader from "../AuthLoader";
 
 import { FaArrowRightLong } from "react-icons/fa6";
-import useSignUpForm from "./useSignUpForm";
-import { changeUrlWithoutReload } from "@/utils";
+
+const initialState = {
+  username: "",
+  email: "",
+  password: "",
+};
 
 const SignUpForm = () => {
-  const {
-    username,
-    setUsername,
-    email,
-    setEmail,
-    password,
-    setPassword,
-    isSubmitted,
-    progressValue,
-    handleSubmit,
-  } = useSignUpForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
+  console.log(isSubmitted);
+  const [, action] = useActionState(
+    (prevState: unknown, formData: FormData) => {
+      return signUpAction(
+        prevState,
+        formData,
+        setProgressValue,
+        setIsSubmitted
+      );
+    },
+    initialState
+  );
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const inputClassName =
-    "bg-dark pl-3 py-3 text-white text-[12px] placeholder:text-[12px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";
+    "bg-dark pl-3 py-3 text-white text-[14px] placeholder:text-[14px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";
 
   return (
     <form
-      onSubmit={handleSubmit}
+      action={action}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           if (submitButtonRef.current) {
@@ -42,9 +52,7 @@ const SignUpForm = () => {
         placeholder="Username"
         required
         isDark
-        value={username}
-        setValue={setUsername}
-        className={`${inputClassName} ${username ? "outline-white/55" : ""}`}
+        className={inputClassName}
         autoComplete="name"
       />
       <Input
@@ -53,9 +61,7 @@ const SignUpForm = () => {
         placeholder="Email"
         required
         isDark
-        value={email}
-        setValue={setEmail}
-        className={`${inputClassName} ${email ? "outline-white/55" : ""}`}
+        className={inputClassName}
         autoComplete="email"
       />
       <Input
@@ -64,25 +70,23 @@ const SignUpForm = () => {
         placeholder="Password"
         required
         minLength={6}
-        value={password}
-        setValue={setPassword}
-        className={`${inputClassName} ${password ? "outline-white/55" : ""}`}
+        className={inputClassName}
         autoComplete="new-password"
       />
       <Button
         ref={submitButtonRef}
-        className="text-dark flex justify-center hover:bg-gray text-[12px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
+        className="text-dark flex justify-center hover:bg-gray text-[14px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
       >
         <span>Sign Up</span> <FaArrowRightLong className="mt-[2px]" />
       </Button>
 
-      <div className="flex gap-1 items-center justify-center text-[12px]">
+      <div className="flex gap-3 items-center justify-center text-[13px]">
         <span>Already have an account?</span>
         <div>
           <Button
             type="button"
             onClick={() => changeUrlWithoutReload("/login")}
-            className="border inline-block text-[12px] bg-dark hover:bg-[#464646] w-fit px-[10px] py-[2px] rounded-2xl border-gray"
+            className="border inline-block text-[13px] bg-dark hover:bg-[#464646] w-fit px-[10px] py-[2px] rounded-2xl border-gray"
           >
             Log In
           </Button>

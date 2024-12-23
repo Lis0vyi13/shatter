@@ -3,9 +3,8 @@ import {
   EmailAuthProvider,
   updateProfile,
   User,
-  sendEmailVerification,
 } from "firebase/auth";
-import { actionCodeSettings, auth } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 import { toast } from "sonner";
 
 interface ICreatePasswordForm {
@@ -19,24 +18,29 @@ export const signUpWithGoogleAndEmail = async (data: ICreatePasswordForm) => {
 
   if (userData && userData.email) {
     try {
-      const credential = EmailAuthProvider.credential(userData.email, data.password);
-      const userCredential = await linkWithCredential(auth.currentUser as User, credential);
+      const credential = EmailAuthProvider.credential(
+        userData.email,
+        data.password
+      );
+
+      const userCredential = await linkWithCredential(
+        auth.currentUser as User,
+        credential
+      );
       const linkedUser = userCredential.user;
 
       await updateProfile(linkedUser, { displayName: data.username });
 
-      if (!linkedUser.emailVerified) {
-        await sendEmailVerification(linkedUser, actionCodeSettings);
-        toast.info("Verification email sent. Please check your inbox.");
-      }
       localStorage.removeItem("googleUserData");
+
+      toast.success("Account linked successfully with email and password.");
+      
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === "auth/email-already-in-use") {
           toast.error("This email is already in use with another account.");
         } else {
           toast.error(error.message);
-          console.error(error);
         }
       }
     }

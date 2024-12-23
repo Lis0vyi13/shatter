@@ -2,43 +2,34 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import useAuth from "@/hooks/useAuth";
 
-import CreatePasswordForm from "./CreatePasswordForm";
-
 import Block from "@/components/ui/Block";
 import AuthHeader from "../AuthHeader";
+import ForgotPasswordForm from "./ForgotPasswordForm";
 
 import { authDefaultVariants } from "@/constants/animations";
 
-const CreatePassword = () => {
-  const pathname = usePathname();
-  const isLoginPage = pathname?.includes("login");
+const ForgotPassword = () => {
   const isAuth = useAuth();
   const { replace } = useRouter();
 
   useEffect(() => {
-    if (!localStorage.getItem("googleUserData")) {
-      if (isAuth) {
-        replace("/c");
-      } else {
-        replace("/login");
-      }
+    if (isAuth && !localStorage.getItem("googleUserData")) {
+      replace("/c");
     }
   }, [isAuth, replace]);
 
   return (
     <Block
       color="dark"
-      className={`flex transition-all duration-700 flex-col relative min-w-full items-center text-center text-white ${
-        isLoginPage ? "-ml-[100%]" : ""
-      }`}
+      className={`flex transition-all duration-700 flex-col relative min-w-full items-center text-center text-white`}
     >
       <AuthHeader
-        title="Create Password"
-        description="Create a new password to sign in"
+        title="Forgot Password"
+        description="Enter your email account to reset password"
       />
 
       <motion.div
@@ -48,10 +39,10 @@ const CreatePassword = () => {
         className="w-full flex flex-col justify-center items-center"
         variants={authDefaultVariants}
       >
-        <CreatePasswordForm />
+        <ForgotPasswordForm />
       </motion.div>
     </Block>
   );
 };
 
-export default CreatePassword;
+export default ForgotPassword;

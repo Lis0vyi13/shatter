@@ -7,7 +7,6 @@ import { getFavoriteChat, getAllChats } from "@/services/firebase";
 
 import useAuth from "@/hooks/useAuth";
 import { useApp } from "@/hooks/useApp";
-import useEmailVerification from "@/hooks/useEmailVerification";
 import useActions from "@/hooks/useActions";
 import useUser from "@/hooks/useUser";
 
@@ -17,20 +16,24 @@ import Loader from "@/components/ui/Loader";
 import { IChat } from "@/types/chat";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
-  useEmailVerification();
+  // useEmailVerification();
   useApp();
 
   const mainRef = useRef(null);
   const isLogin = useAuth();
-  const router = useRouter();
+  const { replace } = useRouter();
   const { setChats } = useActions();
   const user = useUser();
 
   useEffect(() => {
     if (isLogin === false) {
-      router.replace("/login");
+      replace("/login");
+      return;
     }
-  }, [isLogin, router]);
+    if (localStorage.getItem("googleUserData")) {
+      replace("/create-password");
+    }
+  }, [isLogin, replace]);
 
   useEffect(() => {
     const fetchChats = async () => {

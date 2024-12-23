@@ -3,10 +3,11 @@
 import { motion } from "framer-motion";
 
 import Block from "@/components/ui/Block";
-import CreatePassword from "@/components/Authentication/CreatePassword";
+import ForgotPassword from "@/components/Authentication/ForgotPassword";
+
 import { authFormVariants, authVideoVariants } from "@/constants/animations";
 
-const CreatePasswordPage = () => {
+const ForgotPasswordPage = () => {
   return (
     <section className="login-page overflow-hidden flex flex-col mdLg:flex-row gap-3 justify-center h-full items-center p-4">
       <motion.div
@@ -16,7 +17,7 @@ const CreatePasswordPage = () => {
         transition={{ duration: 0.9 }}
         variants={authFormVariants}
       >
-        <CreatePassword />
+        <ForgotPassword />
       </motion.div>
       <motion.div
         className="text-white h-full hidden mdLg:block"
@@ -47,4 +48,4 @@ const CreatePasswordPage = () => {
   );
 };
 
-export default CreatePasswordPage;
+export default ForgotPasswordPage;

@@ -55,3 +55,6 @@ export const AUTH_SERVICES = [
     Icon: <FaGoogle />,
   },
 ];
+
+export const authInputClassName =
+  "bg-dark pl-3 py-3 text-white text-[14px] placeholder:text-[14px] placeholder:text-white placeholder:text-opacity-30 outline outline-gray/45 focus:outline-white/55";

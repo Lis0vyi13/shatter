@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
@@ -25,6 +24,7 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const { activeChat, setActiveChat } = useActiveChat(params?.id);
+
   const { currentChats, setCurrentChats } = useFetchChats(
     data,
     debouncedSearchValue
@@ -102,7 +102,10 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
   return (
     <section className="chat-list relative user-list flex flex-col custom-scrollbar h-full">
       <SearchInput className="py-[10px]" {...searchInputProps} />
-      <div className="mt-2 transition-all -ml-2 overflow-auto custom-scrollbar chat-scrollbar">
+
+      <div
+        className={`mt-2 transition-all duration-0 -ml-2 overflow-auto custom-scrollbar chat-scrollbar`}
+      >
         <DragDropContext onDragEnd={onDragEnd}>
           <ChatListItems
             chats={currentChats}
@@ -112,6 +115,7 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
           />
         </DragDropContext>
       </div>
+
       <div className="absolute transition-all duration-200 right-3 bottom-4">
         <SearchUserDialog {...dialogProps} />
       </div>

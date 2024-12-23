@@ -9,3 +9,8 @@ export interface IUser {
   folders: string[];
   favorites: string;
 }
+
+export interface IUserStatus {
+  state: "offline" | "online";
+  updatedAt: number;
+}
