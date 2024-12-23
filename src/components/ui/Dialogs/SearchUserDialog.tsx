@@ -86,9 +86,10 @@ const SearchUserDialog = ({
             <CommandList className="max-h-[400px]">
               {currentChats && currentChats.length > 0 ? (
                 <CommandGroup>
-                  {currentChats.map((chat) => (
+                  {currentChats.map((chat, index) => (
                     <ChatListItem
                       key={chat.id}
+                      index={index}
                       hideIndicators
                       {...chat}
                       isActive={chat.id == activeChat}
