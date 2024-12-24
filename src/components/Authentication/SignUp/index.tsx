@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { handleGoogleSignIn } from "@/hooks/handleGoogleSignIn";
 import { cn } from "@/utils";
 
-import Block from "@/components/ui/Block";
+import AuthWrapper from "../AuthWrapper";
 import AuthHeader from "../AuthHeader";
 import SignUpForm from "./SignUpForm";
 import Button from "@/components/ui/Button";
@@ -19,12 +19,7 @@ const SignUp = ({ pathname }: { pathname: string | null }) => {
   const router = useRouter();
 
   return (
-    <Block
-      color="dark"
-      className={`flex overflow-auto transition-all duration-700 relative flex-col min-w-full items-center text-center text-white ${
-        isLoginPage ? "translate-x-full" : ""
-      }`}
-    >
+    <AuthWrapper className={isLoginPage ? "translate-x-full" : ""}>
       <AuthHeader
         title="Sign up account"
         description="Enter your personal data to create your account"
@@ -72,11 +67,11 @@ const SignUp = ({ pathname }: { pathname: string | null }) => {
         animate="visible"
         transition={{ duration: 0.8, delay: 0.5 }}
         variants={authDefaultVariants}
-        className="w-full flex flex-col justify-center items-center"
+        className="w-full mb-4 flex flex-col justify-center items-center"
       >
         <SignUpForm />
       </motion.div>
-    </Block>
+    </AuthWrapper>
   );
 };
 

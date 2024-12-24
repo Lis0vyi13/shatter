@@ -18,7 +18,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [isLogin, replace]);
 
-  return children;
+  return <div className="min-h-full">{children}</div>;
 };
 
 export default AuthLayout;

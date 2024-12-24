@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import useAuth from "@/hooks/useAuth";
 
-import Block from "@/components/ui/Block";
+import AuthWrapper from "../AuthWrapper";
 import AuthHeader from "../AuthHeader";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 
@@ -23,10 +23,7 @@ const ForgotPassword = () => {
   }, [isAuth, replace]);
 
   return (
-    <Block
-      color="dark"
-      className={`flex transition-all duration-700 flex-col relative min-w-full items-center text-center text-white`}
-    >
+    <AuthWrapper>
       <AuthHeader
         title="Forgot Password"
         description="Enter your email account to reset password"
@@ -36,12 +33,12 @@ const ForgotPassword = () => {
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="w-full flex flex-col justify-center items-center"
+        className="w-full mb-4 flex flex-col justify-center items-center"
         variants={authDefaultVariants}
       >
         <ForgotPasswordForm />
       </motion.div>
-    </Block>
+    </AuthWrapper>
   );
 };
 

@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/utils";
 import { handleGoogleSignIn } from "@/hooks/handleGoogleSignIn";
 
-import Block from "@/components/ui/Block";
-import Button from "@/components/ui/Button";
+import AuthWrapper from "../AuthWrapper";
 import AuthHeader from "../AuthHeader";
+import Button from "@/components/ui/Button";
 import LoginForm from "./LoginForm";
 
 import { AUTH_SERVICES } from "@/constants";
@@ -19,12 +19,7 @@ const Login = ({ pathname }: { pathname: string | null }) => {
   const router = useRouter();
 
   return (
-    <Block
-      color="dark"
-      className={`flex overflow-auto px-2 transition-all duration-700 flex-col relative min-w-full items-center text-center text-white ${
-        isLoginPage ? "-ml-[100%]" : ""
-      }`}
-    >
+    <AuthWrapper className={isLoginPage ? "-ml-[100%]" : ""}>
       <AuthHeader
         title="Log in"
         description="Enter your credentials to access your account"
@@ -76,7 +71,7 @@ const Login = ({ pathname }: { pathname: string | null }) => {
       >
         <LoginForm />
       </motion.div>
-    </Block>
+    </AuthWrapper>
   );
 };
 

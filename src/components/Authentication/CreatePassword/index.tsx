@@ -2,20 +2,17 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import useAuth from "@/hooks/useAuth";
 
-import CreatePasswordForm from "./CreatePasswordForm";
-
-import Block from "@/components/ui/Block";
+import AuthWrapper from "../AuthWrapper";
 import AuthHeader from "../AuthHeader";
+import CreatePasswordForm from "./CreatePasswordForm";
 
 import { authDefaultVariants } from "@/constants/animations";
 
 const CreatePassword = () => {
-  const pathname = usePathname();
-  const isLoginPage = pathname?.includes("login");
   const isAuth = useAuth();
   const { replace } = useRouter();
 
@@ -30,12 +27,7 @@ const CreatePassword = () => {
   }, [isAuth, replace]);
 
   return (
-    <Block
-      color="dark"
-      className={`flex transition-all duration-700 flex-col relative min-w-full items-center text-center text-white ${
-        isLoginPage ? "-ml-[100%]" : ""
-      }`}
-    >
+    <AuthWrapper>
       <AuthHeader
         title="Create Password"
         description="Create a new password to sign in"
@@ -45,12 +37,12 @@ const CreatePassword = () => {
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="w-full flex flex-col justify-center items-center"
+        className="w-full mb-4 flex flex-col justify-center items-center"
         variants={authDefaultVariants}
       >
         <CreatePasswordForm />
       </motion.div>
-    </Block>
+    </AuthWrapper>
   );
 };
 
