@@ -19,7 +19,7 @@ import {
 
 import AddChat from "../AddChat";
 import SearchInput from "../SearchInput";
-import useFetchChats from "@/components/Chat/hooks/useFetchChats";
+import useFetchUsersChat from "@/components/Chat/hooks/useFetchChats";
 import ChatListItem from "@/components/Chat/ChatListItem";
 
 import { IChat } from "@/types/chat";
@@ -46,7 +46,7 @@ const SearchUserDialog = ({
     () => (data ? data.filter((user) => user.title !== "Favorites") : null),
     [data]
   );
-  const { currentChats } = useFetchChats(users, debouncedSearchValue);
+  const { currentChats } = useFetchUsersChat(users, debouncedSearchValue);
 
   const searchInputProps = {
     name: "search",

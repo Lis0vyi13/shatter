@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-import { getFavoriteChat, getAllChats } from "@/services/firebase";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
+
+import { getFavoriteChat } from "@/services/firebase";
 
 import useAuth from "@/hooks/useAuth";
 import { useApp } from "@/hooks/useApp";
@@ -16,7 +19,6 @@ import Loader from "@/components/ui/Loader";
 import { IChat } from "@/types/chat";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
-  // useEmailVerification();
   useApp();
 
   const mainRef = useRef(null);
@@ -36,15 +38,24 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isLogin, replace]);
 
   useEffect(() => {
-    const fetchChats = async () => {
-      if (user?.chats) {
-        try {
-          if (user?.favorites) {
-            const chats = await getAllChats(user.chats);
-            const favoriteChat = await getFavoriteChat(user.favorites);
-            const allChats = [...chats, favoriteChat];
+    const initializeChats = async () => {
+      try {
+        const favoriteChat = user?.favorites
+          ? await getFavoriteChat(user.favorites)
+          : null;
 
-            const { pinnedChats, regularChats } = allChats.reduce(
+        if (user?.chats && user.chats.length > 0) {
+          const chatsRef = collection(db, "chats");
+
+          const q = query(chatsRef, where("id", "in", user.chats));
+
+          const unsubscribe = onSnapshot(q, (snapshot) => {
+            const chatData = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as IChat[];
+
+            const { pinnedChats, regularChats } = chatData.reduce(
               (acc, chat) => {
                 if (chat.isPin.includes(user?.uid)) {
                   acc.pinnedChats.push(chat);
@@ -57,17 +68,23 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
             );
 
             const sortedChats = [...pinnedChats, ...regularChats];
-            setChats(sortedChats);
-          }
-        } catch (error) {
-          console.error("Error fetching chats:", error);
-          setChats([]);
+            setChats(
+              favoriteChat ? [favoriteChat, ...sortedChats] : sortedChats
+            );
+          });
+
+          return () => unsubscribe();
+        } else {
+          if (favoriteChat) setChats([favoriteChat]);
         }
+      } catch (error) {
+        console.error("Error initializing chats:", error);
+        setChats([]);
       }
     };
 
-    fetchChats();
-  }, [setChats, user, user?.chats, user?.favorites]);
+    initializeChats();
+  }, [setChats, user?.chats, user?.favorites, user?.uid]);
 
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">

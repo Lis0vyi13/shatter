@@ -7,7 +7,7 @@ import { createChatFromUser } from "@/templates";
 
 import { IChat } from "@/types/chat";
 
-const useFetchChats = (data: IChat[] | null, searchValue: string) => {
+const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
   const [currentChats, setCurrentChats] = useState<IChat[] | null>(null);
   const user = useUser();
 
@@ -62,4 +62,4 @@ const useFetchChats = (data: IChat[] | null, searchValue: string) => {
   return { currentChats, setCurrentChats };
 };
 
-export default useFetchChats;
+export default useFetchUsersChat;

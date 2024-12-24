@@ -6,6 +6,7 @@ import {
   query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { db } from "@/firebase/firebaseConfig";
@@ -133,13 +134,23 @@ export const getFolderById = async (
 };
 
 export const getAllChats = async (chatsId: string[]): Promise<IChat[]> => {
-  const chats = await Promise.all(
-    chatsId.map(async (id) => {
-      const chat = await getChatById(id);
-      return chat;
-    })
-  );
-  return chats.filter((chat) => chat !== null);
+  try {
+    if (!chatsId.length) return [];
+
+    const chatsRef = collection(db, "chats");
+    const q = query(chatsRef, where("id", "in", chatsId.slice(0, 10)));
+
+    const snapshot = await getDocs(q);
+    const chats = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as IChat[];
+
+    return chats;
+  } catch (error) {
+    console.error("Error fetching all chats:", error);
+    return [];
+  }
 };
 
 export const getAllFolders = async (
