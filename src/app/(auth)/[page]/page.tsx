@@ -15,7 +15,7 @@ export default function AuthPage() {
   const currentPageName = pathname?.split("/").at(-1);
 
   return (
-    <section className="login-page overflow-hidden flex flex-col mdLg:flex-row gap-3 justify-center h-full items-center p-4">
+    <section className="login-page mdLg:overflow-hidden flex flex-col mdLg:flex-row gap-3 justify-center h-full items-center p-4">
       <motion.div
         className="flex xs:min-w-[390px] items-center sm:items-start relative h-full w-[100%] mdLg:w-[unset] mdLg:max-w-[35%] overflow-hidden"
         initial="hidden"

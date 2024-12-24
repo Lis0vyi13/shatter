@@ -44,7 +44,6 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const user = useUser();
   const [userStatus, setUserStatus] = useState<IUserStatus | null>(null);
   const root = pathname.split("/")[1];
-  const currentPath = usePathname();
   const hasChat = user?.chats.includes(id) || id === user?.favorites;
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
 
   return (
     <motion.div
-      initial={{ x: currentPath === "/c" ? "-100%" : 0 }}
+      initial={{ x: pathname === "/c" ? "-100%" : 0 }}
       animate={{ x: 0 }}
       transition={{
         type: "spring",

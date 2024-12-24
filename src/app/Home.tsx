@@ -34,7 +34,7 @@ const Home = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <Link href={"/"}>
-          <Image width={30} height={30} src="/logo.svg" alt="Shatter" />
+          <Image width={40} height={40} src="/logo.svg" alt="Shatter" />
         </Link>
         <Link className="rounded-xl" href="/login">
           <Button className="w-full text-[14px] border-2 rounded-xl hover:bg-blue">
@@ -48,7 +48,7 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <Title className="text-center text-5xl">
+        <Title className="text-center text-5xl line-clamp-none">
           Connect with your mate easily
         </Title>
         <motion.h2
