@@ -4,13 +4,13 @@ import { useActionState, useRef } from "react";
 import Link from "next/link";
 
 import { changeUrlWithoutReload } from "@/utils";
+import { loginAction } from "./Login.action";
 
 import Input from "@/components/ui/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
 import Button from "@/components/ui/Button";
 
 import { FaArrowRightLong } from "react-icons/fa6";
-import { loginAction } from "./Login.action";
 
 const LoginForm = () => {
   const [, action, isPending] = useActionState(loginAction, {
