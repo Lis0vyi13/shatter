@@ -1,19 +1,13 @@
-import { Dispatch, SetStateAction } from "react";
 import Input, { InputProps } from "./Input";
 import { CiSearch } from "react-icons/ci";
 
 interface ISearchInput extends InputProps {
   className?: string;
-  onInputFocus?: Dispatch<SetStateAction<boolean>>;
 }
 
-const SearchInput = ({ className, onInputFocus, ...props }: ISearchInput) => {
+const SearchInput = ({ className, ...props }: ISearchInput) => {
   return (
-    <div
-      onFocus={onInputFocus ? () => onInputFocus(true) : undefined}
-      onBlur={onInputFocus ? () => onInputFocus(false) : undefined}
-      className="relative"
-    >
+    <div className="relative">
       <Input
         {...props}
         className={`pl-[30px] placeholder:text-[12px] text-[12px] bg-lightBlue ${className}`}
