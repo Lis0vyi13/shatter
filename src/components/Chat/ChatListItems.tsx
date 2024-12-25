@@ -1,13 +1,13 @@
-"use client";
-
 import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { useAppSelector } from "@/redux/app/hooks";
+
+import useUser from "@/hooks/useUser";
 
 import ChatListItem from "./ChatListItem";
 import Loader from "@/components/ui/Loader";
 import { ChatListItemMenu } from "@/components/ui/Menus/ChatListItemMenu";
 
 import { IChat } from "@/types/chat";
-import useUser from "@/hooks/useUser";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -23,6 +23,10 @@ const ChatListItems = ({
   createNewChat,
 }: ChatListItemsProps) => {
   const user = useUser();
+  const searchInputValue = useAppSelector(
+    (store) => store.search.searchInput.value
+  );
+
   return (
     <Droppable droppableId="chatListDroppable">
       {(provided) => (
@@ -32,45 +36,59 @@ const ChatListItems = ({
           {...provided.droppableProps}
         >
           {chats ? (
-            chats.map((chat, index) => (
-              <ChatListItemMenu data={chat} key={chat.id}>
-                {user && chat.isPin.includes(user.uid) ? (
-                  <Draggable key={chat.id} draggableId={chat.id} index={index}>
-                    {(provided) => (
-                      <li
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <ChatListItem
-                          {...chat}
-                          index={index}
-                          isActive={chat.id == activeChat}
-                          setChat={
-                            chat.chatType === "none"
-                              ? () => createNewChat(chat)
-                              : () => setActiveChat(chat.id)
-                          }
-                        />
-                      </li>
-                    )}
-                  </Draggable>
-                ) : (
-                  <li key={chat.id}>
-                    <ChatListItem
-                      {...chat}
+            chats.map((chat, index) => {
+              const isChatPinned = user && chat.isPin.includes(user.uid);
+              const isActive = chat.id === activeChat;
+              const setChatHandler =
+                chat.chatType === "none"
+                  ? () => createNewChat(chat)
+                  : () => setActiveChat(chat.id);
+
+              return searchInputValue === "" ? (
+                <ChatListItemMenu data={chat} key={chat.id}>
+                  {isChatPinned ? (
+                    <Draggable
+                      key={chat.id}
+                      draggableId={chat.id}
                       index={index}
-                      isActive={chat.id == activeChat}
-                      setChat={
-                        chat.chatType === "none"
-                          ? () => createNewChat(chat)
-                          : () => setActiveChat(chat.id)
-                      }
-                    />
-                  </li>
-                )}
-              </ChatListItemMenu>
-            ))
+                    >
+                      {(provided) => (
+                        <li
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <ChatListItem
+                            {...chat}
+                            index={index}
+                            isActive={isActive}
+                            setChat={setChatHandler}
+                          />
+                        </li>
+                      )}
+                    </Draggable>
+                  ) : (
+                    <li key={chat.id}>
+                      <ChatListItem
+                        {...chat}
+                        index={index}
+                        isActive={isActive}
+                        setChat={setChatHandler}
+                      />
+                    </li>
+                  )}
+                </ChatListItemMenu>
+              ) : (
+                <li key={chat.id}>
+                  <ChatListItem
+                    {...chat}
+                    index={index}
+                    isActive={isActive}
+                    setChat={setChatHandler}
+                  />
+                </li>
+              );
+            })
           ) : (
             <Loader isDefault />
           )}

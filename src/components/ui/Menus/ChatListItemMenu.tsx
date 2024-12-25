@@ -95,7 +95,7 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-56">
+      <ContextMenuContent className="w-56 border-none">
         {menuItems.map((item, index) => (
           <div key={index}>
             <ContextMenuItem onClick={item.action}>

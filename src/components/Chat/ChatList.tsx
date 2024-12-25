@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useParams } from "next/navigation";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -9,7 +8,8 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { createChat } from "@/services/firebase";
 
 import useUser from "@/hooks/useUser";
-import useFetchChats from "./hooks/useFetchChats";
+import useFetchUsersChat from "./hooks/useFetchUsersChat";
+import useActions from "@/hooks/useActions";
 import useActiveChat from "./hooks/useActiveChat";
 
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
@@ -17,15 +17,19 @@ import SearchInput from "@/components/ui/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";
+import { useAppSelector } from "@/redux/app/hooks";
 
 const ChatList = ({ data }: { data: IChat[] | null }) => {
   const params = useParams<{ id: string }>();
   const currentUser = useUser();
-  const [searchValue, setSearchValue] = useState("");
-  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const { activeChat, setActiveChat } = useActiveChat(params?.id);
+  const searchValue = useAppSelector((store) => store.search.searchInput.value);
+  const debouncedSearchValue = useAppSelector(
+    (store) => store.search.searchInput.debouncedValue
+  );
+  const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
 
-  const { currentChats, setCurrentChats } = useFetchChats(
+  const { currentChats, setCurrentChats } = useFetchUsersChat(
     data,
     debouncedSearchValue
   );
@@ -34,8 +38,8 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     name: "search",
     placeholder: "Search...",
     value: searchValue,
-    setValue: setSearchValue,
-    setDebouncedValue: setDebouncedSearchValue,
+    setValue: setSearchInputValue,
+    setDebouncedValue: setDebouncedSearchInputValue,
   };
 
   const createNewChat = async (chatData: IChat) => {
@@ -45,7 +49,7 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
       if (uid) {
         const chat = await createChat(data);
         if (chat.data?.id) setActiveChat(chat.data?.id);
-        setSearchValue("");
+        setSearchInputValue("");
       }
     } catch (error) {
       console.error("Error creating or updating chat:", error);

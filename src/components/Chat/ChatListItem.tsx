@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAppSelector } from "@/redux/app/hooks";
 
 import { formatTimestampToDate, getTimeAgo, getUserStatus } from "@/utils";
 import useUser from "@/hooks/useUser";
@@ -45,6 +46,17 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const [userStatus, setUserStatus] = useState<IUserStatus | null>(null);
   const root = pathname.split("/")[1];
   const hasChat = user?.chats.includes(id) || id === user?.favorites;
+  const hadAnim = sessionStorage.getItem("chatAnim");
+  const searchInputDebouncedValue = useAppSelector(
+    (store) => store.search.searchInput.debouncedValue
+  );
+
+  const animatePosition =
+    searchInputDebouncedValue !== "" || !hadAnim ? "-100%" : 0;
+
+  useEffect(() => {
+    if (id) sessionStorage.setItem("chatAnim", "true");
+  }, [id]);
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -56,7 +68,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
 
   return (
     <motion.div
-      initial={{ x: pathname === "/c" ? "-100%" : 0 }}
+      initial={{ x: animatePosition }}
       animate={{ x: 0 }}
       transition={{
         type: "spring",

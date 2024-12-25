@@ -1,4 +1,3 @@
-// store/chatSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ReactNode } from "react";
 
@@ -21,8 +20,8 @@ const initialState: IModal = {
   },
 };
 
-export const chatSlice = createSlice({
-  name: "chat",
+export const modalsSlice = createSlice({
+  name: "modals",
   initialState,
   reducers: {
     openModal(state, action: PayloadAction<IModalProps>) {
@@ -37,5 +36,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const chatActions = chatSlice.actions;
-export default chatSlice.reducer;
+export const modalsActions = modalsSlice.actions;
+export default modalsSlice.reducer;

@@ -10,12 +10,17 @@ import Icon from "./Icon";
 import Delete from "./Delete";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   value?: string;
-  setValue?: React.Dispatch<React.SetStateAction<string>>;
-  setDebouncedValue?: React.Dispatch<React.SetStateAction<string>>;
+  setValue?:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ActionCreatorWithPayload<string, "search/setSearchInputValue">;
+  setDebouncedValue?:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ActionCreatorWithPayload<string, "search/setDebouncedSearchInputValue">;
   noDeleteIcon?: boolean;
   isDark?: boolean;
   type?: "text" | "email" | "password" | "number" | "search" | "tel" | "url";
