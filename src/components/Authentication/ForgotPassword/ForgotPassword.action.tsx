@@ -1,5 +1,11 @@
-
+import { resetPassword } from "@/services/auth";
 
 export async function forgotPasswordAction(_: unknown, formData: FormData) {
-  return formData.get("email") as string | null;
+  const email = formData.get("email") as string;
+  try {
+    await resetPassword(email);
+  } catch (error) {
+    console.log(error);
+  }
+  return email;
 }

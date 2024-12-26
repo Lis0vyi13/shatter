@@ -1,5 +1,7 @@
 import {
   AuthProvider,
+  getAuth,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   User,
@@ -74,6 +76,32 @@ export const createUserAccount = async (
     } else {
       toast.error("An unexpected error occurred. Please try again.");
     }
+    throw error;
+  }
+};
+
+export const resetPassword = async (email: string): Promise<void> => {
+  const auth = getAuth();
+
+  const actionCodeSettings = {
+    url: process.env.NEXT_PUBLIC_APP_URL + "login",
+    handleCodeInApp: true,
+  };
+
+  try {
+    await sendPasswordResetEmail(auth, email, actionCodeSettings);
+    toast.info("Password reset email sent. Please check your inbox.");
+  } catch (error) {
+    const firebaseError = error as { code: string; message: string };
+
+    const errorMessage =
+      {
+        "auth/user-not-found": "No account found with this email address.",
+        "auth/invalid-email": "Please enter a valid email address.",
+        "auth/too-many-requests": "Too many attempts. Please try again later.",
+      }[firebaseError.code] || "Failed to send reset email. Please try again.";
+
+    toast.error(errorMessage);
     throw error;
   }
 };
