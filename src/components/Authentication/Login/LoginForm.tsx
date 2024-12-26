@@ -61,7 +61,7 @@ const LoginForm = () => {
         height={3}
         shadow={true}
         ref={loadingBarRef}
-        className="transition-all duration-300"
+        className="transition-all duration-500"
       />
       <form
         action={handleSubmit}

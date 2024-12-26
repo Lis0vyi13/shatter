@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { Metadata } from "next";
 
 import ChatLayout from "./ChatLayout";
+import Loader from "@/components/ui/Loader";
 
 export const metadata: Metadata = {
   title: {
@@ -12,7 +13,11 @@ export const metadata: Metadata = {
 };
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  return <ChatLayout>{children}</ChatLayout>;
+  return (
+    <Suspense fallback={<Loader />}>
+      <ChatLayout>{children}</ChatLayout>
+    </Suspense>
+  );
 };
 
 export default Layout;
