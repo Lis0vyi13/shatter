@@ -39,7 +39,7 @@ export interface IChat {
   lastMessage: ILastMessage | null;
   avatar: string | StaticImageData;
   updatedAt: number;
-  unreadedMessages: number;
+  unreadMessages: number;
   isPin: string[];
   chatType: TChatType;
   info: IChatInfo;

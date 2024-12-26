@@ -4,10 +4,11 @@ import { useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-import { createUser, monitorUserConnection } from "@/services/firebase";
-import { generateFavoritesChatTemplate } from "@/templates";
+
+import { createUser, monitorUserConnection } from "@/services/user";
 
 import useActions from "./useActions";
+import { createFavoritesChatTemplate } from "@/templates";
 
 import { IUser } from "@/types/user";
 
@@ -26,7 +27,7 @@ export const useApp = () => {
 
         await createUser(user);
 
-        await generateFavoritesChatTemplate(user.uid);
+        await createFavoritesChatTemplate(user.uid);
 
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);

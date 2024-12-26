@@ -24,7 +24,7 @@ const ForgotPasswordForm = () => {
           }
         }
       }}
-      className="mt-4 w-full px-4 xs:px-0 xs:w-[270px] flex flex-col gap-3 max-w-full"
+      className="mt-2 w-full px-4 xs:px-0 xs:w-[270px] flex flex-col gap-3 max-w-full"
     >
       <Input
         name="email"
@@ -37,13 +37,13 @@ const ForgotPasswordForm = () => {
 
       <Button
         ref={submitButtonRef}
-        className="text-dark flex justify-center hover:bg-gray text-[14px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"
+        className="text-dark flex justify-center hover:bg-gray text-[14px] py-3 items-center gap-1 mt-3 bg-white rounded-2xl"
       >
         {isPending ? (
           <CircleLoader />
         ) : (
           <>
-            <span>Reset</span> <FaArrowRightLong className="-mt-[1px]" />
+            <span>Reset</span> <FaArrowRightLong />
           </>
         )}
       </Button>

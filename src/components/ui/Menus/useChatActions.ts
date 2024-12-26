@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { togglePinChat } from "@/services/firebase";
+
+import { togglePinChat } from "@/services/chat";
 
 export const useChatActions = () => {
   const pathname = usePathname();

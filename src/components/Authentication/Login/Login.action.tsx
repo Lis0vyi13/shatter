@@ -1,4 +1,4 @@
-import { doSignInWithEmailAndPassword } from "@/firebase/signIn";
+import { signInWithEmail } from "@/services/auth";
 import { toast } from "sonner";
 
 export async function loginAction(_: unknown, formData: FormData) {
@@ -8,10 +8,7 @@ export async function loginAction(_: unknown, formData: FormData) {
   };
   if (data.email && data.password) {
     try {
-      const user = await doSignInWithEmailAndPassword(
-        data.email,
-        data.password
-      );
+      const user = await signInWithEmail(data.email, data.password);
       if (user) {
         toast.success("You have successfully logged in!");
       }

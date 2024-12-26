@@ -1,16 +1,18 @@
 import { cloneElement } from "react";
 import Link from "next/link";
 
-import { ILogoutIcon, IFolder, IUserEditIcons } from "@/types/sidebar";
 import { cn } from "@/utils";
 
-type TSidebarIconProps = (IFolder | IUserEditIcons | ILogoutIcon) & {
+import { ILogoutIcon, IFolder, ISettings } from "@/types/sidebar";
+import { FaFolder } from "react-icons/fa";
+
+type TSidebarIconProps = (IFolder | ISettings | ILogoutIcon) & {
   onClick: () => void;
   href?: string;
 };
 
 const SidebarIcon = ({
-  Icon,
+  Icon: propsIcon,
   title,
   href,
   onClick,
@@ -21,7 +23,7 @@ const SidebarIcon = ({
     isActive ? "text-opacity-100" : "text-opacity-30 hover:text-opacity-100",
     "active:scale-95 active:bg-opacity-20"
   );
-
+  const Icon = propsIcon || <FaFolder />;
   const iconWithClasses = cloneElement(Icon, {
     className: `text-[21px]`,
   });

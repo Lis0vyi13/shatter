@@ -20,7 +20,7 @@ import {
 import AddChat from "../AddChat";
 import SearchInput from "../SearchInput";
 import useFetchUsersChat from "@/components/Chat/hooks/useFetchUsersChat";
-import ChatListItem from "@/components/Chat/ChatListItem";
+import ChatListItem from "@/components/Chat/ChatList/ChatListItem";
 
 import { IChat } from "@/types/chat";
 

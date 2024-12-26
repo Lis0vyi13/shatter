@@ -11,8 +11,8 @@ import useUser from "@/hooks/useUser";
 
 import Title from "@/components/ui/Title";
 import Counter from "@/components/ui/Counter";
-import Avatar from "../Avatar";
-import LastMessage from "../LastMessage";
+import Avatar from "../../Avatar";
+import LastMessage from "../../LastMessage";
 
 import { TiPin } from "react-icons/ti";
 import { IChat } from "@/types/chat";
@@ -112,13 +112,15 @@ const ChatListItem = memo((props: IChatListItemProps) => {
           {!hideIndicators && (
             <div className="flex flex-col pt-[1px] gap-1 items-end">
               {id && hasChat && (
-                <strong className="text-[12px] mt-[6px] font-normal opacity-80">
+                <strong className="text-[12px] mt-[7px] font-normal opacity-80">
                   {duration}
                 </strong>
               )}
 
-              <div className="flex justify-center items-center gap-1 pt-[1px]">
-                {unreadedMessages > 0 && <Counter>{unreadedMessages}</Counter>}
+              <div className="flex justify-center items-center gap-1 -mr-[2px] mt-[1px]">
+                {unreadedMessages === 0 && (
+                  <Counter>{unreadedMessages}</Counter>
+                )}
                 {user && isPin.includes(user.uid) && (
                   <TiPin className="text-blue text-[20px]" />
                 )}

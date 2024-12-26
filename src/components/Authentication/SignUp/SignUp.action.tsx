@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
-import doCreateUserWithEmailAndPassword from "@/firebase/auth";
+
+import { createUserAccount } from "@/services/auth";
 
 type TSignUpAction = (
   _: unknown,
@@ -38,7 +39,7 @@ export const signUpAction: TSignUpAction = async (
   });
 
   try {
-    await doCreateUserWithEmailAndPassword(
+    await createUserAccount(
       data.email,
       data.password,
       data.username,

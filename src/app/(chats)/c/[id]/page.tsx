@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { auth } from "@/firebase/firebaseConfig";
-import { getChatById, getUserById } from "@/services/firebase";
+
+import { getUserById } from "@/services/user";
+import { getChatById } from "@/services/chat";
 
 import Chat from "./Chat";
 

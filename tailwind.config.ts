@@ -16,6 +16,7 @@ export default {
       lightBlue: "#dcdcff",
       orange: "#ff7a55",
       white: "#f9fafc",
+      skeleton: "#434343",
     },
     extend: {
       backgroundImage: {

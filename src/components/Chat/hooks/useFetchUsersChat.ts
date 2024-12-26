@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { searchByDisplayName } from "@/services/firebase";
 import useUser from "@/hooks/useUser";
+import { searchByDisplayName } from "@/services/user";
 
-import { createChatFromUser } from "@/templates";
+import { createChatTemplate } from "@/templates";
 
 import { IChat } from "@/types/chat";
 
@@ -28,7 +28,7 @@ const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
 
         const usersByQuery = await searchUser(searchValue);
         const usersChats: IChat[] = usersByQuery.map((user) =>
-          createChatFromUser(user)
+          createChatTemplate(user)
         );
 
         const combinedList = [...chatsByQuery, ...usersChats];

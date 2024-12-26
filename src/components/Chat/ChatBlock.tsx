@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import useChats from "@/hooks/useChats";
 
 import Block from "@/components/ui/Block";
-import ChatList from "./ChatList";
+import ChatList from "./ChatList/ChatList";
 import ChatDetails from "./ChatDetails";
 import Chat from "./Chat";
 

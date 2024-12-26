@@ -4,7 +4,7 @@ import { FaGoogle, FaUser } from "react-icons/fa";
 import { CgOptions } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
 
-import { ILogoutIcon, IFolder, IUserEditIcons } from "@/types/sidebar";
+import { ILogoutIcon, IFolder, ISettings } from "@/types/sidebar";
 
 // import { FaFolder } from "react-icons/fa";
 export const sidebarIcons: IFolder[] = [
@@ -28,7 +28,7 @@ export const sidebarIcons: IFolder[] = [
   },
 ];
 
-export const userEditIcons: IUserEditIcons[] = [
+export const settings: ISettings[] = [
   {
     Icon: <FaUser />,
     title: "Profile",

@@ -4,7 +4,6 @@ export interface IUser {
   displayName: string;
   createdAt: number;
   photoUrl: string;
-  emailVerified: boolean;
   chats: string[];
   folders: string[];
   favorites: string;

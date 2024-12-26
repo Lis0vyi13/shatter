@@ -2,16 +2,15 @@ import { ReactElement } from "react";
 
 export interface IFolder {
   id: string;
-  Icon: ReactElement;
+  Icon?: ReactElement;
   title: string;
   isActive: boolean;
   type: "all" | "archive";
   unreaded: number;
-  href: string;
+  href?: string;
 }
 
-export interface IUserEditIcons
-  extends Omit<IFolder, "type" | "unreaded" | "id"> {
+export interface ISettings extends Omit<IFolder, "type" | "unreaded" | "id"> {
   id?: string;
   type?: string;
 }

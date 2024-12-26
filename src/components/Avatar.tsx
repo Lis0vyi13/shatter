@@ -21,7 +21,7 @@ const Avatar = ({ avatar, title, className }: TAvatar) => {
           width={48}
           title={title}
           height={48}
-          alt="USER"
+          alt={title as string}
         />
       ) : (
         <span title={title}>{getInitials(title as string)}</span>

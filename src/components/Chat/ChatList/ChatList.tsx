@@ -4,20 +4,20 @@ import { useParams } from "next/navigation";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { useAppSelector } from "@/redux/app/hooks";
 
-import { createChat } from "@/services/firebase";
+import { createChat } from "@/services/chat";
 
 import useUser from "@/hooks/useUser";
-import useFetchUsersChat from "./hooks/useFetchUsersChat";
+import useFetchUsersChat from "../hooks/useFetchUsersChat";
 import useActions from "@/hooks/useActions";
-import useActiveChat from "./hooks/useActiveChat";
+import useActiveChat from "../hooks/useActiveChat";
 
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import SearchInput from "@/components/ui/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";
-import { useAppSelector } from "@/redux/app/hooks";
 
 const ChatList = ({ data }: { data: IChat[] | null }) => {
   const params = useParams<{ id: string }>();
@@ -120,7 +120,7 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
         </DragDropContext>
       </div>
 
-      <div className="absolute transition-all duration-200 right-3 bottom-4">
+      <div className="absolute transition-all duration-200 right-3 bottom-2">
         <SearchUserDialog {...dialogProps} />
       </div>
     </section>

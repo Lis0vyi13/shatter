@@ -4,8 +4,8 @@ import { useAppSelector } from "@/redux/app/hooks";
 import useUser from "@/hooks/useUser";
 
 import ChatListItem from "./ChatListItem";
-import Loader from "@/components/ui/Loader";
 import { ChatListItemMenu } from "@/components/ui/Menus/ChatListItemMenu";
+import SkeletonChatListItem from "./SkeletonChatListItem";
 
 import { IChat } from "@/types/chat";
 
@@ -90,7 +90,17 @@ const ChatListItems = ({
               );
             })
           ) : (
-            <Loader isDefault />
+            <>
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+              <SkeletonChatListItem />
+            </>
           )}
           {provided.placeholder}
         </ul>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
-import { getFavoriteChat } from "@/services/firebase";
+import { getFavoriteChat } from "@/services/chat";
 
 import useAuth from "@/hooks/useAuth";
 import { useApp } from "@/hooks/useApp";

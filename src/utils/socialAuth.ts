@@ -1,28 +1,28 @@
 "use client";
 
+import { signInWithProvider } from "@/services/auth";
 import { AuthProvider } from "firebase/auth";
+
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { toast } from "sonner";
 
-import { doSignInWithPopup } from "./doSignInWithPopup";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-
-interface ISocialSignInProps {
+interface SocialAuthProps {
   router: AppRouterInstance;
   provider: AuthProvider;
 }
 
-export const socialSignIn = async (props: ISocialSignInProps) => {
-  const { provider, router } = props;
-
+export const handleSocialAuth = async ({
+  provider,
+  router,
+}: SocialAuthProps) => {
   try {
-    const user = await doSignInWithPopup(provider);
+    const user = await signInWithProvider(provider);
 
-    const hasPasswordProvider = user?.providerData.some(
+    const isPasswordProvider = user?.providerData.some(
       (data) => data.providerId === "password"
     );
 
-    console.log(user, hasPasswordProvider);
-    if (user && !hasPasswordProvider) {
+    if (user && !isPasswordProvider) {
       localStorage.setItem("googleUserData", JSON.stringify(user));
       router.push("/create-password");
     }
