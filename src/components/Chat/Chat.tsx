@@ -22,6 +22,12 @@ const messages: IMessage[] = [
     text: "Jaden, my congratulations! I will be glad to work with you on a new project 😉",
     reactions: [],
   },
+  {
+    id: "4",
+    uid: "xItTpjRcmXYJWHhVUpMhO9lX5R53",
+    text: "Jaden, my congratulations! I will be glad to work with you on a new project 😉",
+    reactions: [],
+  },
 ];
 
 const Chat = ({ data }: { data: IChat }) => {

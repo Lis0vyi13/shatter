@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
-import { getFavoriteChat } from "@/services/chat";
-
 import useAuth from "@/hooks/useAuth";
 import { useApp } from "@/hooks/useApp";
 import useActions from "@/hooks/useActions";
@@ -17,6 +15,7 @@ import Sidebar from "@/components/Sidebar";
 import Loader from "@/components/ui/Loader";
 
 import { IChat } from "@/types/chat";
+import { getFavoriteChat } from "@/services/chat";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   useApp();

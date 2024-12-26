@@ -1,21 +1,39 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 
 import Login from "@/components/Authentication/Login";
 import SignUp from "@/components/Authentication/SignUp";
 import Block from "@/components/ui/Block";
 import Loader from "@/components/ui/Loader";
+
 import { authFormVariants, authVideoVariants } from "@/constants/animations";
 
 export default function AuthPage() {
   const pathname = usePathname();
   const currentPageName = pathname?.split("/").at(-1);
+  const loadingBarRef = useRef<LoadingBarRef>(null);
 
+  useEffect(() => {
+    loadingBarRef.current?.continuousStart();
+
+    const timer = setTimeout(() => {
+      loadingBarRef.current?.complete();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <section className="login-page mdLg:overflow-hidden flex flex-col mdLg:flex-row gap-3 justify-center h-full items-center p-4">
+      <LoadingBar
+        color="#7678ed"
+        height={3}
+        shadow={true}
+        ref={loadingBarRef}
+      />
       <motion.div
         className="flex xs:min-w-[390px] items-center sm:items-start relative h-full w-[100%] mdLg:w-[unset] mdLg:max-w-[35%] overflow-hidden"
         initial="hidden"

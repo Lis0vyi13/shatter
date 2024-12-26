@@ -25,10 +25,10 @@ const Sidebar = () => {
         <div
           className={cn(
             "sidebar-icons flex flex-col justify-center pt-2",
-            sidebarItems ? "gap-1" : "gap-8 mb-2"
+            sidebarItems.length > 0 ? "gap-1" : "gap-9 mb-2"
           )}
         >
-          {sidebarItems ? (
+          {sidebarItems.length > 0 ? (
             <>
               {sidebarItems?.map((iconData, i) => (
                 <SidebarIcon
