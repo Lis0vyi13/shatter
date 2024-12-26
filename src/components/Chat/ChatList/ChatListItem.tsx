@@ -29,7 +29,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const {
     lastMessage,
     chatType,
-    unreadedMessages,
+    unreadMessages,
     updatedAt,
     isPin,
     id,
@@ -118,8 +118,8 @@ const ChatListItem = memo((props: IChatListItemProps) => {
               )}
 
               <div className="flex justify-center items-center gap-1 -mr-[2px] mt-[1px]">
-                {unreadedMessages === 0 && (
-                  <Counter>{unreadedMessages}</Counter>
+                {unreadMessages === 0 && (
+                  <Counter>{unreadMessages}</Counter>
                 )}
                 {user && isPin.includes(user.uid) && (
                   <TiPin className="text-blue text-[20px]" />
