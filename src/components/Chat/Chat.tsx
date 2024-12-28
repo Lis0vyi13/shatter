@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import Title from "@/components/ui/Title";
 import Icon from "@/components/ui/Icon";
-import Input from "@/components/ui/Input";
+import Input from "@/components/ui/Inputs/Input";
 import Message from "./Message";
 
 import { IChat, IMessage } from "@/types/chat";

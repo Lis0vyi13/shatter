@@ -3,7 +3,7 @@ import { useActionState, useRef, useState } from "react";
 import { changeUrlWithoutReload } from "@/utils";
 import { signUpAction } from "./SignUp.action";
 
-import Input from "@/components/ui/Input";
+import Input from "@/components/ui/Inputs/Input";
 import Button from "@/components/ui/Button";
 import AuthLoader from "../AuthLoader";
 

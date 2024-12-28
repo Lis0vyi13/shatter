@@ -18,7 +18,7 @@ import {
 } from "../shadcn/dialog";
 
 import AddChat from "../AddChat";
-import SearchInput from "../SearchInput";
+import SearchInput from "../Inputs/SearchInput";
 import useFetchUsersChat from "@/components/Chat/hooks/useFetchUsersChat";
 import ChatListItem from "@/components/Chat/ChatList/ChatListItem";
 

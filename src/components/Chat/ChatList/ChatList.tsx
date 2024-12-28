@@ -14,7 +14,7 @@ import useActions from "@/hooks/useActions";
 import useActiveChat from "../hooks/useActiveChat";
 
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
-import SearchInput from "@/components/ui/SearchInput";
+import SearchInput from "@/components/ui/Inputs/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";

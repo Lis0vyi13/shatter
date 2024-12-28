@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createPasswordAction } from "./CreatePassword.action";
 
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import Input from "@/components/ui/Inputs/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
 
 import { FaArrowRightLong } from "react-icons/fa6";

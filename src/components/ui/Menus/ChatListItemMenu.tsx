@@ -1,8 +1,9 @@
-import { ReactNode, useMemo } from "react";
+import { Dispatch, ReactNode, SetStateAction, useMemo } from "react";
 
 import useUser from "@/hooks/useUser";
 import { useChatActions } from "./useChatActions";
 import useActions from "@/hooks/useActions";
+import useChats from "@/hooks/useChats";
 
 import {
   ContextMenu,
@@ -18,14 +19,18 @@ import { RiInboxUnarchiveLine } from "react-icons/ri";
 import { MdOutlineCleaningServices, MdDeleteOutline } from "react-icons/md";
 
 import { IChat } from "@/types/chat";
-import useChats from "@/hooks/useChats";
 
 interface IChatListItemMenu {
   data: IChat;
-  children?: ReactNode;
+  children: ReactNode;
+  onDelete: Dispatch<SetStateAction<string>>;
 }
 
-export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
+export function ChatListItemMenu({
+  data,
+  onDelete,
+  children,
+}: IChatListItemMenu) {
   const labelWithIconClassName =
     "absolute left-[2rem] top-1/2 -translate-y-1/2";
   const user = useUser();
@@ -88,10 +93,13 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
         separator: false,
         action: async () => {
           if (user) {
+            onDelete(data.id);
             const updatedChats = user.chats?.filter((id) => id != data.id);
             const updatedUser = { ...user, chats: updatedChats };
-            setUser(updatedUser);
-            doDeleteChat(user?.uid, data.id);
+            setTimeout(() => {
+              setUser(updatedUser);
+              doDeleteChat(user?.uid, data.id);
+            }, 300);
           }
         },
       },
@@ -102,6 +110,7 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
       data.isPin,
       doDeleteChat,
       doTogglePinChat,
+      onDelete,
       openChat,
       setChats,
       setUser,

@@ -1,6 +1,6 @@
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
-
+import { motion } from "framer-motion";
 import useUser from "@/hooks/useUser";
 
 import ChatListItem from "./ChatListItem";
@@ -8,6 +8,8 @@ import { ChatListItemMenu } from "@/components/ui/Menus/ChatListItemMenu";
 import SkeletonChatListItem from "./SkeletonChatListItem";
 
 import { IChat } from "@/types/chat";
+import { useState } from "react";
+import { cn } from "@/utils";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -26,6 +28,7 @@ const ChatListItems = ({
   const searchInputValue = useAppSelector(
     (store) => store.search.searchInput.value
   );
+  const [deletingChat, setDeletingChat] = useState("");
 
   return (
     <Droppable droppableId="chatListDroppable">
@@ -45,7 +48,11 @@ const ChatListItems = ({
                   : () => setActiveChat(chat.id);
 
               return searchInputValue === "" ? (
-                <ChatListItemMenu data={chat} key={chat.id}>
+                <ChatListItemMenu
+                  onDelete={setDeletingChat}
+                  data={chat}
+                  key={chat.id}
+                >
                   {isChatPinned ? (
                     <Draggable
                       key={chat.id}
@@ -54,6 +61,10 @@ const ChatListItems = ({
                     >
                       {(provided) => (
                         <li
+                          className={cn(
+                            "transition-all duration-300",
+                            deletingChat === chat.id && "-translate-x-full"
+                          )}
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
@@ -68,14 +79,34 @@ const ChatListItems = ({
                       )}
                     </Draggable>
                   ) : (
-                    <li key={chat.id}>
+                    <motion.li
+                      key={chat.id}
+                      className="max-h-16 overflow-hidden"
+                      initial={{ x: 0 }}
+                      animate={{
+                        x: deletingChat === chat.id ? "-100%" : 0,
+                        maxHeight: deletingChat === chat.id ? 0 : "4rem",
+                      }}
+                      exit={{
+                        x: "-100%",
+                        maxHeight: 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        ease: "easeOut",
+                        maxHeight: {
+                          duration: 0.3,
+                          delay: deletingChat === chat.id ? 0.3 : 0,
+                        },
+                      }}
+                    >
                       <ChatListItem
                         {...chat}
                         index={index}
                         isActive={isActive}
                         setChat={setChatHandler}
                       />
-                    </li>
+                    </motion.li>
                   )}
                 </ChatListItemMenu>
               ) : (

@@ -8,8 +8,8 @@ import {
 } from "react";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
-import Icon from "./Icon";
-import Delete from "./Delete";
+import Icon from "../Icon";
+import Delete from "../Delete";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { cn } from "@/utils";

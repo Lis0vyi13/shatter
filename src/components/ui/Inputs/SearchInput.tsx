@@ -1,13 +1,13 @@
 import Input, { InputProps } from "./Input";
 import { CiSearch } from "react-icons/ci";
-
+import styles from "./SearchInput.module.css";
 interface ISearchInput extends InputProps {
   className?: string;
 }
 
 const SearchInput = ({ className, ...props }: ISearchInput) => {
   return (
-    <div className="relative">
+    <div className={`relative ${styles.input}`}>
       <Input
         {...props}
         className={`pl-[30px] placeholder:text-[12px] text-[12px] bg-lightBlue ${className}`}

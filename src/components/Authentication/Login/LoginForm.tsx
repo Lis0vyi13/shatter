@@ -7,7 +7,7 @@ import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { changeUrlWithoutReload } from "@/utils";
 import { loginAction } from "./Login.action";
 
-import Input from "@/components/ui/Input";
+import Input from "@/components/ui/Inputs/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
 import Button from "@/components/ui/Button";
 

@@ -4,7 +4,7 @@ import { forgotPasswordAction } from "./ForgotPassword.action";
 
 import Button from "@/components/ui/Button";
 import CircleLoader from "@/components/ui/CircleLoader";
-import Input from "@/components/ui/Input";
+import Input from "@/components/ui/Inputs/Input";
 
 import { FaArrowRightLong } from "react-icons/fa6";
 
