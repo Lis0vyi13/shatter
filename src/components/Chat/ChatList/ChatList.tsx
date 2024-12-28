@@ -6,7 +6,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
 
-import { createChat } from "@/services/chat";
+import { addChatToUser, createChat } from "@/services/chat";
 
 import useUser from "@/hooks/useUser";
 import useFetchUsersChat from "../hooks/useFetchUsersChat";
@@ -18,7 +18,6 @@ import SearchInput from "@/components/ui/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";
-import { addChatToUser } from "@/services/user";
 
 const ChatList = ({ data }: { data: IChat[] | null }) => {
   const params = useParams<{ id: string }>();

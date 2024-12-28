@@ -30,9 +30,9 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
     "absolute left-[2rem] top-1/2 -translate-y-1/2";
   const user = useUser();
   const chats = useChats();
-  const { setChats } = useActions();
+  const { setChats, setUser } = useActions();
 
-  const { openChat, doTogglePinChat } = useChatActions();
+  const { openChat, doTogglePinChat, doDeleteChat } = useChatActions();
 
   const menuItems = useMemo(
     () => [
@@ -86,10 +86,27 @@ export function ChatListItemMenu({ data, children }: IChatListItemMenu) {
         label: "Delete chat",
         isDanger: true,
         separator: false,
-        action: () => {},
+        action: async () => {
+          if (user) {
+            const updatedChats = user.chats?.filter((id) => id != data.id);
+            const updatedUser = { ...user, chats: updatedChats };
+            setUser(updatedUser);
+            doDeleteChat(user?.uid, data.id);
+          }
+        },
       },
     ],
-    [chats, data.id, data.isPin, doTogglePinChat, openChat, setChats, user]
+    [
+      chats,
+      data.id,
+      data.isPin,
+      doDeleteChat,
+      doTogglePinChat,
+      openChat,
+      setChats,
+      setUser,
+      user,
+    ]
   );
 
   return (

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { togglePinChat } from "@/services/chat";
+import { deleteChat, togglePinChat } from "@/services/chat";
 
 export const useChatActions = () => {
   const pathname = usePathname();
@@ -30,8 +30,9 @@ export const useChatActions = () => {
     console.log("Clear history clicked");
   };
 
-  const deleteChat = () => {
-    console.log("Delete chat clicked");
+  const doDeleteChat = async (uid: string, chatId: string) => {
+    const user = await deleteChat(uid, chatId);
+    return user?.updatedUser;
   };
 
   return {
@@ -39,6 +40,6 @@ export const useChatActions = () => {
     doTogglePinChat,
     archiveChat,
     clearChatHistory,
-    deleteChat,
+    doDeleteChat,
   };
 };

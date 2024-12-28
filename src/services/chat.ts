@@ -11,6 +11,7 @@ import {
 import { db } from "@/firebase/firebaseConfig";
 
 import { IChat } from "@/types/chat";
+import { IUser } from "@/types/user";
 
 export const createFavoritesChat = async (data: IChat | null) => {
   if (data) {
@@ -109,4 +110,60 @@ export const togglePinChat = async (
     console.error("Error toggling chat pin state:", error);
     return null;
   }
+};
+
+export const addChatToUser = async (uid: string, chatId: string) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      console.error(`User with uid ${uid} does not exist.`);
+      return { success: false, error: "User not found" };
+    }
+
+    const userData = userDoc.data() as IUser;
+
+    const existingChats = userData.chats || [];
+
+    if (!existingChats.includes(chatId)) {
+      const updatedChats = [...existingChats, chatId];
+      await updateDoc(userDocRef, { chats: updatedChats });
+
+      const updatedUserDoc = await getDoc(userDocRef);
+      const updatedUser = updatedUserDoc.data() as IUser;
+
+      return { success: true, updatedUser };
+    } else {
+      return {
+        success: false,
+        message: "Chat ID already exists",
+        user: userData,
+      };
+    }
+  } catch (error) {
+    console.error("Error adding chat ID:", error);
+    return { success: false, error };
+  }
+};
+
+export const deleteChat = async (uid: string, chatId: string) => {
+  const userDocRef = doc(db, "users", uid);
+
+  const userDoc = await getDoc(userDocRef);
+
+  if (!userDoc.exists()) {
+    console.error(`User with uid ${uid} does not exist.`);
+    return;
+  }
+  const userData = userDoc.data() as IUser;
+  const existingChats = userData.chats || [];
+
+  const updatedChats = existingChats.filter((id) => id !== chatId);
+  await updateDoc(userDocRef, { chats: updatedChats });
+
+  const updatedUserDoc = await getDoc(userDocRef);
+  const updatedUser = updatedUserDoc.data() as IUser;
+
+  return { success: true, updatedUser };
 };
