@@ -18,6 +18,7 @@ import SearchInput from "@/components/ui/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";
+import { addChatToUser } from "@/services/user";
 
 const ChatList = ({ data }: { data: IChat[] | null }) => {
   const params = useParams<{ id: string }>();
@@ -27,7 +28,8 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue
   );
-  const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
+  const { setSearchInputValue, setDebouncedSearchInputValue, setUser } =
+    useActions();
 
   const { currentChats, setCurrentChats } = useFetchUsersChat(
     data,
@@ -46,10 +48,25 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     try {
       const uid = currentUser?.uid;
       const data: IChat = { ...chatData, chatType: "individual" };
+
       if (uid) {
         const chat = await createChat(data);
-        if (chat.data?.id) setActiveChat(chat.data?.id);
-        setSearchInputValue("");
+        if (chat.success && chat.data?.id) {
+          setSearchInputValue("");
+          setDebouncedSearchInputValue("");
+
+          const result = await addChatToUser(uid, chat.data.id);
+          if (result.success && result.updatedUser) {
+            setUser(result.updatedUser);
+            setActiveChat(chat.data.id);
+          } else {
+            console.error("Failed to update user with the new chat.");
+          }
+        } else {
+          console.error("Failed to create chat:", chat.error);
+        }
+      } else {
+        console.error("User ID is missing, unable to create chat.");
       }
     } catch (error) {
       console.error("Error creating or updating chat:", error);
@@ -114,8 +131,12 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
           <ChatListItems
             chats={currentChats}
             activeChat={activeChat}
-            createNewChat={(chatData) => createNewChat(chatData)}
-            setActiveChat={setActiveChat}
+            createNewChat={createNewChat}
+            setActiveChat={(id) => {
+              setActiveChat(id);
+              setSearchInputValue("");
+              setDebouncedSearchInputValue("");
+            }}
           />
         </DragDropContext>
       </div>

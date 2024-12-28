@@ -25,7 +25,6 @@ export const createFavoritesChat = async (data: IChat | null) => {
     return updatedChatDoc.data();
   }
 };
-
 export const createChat = async (chatData: IChat) => {
   try {
     const chatDocRef = doc(db, "chats", chatData.id);
@@ -34,7 +33,6 @@ export const createChat = async (chatData: IChat) => {
 
     return { success: true, data: chatData };
   } catch (error) {
-    console.error("Ошибка при создании чата:", error);
     return { success: false, error };
   }
 };
