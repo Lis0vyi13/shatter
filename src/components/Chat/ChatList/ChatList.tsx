@@ -1,23 +1,22 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { db } from "@/firebase/firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
 
-import { addChatToUser, createChat } from "@/services/chat";
-
 import useUser from "@/hooks/useUser";
-import useFetchUsersChat from "../hooks/useFetchUsersChat";
+import useFetchUsersChat from "./hooks/useFetchUsersChat";
 import useActions from "@/hooks/useActions";
-import useActiveChat from "../hooks/useActiveChat";
+import useActiveChat from "./hooks/useActiveChat";
 
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import SearchInput from "@/components/ui/Inputs/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";
+import { useDragDropHandler } from "./hooks/useDragDropHandler";
+import { IUser } from "@/types/user";
+import { useCreateNewChat } from "./hooks/useCreateNewChat";
 
 const ChatList = ({ data }: { data: IChat[] | null }) => {
   const params = useParams<{ id: string }>();
@@ -27,13 +26,22 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue
   );
-  const { setSearchInputValue, setDebouncedSearchInputValue, setUser } =
-    useActions();
+  const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
 
   const { currentChats, setCurrentChats } = useFetchUsersChat(
     data,
     debouncedSearchValue
   );
+
+  const { onDragEnd } = useDragDropHandler(
+    currentUser as IUser,
+    setCurrentChats
+  );
+
+  const createNewChat = useCreateNewChat({
+    user: currentUser as IUser,
+    setActiveChat,
+  });
 
   const searchInputProps = {
     name: "search",
@@ -43,34 +51,42 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     setDebouncedValue: setDebouncedSearchInputValue,
   };
 
-  const createNewChat = async (chatData: IChat) => {
-    try {
-      const uid = currentUser?.uid;
-      const data: IChat = { ...chatData, chatType: "individual" };
+  // const createNewChat = async (chatData: IChat) => {
+  //   setSearchInputValue("");
+  //   setDebouncedSearchInputValue("");
+  //   try {
+  //     const uid = currentUser?.uid;
 
-      if (uid) {
-        const chat = await createChat(data);
-        if (chat.success && chat.data?.id) {
-          setSearchInputValue("");
-          setDebouncedSearchInputValue("");
+  //     if (!uid) {
+  //       console.error("User ID is missing, unable to create chat.");
+  //       return;
+  //     }
 
-          const result = await addChatToUser(uid, chat.data.id);
-          if (result.success && result.updatedUser) {
-            setUser(result.updatedUser);
-            setActiveChat(chat.data.id);
-          } else {
-            console.error("Failed to update user with the new chat.");
-          }
-        } else {
-          console.error("Failed to create chat:", chat.error);
-        }
-      } else {
-        console.error("User ID is missing, unable to create chat.");
-      }
-    } catch (error) {
-      console.error("Error creating or updating chat:", error);
-    }
-  };
+  //     const data: IChat = { ...chatData, chatType: "individual" };
+
+  //     const updatedUser = {
+  //       ...currentUser,
+  //       chats: [...currentUser.chats, chatData.id],
+  //     };
+  //     setUser(updatedUser);
+
+  //     const chat = await createChat(data);
+
+  //     if (chat.success && chat.data?.id) {
+  //       const result = await addChatToUser(uid, chat.data.id);
+
+  //       if (result.success && result.updatedUser) {
+  //         setActiveChat(chat.data.id);
+  //       } else {
+  //         console.error("Failed to update user with the new chat.");
+  //       }
+  //     } else {
+  //       console.error("Failed to create chat:", chat.error);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating or updating chat:", error);
+  //   }
+  // };
 
   const dialogProps = {
     data,
@@ -79,49 +95,29 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     setActiveChat,
   };
 
-  const onDragEnd = async (result: DropResult) => {
-    const { destination, source } = result;
-    if (!destination || destination.index === source.index) return;
-
-    setCurrentChats((prevChats) => {
-      const updatedChats = [...(prevChats as IChat[])];
-      const [movedChat] = updatedChats.splice(source.index, 1);
-      updatedChats.splice(destination.index, 0, movedChat);
-
-      return updatedChats;
-    });
-
-    const userId = currentUser?.uid;
-    const chatRef = doc(db, `chats/${userId}`);
-
-    try {
-      const chatDoc = await getDoc(chatRef);
-      if (!chatDoc.exists()) {
-        console.error("Document does not exist!");
-        return;
-      }
-
-      const chatData = chatDoc.data();
-      const chatsArray: IChat[] = chatData.chats;
-
-      const [movedChat] = chatsArray.splice(source.index, 1);
-      chatsArray.splice(destination.index, 0, movedChat);
-
-      chatsArray.forEach((chat, index) => {
-        if (chat.isPin) {
-          chat.order = index;
-        }
-      });
-
-      await updateDoc(chatRef, { chats: chatsArray });
-    } catch (error) {
-      console.error("Error updating chat order:", error);
+  const createNewChatHandler = async (chatData: IChat) => {
+    if (searchValue != "") {
+      setSearchInputValue("");
+      setDebouncedSearchInputValue("");
     }
+    await createNewChat(chatData);
+  };
+
+  const setActiveChatHandler = async (id: string) => {
+    if (searchValue != "") {
+      setSearchInputValue("");
+      setDebouncedSearchInputValue("");
+    }
+    setActiveChat(id);
   };
 
   return (
     <section className="chat-list relative user-list flex flex-col custom-scrollbar h-full">
-      <SearchInput className="py-[10px]" {...searchInputProps} />
+      <SearchInput
+        autoComplete="off"
+        className="py-[10px]"
+        {...searchInputProps}
+      />
 
       <div
         className={`mt-2 transition-all duration-0 -ml-2 overflow-auto custom-scrollbar chat-scrollbar`}
@@ -130,12 +126,8 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
           <ChatListItems
             chats={currentChats}
             activeChat={activeChat}
-            createNewChat={createNewChat}
-            setActiveChat={(id) => {
-              setActiveChat(id);
-              setSearchInputValue("");
-              setDebouncedSearchInputValue("");
-            }}
+            createNewChat={createNewChatHandler}
+            setActiveChat={setActiveChatHandler}
           />
         </DragDropContext>
       </div>

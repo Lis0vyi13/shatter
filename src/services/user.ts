@@ -21,26 +21,32 @@ import {
 
 import { IUser } from "@/types/user";
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: User): Promise<IUser> => {
   const userDocRef = doc(db, "users", user.uid);
-  const userDoc = await getDoc(userDocRef);
 
-  const userData: IUser = {
-    uid: user.uid,
-    email: user.email,
-    displayName: user.displayName || "Anonymous",
-    photoUrl: "",
-    chats: [],
-    folders: [],
-    createdAt: Date.now(),
-    favorites: "",
-  };
+  try {
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      const userData: IUser = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "Anonymous",
+        photoUrl: "",
+        chats: [],
+        folders: [],
+        createdAt: Date.now(),
+        favorites: "",
+      };
 
-  if (!userDoc.exists()) {
-    await setDoc(userDocRef, userData);
+      await setDoc(userDocRef, userData);
+      return userData;
+    }
+
+    return userDoc.data() as IUser;
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw new Error("Error creating user. Please try again.");
   }
-
-  return userDoc.exists() ? (userDoc.data() as IUser) : userData;
 };
 
 export const updateUser = async (uid: string, updatedData: Partial<IUser>) => {
@@ -62,13 +68,18 @@ export const updateUser = async (uid: string, updatedData: Partial<IUser>) => {
 };
 
 export const getUserById = async (uid: string): Promise<IUser | null> => {
-  const userDocRef = doc(db, "users", uid);
-  const userDoc = await getDoc(userDocRef);
-
-  if (!userDoc.exists) {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists) {
+      console.error(`User with uid ${uid} not found.`);
+      return null;
+    }
+    return userDoc.data() as IUser;
+  } catch (error) {
+    console.error("Error fetching user:", error);
     return null;
   }
-  return userDoc.data() as IUser;
 };
 
 export const searchByDisplayName = async (
@@ -76,22 +87,15 @@ export const searchByDisplayName = async (
 ): Promise<IUser[]> => {
   try {
     const usersRef = collection(db, "users");
-    const lowerSearchTerm = searchTerm.toLowerCase();
-
     const q = query(usersRef);
     const querySnapshot = await getDocs(q);
 
-    const users: IUser[] = [];
-    querySnapshot.forEach((doc) => {
-      const userData = doc.data() as IUser;
-      const isMatch = userData.displayName
-        ?.toLowerCase()
-        .includes(lowerSearchTerm);
-
-      if (isMatch) users.push(userData);
-    });
-
-    return users;
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return querySnapshot.docs
+      .map((doc) => doc.data() as IUser)
+      .filter((userData) =>
+        userData.displayName?.toLowerCase().includes(lowerSearchTerm)
+      );
   } catch (error) {
     console.error("Error searching users:", error);
     return [];
@@ -101,14 +105,12 @@ export const searchByDisplayName = async (
 export const getUserStatus = (uid: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     const dbRealtime = getDatabase();
-    const userStatusDatabaseRef = ref(dbRealtime, `/status/${uid}`);
-
-    onValue(userStatusDatabaseRef, (snapshot) => {
+    const userStatusRef = ref(dbRealtime, `/status/${uid}`);
+    onValue(userStatusRef, (snapshot) => {
       if (snapshot.exists()) {
-        const userStatus = snapshot.val();
-        resolve(userStatus.state);
+        resolve(snapshot.val().state);
       } else {
-        reject(new Error(`${uid} status is not available`));
+        reject(new Error(`Status for user ${uid} not found.`));
       }
     });
   });
@@ -136,12 +138,7 @@ export const monitorUserConnection = () => {
       try {
         if (snapshot.val() === true) {
           await set(userStatusDatabaseRef, isOnlineForDatabase);
-
-          onDisconnect(userStatusDatabaseRef)
-            .set(isOfflineForDatabase)
-            .catch((error) => {
-              console.error("Error setting onDisconnect:", error);
-            });
+          onDisconnect(userStatusDatabaseRef).set(isOfflineForDatabase);
         } else {
           await set(userStatusDatabaseRef, isOfflineForDatabase);
         }

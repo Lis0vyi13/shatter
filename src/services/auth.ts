@@ -50,13 +50,11 @@ export const createUserAccount = async (
 ) => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 0));
-
     const { user } = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
-
     await updateProfile(user, { displayName });
 
     const progressSteps = [33, 66, 90, 100];
@@ -71,11 +69,9 @@ export const createUserAccount = async (
 
     toast.success("You have successfully logged in!");
   } catch (error) {
-    if (error instanceof Error) {
-      toast.error(error.message);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred.";
+    toast.error(errorMessage);
     throw error;
   }
 };
@@ -85,7 +81,7 @@ export const resetPassword = async (email: string): Promise<void> => {
 
   const actionCodeSettings = {
     url: process.env.NEXT_PUBLIC_APP_URL + "login",
-    handleCodeInApp: true,
+    handleCodeInApp: false,
   };
 
   try {

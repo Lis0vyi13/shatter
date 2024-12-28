@@ -20,7 +20,6 @@ import { IUserStatus } from "@/types/user";
 
 interface IChatListItemProps extends IChat {
   isActive: boolean;
-  hideIndicators?: boolean;
   setChat: () => void;
   index: number;
 }
@@ -35,7 +34,6 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     id,
     title,
     avatar,
-    hideIndicators,
     isActive,
     setChat,
     members,
@@ -83,7 +81,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
         shallow={true}
         prefetch
         className={`chat-list-item flex transition-colors rounded-xl gap-2 w-full p-2 cursor-pointer ${
-          isActive && !hideIndicators
+          isActive
             ? "bg-lightBlue"
             : "bg-white hover:bg-blue hover:bg-opacity-15"
         }`}
@@ -109,22 +107,20 @@ const ChatListItem = memo((props: IChatListItemProps) => {
           )}
         </div>
         <div className="flex gap-1 justify-end">
-          {!hideIndicators && (
-            <div className="flex flex-col pt-[1px] gap-1 items-end">
-              {id && hasChat && (
-                <strong className="text-[12px] mt-[7px] font-normal opacity-80">
-                  {duration}
-                </strong>
-              )}
+          <div className="flex flex-col pt-[1px] gap-1 items-end">
+            {id && hasChat && (
+              <strong className="text-[12px] mt-[7px] font-normal opacity-80">
+                {duration}
+              </strong>
+            )}
 
-              <div className="flex justify-center items-center gap-1 -mr-[2px] mt-[1px]">
-                {unreadMessages > 0 && <Counter>{unreadMessages}</Counter>}
-                {user && isPin.includes(user.uid) && (
-                  <TiPin className="text-blue text-[20px]" />
-                )}
-              </div>
+            <div className="flex justify-center items-center gap-1 -mr-[2px] mt-[1px]">
+              {unreadMessages > 0 && <Counter>{unreadMessages}</Counter>}
+              {user && isPin.includes(user.uid) && (
+                <TiPin className="text-blue text-[20px]" />
+              )}
             </div>
-          )}
+          </div>
         </div>
       </Link>
     </motion.div>

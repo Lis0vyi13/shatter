@@ -19,7 +19,7 @@ import {
 
 import AddChat from "../AddChat";
 import SearchInput from "../Inputs/SearchInput";
-import useFetchUsersChat from "@/components/Chat/hooks/useFetchUsersChat";
+import useFetchUsersChat from "@/components/Chat/ChatList/hooks/useFetchUsersChat";
 import ChatListItem from "@/components/Chat/ChatList/ChatListItem";
 
 import { IChat } from "@/types/chat";
@@ -90,7 +90,6 @@ const SearchUserDialog = ({
                     <ChatListItem
                       key={chat.id}
                       index={index}
-                      hideIndicators
                       {...chat}
                       isActive={chat.id == activeChat}
                       setChat={() => handleSelectChat(chat)}
