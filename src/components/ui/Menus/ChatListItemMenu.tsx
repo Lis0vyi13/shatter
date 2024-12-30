@@ -134,7 +134,7 @@ export function ChatListItemMenu({
             setTimeout(() => {
               setUser(updatedUser);
               doDeleteChat(user?.uid, data.id);
-            }, 300);
+            }, 400);
           }
         },
       },
