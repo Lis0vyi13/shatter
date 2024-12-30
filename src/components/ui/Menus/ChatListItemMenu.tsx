@@ -74,11 +74,9 @@ export function ChatListItemMenu({
       );
 
       pinnedChats.sort((a, b) => b.updatedAt - a.updatedAt);
-
       regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
 
       const sortedChats = [...pinnedChats, ...regularChats];
-      console.log("tut3");
 
       setChats(sortedChats);
 
