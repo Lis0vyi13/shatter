@@ -1,9 +1,11 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
   query,
+  runTransaction,
   setDoc,
   updateDoc,
   where,
@@ -96,14 +98,13 @@ export const togglePinChat = async (
   uid: string,
   chatId: string,
   collectionName: "favorites" | "chats" = "chats"
-): Promise<IChat | null> => {
-  try {
+): Promise<void> => {
+  await runTransaction(db, async (transaction) => {
     const chatDocRef = doc(db, collectionName, chatId);
-    const chatDocSnap = await getDoc(chatDocRef);
+    const chatDocSnap = await transaction.get(chatDocRef);
 
     if (!chatDocSnap.exists()) {
-      console.error("Chat document does not exist.");
-      return null;
+      throw new Error("Chat document does not exist.");
     }
 
     const chatData = chatDocSnap.data() as IChat;
@@ -113,16 +114,8 @@ export const togglePinChat = async (
       ? chatData.isPin.filter((pinnedUid) => pinnedUid !== uid)
       : [...(chatData.isPin || []), uid];
 
-    await updateDoc(chatDocRef, { isPin: updatedIsPin });
-
-    const updatedChatDocSnap = await getDoc(chatDocRef);
-    return updatedChatDocSnap.exists()
-      ? (updatedChatDocSnap.data() as IChat)
-      : null;
-  } catch (error) {
-    console.error("Error toggling pin state:", error);
-    return null;
-  }
+    transaction.update(chatDocRef, { isPin: updatedIsPin });
+  });
 };
 
 export const addChatToUser = async (uid: string, chatId: string) => {
@@ -174,6 +167,9 @@ export const deleteChat = async (uid: string, chatId: string) => {
 
     const updatedChats = existingChats.filter((id) => id !== chatId);
     await updateDoc(userDocRef, { chats: updatedChats });
+
+    const chatDocRef = doc(db, "chats", chatId);
+    await deleteDoc(chatDocRef);
 
     const updatedUserDocSnap = await getDoc(userDocRef);
     const updatedUser = updatedUserDocSnap.data() as IUser;

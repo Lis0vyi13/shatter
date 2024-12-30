@@ -1,4 +1,10 @@
-import { Dispatch, ReactNode, SetStateAction, useMemo } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useMemo,
+} from "react";
 
 import useUser from "@/hooks/useUser";
 import { useChatActions } from "./useChatActions";
@@ -39,6 +45,52 @@ export function ChatListItemMenu({
 
   const { openChat, doTogglePinChat, doDeleteChat } = useChatActions();
 
+  const handlePinToggle = useCallback(
+    async (chatId: string) => {
+      if (!user || !chats) return;
+      const updatedChats = chats.map((chat) => {
+        if (chat.id === chatId) {
+          const isPinned = chat.isPin.includes(user.uid);
+
+          const updatedIsPin = isPinned
+            ? chat.isPin.filter((pinnedUid) => pinnedUid !== user.uid)
+            : [...chat.isPin, user.uid];
+
+          return { ...chat, isPin: updatedIsPin };
+        }
+        return chat;
+      });
+
+      const { pinnedChats, regularChats } = updatedChats.reduce(
+        (acc, chat) => {
+          if (chat.isPin.includes(user?.uid)) {
+            acc.pinnedChats.push(chat);
+          } else {
+            acc.regularChats.push(chat);
+          }
+          return acc;
+        },
+        { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
+      );
+
+      pinnedChats.sort((a, b) => b.updatedAt - a.updatedAt);
+
+      regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
+
+      const sortedChats = [...pinnedChats, ...regularChats];
+      console.log("tut3");
+
+      setChats(sortedChats);
+
+      await doTogglePinChat(
+        user.uid,
+        chatId,
+        chatId === user.favorites ? "favorites" : "chats"
+      );
+    },
+    [chats, doTogglePinChat, setChats, user]
+  );
+
   const menuItems = useMemo(
     () => [
       {
@@ -53,24 +105,7 @@ export function ChatListItemMenu({
         separator: false,
         action: async () => {
           if (user && chats) {
-            const updatedChats: IChat[] = chats.map((chat) => {
-              if (chat.id === data.id) {
-                const isPinned = chat.isPin.includes(user.uid);
-
-                const updatedIsPin = isPinned
-                  ? chat.isPin.filter((pinnedUid) => pinnedUid !== user.uid)
-                  : [...chat.isPin, user.uid];
-                return { ...chat, isPin: updatedIsPin };
-              }
-              return chat;
-            });
-            setChats(updatedChats);
-
-            await doTogglePinChat(
-              user.uid,
-              data.id,
-              data.id === user.favorites ? "favorites" : "chats"
-            );
+            await handlePinToggle(data.id);
           }
         },
       },
@@ -109,10 +144,9 @@ export function ChatListItemMenu({
       data.id,
       data.isPin,
       doDeleteChat,
-      doTogglePinChat,
+      handlePinToggle,
       onDelete,
       openChat,
-      setChats,
       setUser,
       user,
     ]

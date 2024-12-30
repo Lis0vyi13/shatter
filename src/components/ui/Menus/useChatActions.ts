@@ -17,9 +17,14 @@ export const useChatActions = () => {
     userId: string,
     chatId: string,
     collection: "favorites" | "chats" = "chats"
-  ) => {
-    const chats = await togglePinChat(userId, chatId, collection);
-    return chats;
+  ): Promise<boolean> => {
+    try {
+      await togglePinChat(userId, chatId, collection);
+      return true;
+    } catch (error) {
+      console.error("Error toggling pin state:", error);
+      return false;
+    }
   };
 
   const archiveChat = () => {

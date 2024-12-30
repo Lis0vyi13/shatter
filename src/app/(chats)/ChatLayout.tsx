@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
 import useAuth from "@/hooks/useAuth";
@@ -15,7 +15,6 @@ import Sidebar from "@/components/Sidebar";
 import Loader from "@/components/ui/Loader";
 
 import { IChat } from "@/types/chat";
-import { getFavoriteChat } from "@/services/chat";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   useApp();
@@ -39,43 +38,79 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeChats = async () => {
       try {
-        const favoriteChat = user?.favorites
-          ? await getFavoriteChat(user.favorites)
-          : null;
+        if (!user || !user.uid) return;
 
-        if (user?.chats && user.chats.length > 0) {
-          const chatsRef = collection(db, "chats");
+        const { chats: userChats, favorites: favoriteChatId } = user;
 
-          const q = query(chatsRef, where("id", "in", user.chats));
+        let favoriteChat: IChat | null = null;
 
-          const unsubscribe = onSnapshot(q, (snapshot) => {
-            const chatData = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            })) as IChat[];
+        const unsubscribeFavorite =
+          favoriteChatId &&
+          onSnapshot(
+            doc(db, "favorites", favoriteChatId),
+            (favoriteSnapshot) => {
+              if (favoriteSnapshot.exists()) {
+                favoriteChat = {
+                  id: favoriteSnapshot.id,
+                  ...favoriteSnapshot.data(),
+                } as IChat;
+                updateChatList(currentChats, favoriteChat);
+              } else {
+                favoriteChat = null;
+                updateChatList(currentChats, null);
+              }
+            }
+          );
 
-            const { pinnedChats, regularChats } = chatData.reduce(
-              (acc, chat) => {
-                if (chat.isPin.includes(user?.uid)) {
-                  acc.pinnedChats.push(chat);
-                } else {
-                  acc.regularChats.push(chat);
-                }
-                return acc;
-              },
-              { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
-            );
+        let currentChats: IChat[] = [];
 
-            const sortedChats = [...pinnedChats, ...regularChats];
-            setChats(
-              favoriteChat ? [favoriteChat, ...sortedChats] : sortedChats
-            );
-          });
+        const unsubscribeChats =
+          userChats &&
+          userChats.length > 0 &&
+          onSnapshot(
+            query(collection(db, "chats"), where("id", "in", userChats)),
+            (snapshot) => {
+              currentChats = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              })) as IChat[];
+              updateChatList(currentChats, favoriteChat);
+            }
+          );
 
-          return () => unsubscribe();
-        } else {
-          if (favoriteChat) setChats([favoriteChat]);
-        }
+        const updateChatList = (chats: IChat[], favoriteChat: IChat | null) => {
+          const { pinnedChats, regularChats } = chats.reduce(
+            (acc, chat) => {
+              if (chat.isPin.includes(user?.uid)) {
+                acc.pinnedChats.push(chat);
+              } else {
+                acc.regularChats.push(chat);
+              }
+              return acc;
+            },
+            { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
+          );
+
+          if (favoriteChat) {
+            const targetArray = favoriteChat.isPin.includes(user.uid)
+              ? pinnedChats
+              : regularChats;
+
+            targetArray.push(favoriteChat);
+          }
+
+          pinnedChats.sort((a, b) => b.updatedAt - a.updatedAt);
+          regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
+
+          const sortedChats = [...pinnedChats, ...regularChats];
+
+          setChats(sortedChats);
+        };
+
+        return () => {
+          if (unsubscribeChats) unsubscribeChats();
+          if (unsubscribeFavorite) unsubscribeFavorite();
+        };
       } catch (error) {
         console.error("Error initializing chats:", error);
         setChats([]);
@@ -83,7 +118,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     };
 
     initializeChats();
-  }, [setChats, user?.chats, user?.favorites, user?.uid]);
+  }, [setChats, user]);
 
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">

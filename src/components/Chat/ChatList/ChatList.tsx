@@ -51,43 +51,6 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     setDebouncedValue: setDebouncedSearchInputValue,
   };
 
-  // const createNewChat = async (chatData: IChat) => {
-  //   setSearchInputValue("");
-  //   setDebouncedSearchInputValue("");
-  //   try {
-  //     const uid = currentUser?.uid;
-
-  //     if (!uid) {
-  //       console.error("User ID is missing, unable to create chat.");
-  //       return;
-  //     }
-
-  //     const data: IChat = { ...chatData, chatType: "individual" };
-
-  //     const updatedUser = {
-  //       ...currentUser,
-  //       chats: [...currentUser.chats, chatData.id],
-  //     };
-  //     setUser(updatedUser);
-
-  //     const chat = await createChat(data);
-
-  //     if (chat.success && chat.data?.id) {
-  //       const result = await addChatToUser(uid, chat.data.id);
-
-  //       if (result.success && result.updatedUser) {
-  //         setActiveChat(chat.data.id);
-  //       } else {
-  //         console.error("Failed to update user with the new chat.");
-  //       }
-  //     } else {
-  //       console.error("Failed to create chat:", chat.error);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating or updating chat:", error);
-  //   }
-  // };
-
   const dialogProps = {
     data,
     createNewChat,

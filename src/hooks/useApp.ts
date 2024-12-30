@@ -24,7 +24,6 @@ export const useApp = () => {
 
       try {
         monitorUserConnection();
-
         await createUser(user);
 
         await createFavoritesChatTemplate(user.uid);

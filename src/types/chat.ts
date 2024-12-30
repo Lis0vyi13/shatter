@@ -43,5 +43,5 @@ export interface IChat {
   isPin: string[];
   chatType: TChatType;
   info: IChatInfo;
-  order?: number;
+  order: number | null;
 }

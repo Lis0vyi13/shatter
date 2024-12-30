@@ -28,6 +28,7 @@ export const createChatTemplate = (user: IUser): IChat => ({
     links: 0,
     voice: 0,
   },
+  order: null,
 });
 
 export const createFavoritesChatTemplate = async (
@@ -61,6 +62,7 @@ export const createFavoritesChatTemplate = async (
         links: 0,
         voice: 0,
       },
+      order: null,
     };
 
     await createFavoritesChat(favoritesChat);
