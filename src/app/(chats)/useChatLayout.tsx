@@ -43,7 +43,7 @@ const useChatLayout = () => {
     regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
 
     const sortedChats = [...pinnedChats, ...regularChats];
-
+    console.log("tutsd");
     setChats(sortedChats);
   };
 
