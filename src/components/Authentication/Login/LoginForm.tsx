@@ -7,11 +7,11 @@ import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { changeUrlWithoutReload } from "@/utils";
 import { loginAction } from "./Login.action";
 
-import Input from "@/components/ui/Inputs/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
 import Button from "@/components/ui/Button";
 
 import { FaArrowRightLong } from "react-icons/fa6";
+import AuthInput from "@/components/ui/Inputs/AuthInput";
 
 const LoginForm = () => {
   const [, action, isPending] = useActionState(loginAction, {
@@ -72,7 +72,7 @@ const LoginForm = () => {
         }}
         className="mt-4 w-full xs:w-[270px] px-4 xs:px-0 flex flex-col gap-3 max-w-full"
       >
-        <Input
+        <AuthInput
           name="email"
           type="email"
           placeholder="Email"
@@ -81,7 +81,7 @@ const LoginForm = () => {
           className={inputClassName}
           autoComplete="email"
         />
-        <Input
+        <AuthInput
           name="password"
           type="password"
           placeholder="Password"

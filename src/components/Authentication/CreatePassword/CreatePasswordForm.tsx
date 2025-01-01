@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { createPasswordAction } from "./CreatePassword.action";
 
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Inputs/Input";
 import CircleLoader from "@/components/ui/CircleLoader";
 
 import { FaArrowRightLong } from "react-icons/fa6";
 
 import { authInputClassName } from "@/constants";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
+import AuthInput from "@/components/ui/Inputs/AuthInput";
 
 const CreatePasswordForm = () => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -72,7 +72,7 @@ const CreatePasswordForm = () => {
         }}
         className="mt-4 w-full px-4 xs:px-0 xs:w-[270px] flex flex-col gap-3 max-w-full"
       >
-        <Input
+        <AuthInput
           name="username"
           placeholder="Username"
           required
@@ -80,7 +80,7 @@ const CreatePasswordForm = () => {
           className={authInputClassName}
           autoComplete="name"
         />
-        <Input
+        <AuthInput
           name="password"
           type="password"
           placeholder="Password"

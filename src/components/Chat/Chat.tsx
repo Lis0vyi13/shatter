@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 import Title from "@/components/ui/Title";
 import Icon from "@/components/ui/Icon";
@@ -33,6 +33,10 @@ const messages: IMessage[] = [
 const Chat = ({ data }: { data: IChat }) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -79,9 +83,8 @@ const Chat = ({ data }: { data: IChat }) => {
         <div className="relative">
           <Input
             ref={inputRef}
-            noDeleteIcon
             value={value}
-            setValue={setValue}
+            onChange={onChangeHandler}
             className="bg-opacity-70 bg-lightBlue pl-9 text-dark placeholder:text-opacity-70 text-xs placeholder:text-xs py-4"
             name="message"
             placeholder="Your message"

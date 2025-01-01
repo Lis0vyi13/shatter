@@ -23,25 +23,24 @@ import useFetchUsersChat from "@/components/Chat/ChatList/hooks/useFetchUsersCha
 import ChatListItem from "@/components/Chat/ChatList/ChatListItem";
 
 import { IChat } from "@/types/chat";
+import { useRouter } from "next/navigation";
 
 interface ISearchUserDialog {
   data: IChat[] | null;
-  createNewChat: (chatData: IChat) => Promise<void>;
-  activeChat: string;
+  createChat: (chatData: IChat) => Promise<void>;
   setActiveChat: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SearchUserDialog = ({
   data,
-  createNewChat,
-  activeChat,
+  createChat,
   setActiveChat,
 }: ISearchUserDialog) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState<string>("");
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
+  const { push } = useRouter();
   const users = useMemo(
     () => (data ? data.filter((user) => user.title !== "Favorites") : null),
     [data]
@@ -56,12 +55,14 @@ const SearchUserDialog = ({
     setDebouncedValue: setDebouncedSearchValue,
   };
 
-  const handleSelectChat = (chat: IChat) => {
+  const handleSelectChat = async (chat: IChat) => {
     if (chat.chatType === "none") {
-      createNewChat(chat).then(() => setIsOpen(false));
-    } else {
-      setActiveChat(chat.id);
       setIsOpen(false);
+      await createChat(chat);
+      push("/c/" + chat.id);
+    } else {
+      setIsOpen(false);
+      setActiveChat(chat.id);
     }
   };
 
@@ -80,6 +81,7 @@ const SearchUserDialog = ({
           </DialogHeader>
           <Command className="rounded-lg border-none border shadow-md w-full">
             <SearchInput
+              autoComplete="off"
               className="py-3 text-[14px] placeholder:text-[14px] bg-[#fff] rounded-b-none"
               {...searchInputProps}
             />
@@ -91,7 +93,7 @@ const SearchUserDialog = ({
                       key={chat.id}
                       index={index}
                       {...chat}
-                      isActive={chat.id == activeChat}
+                      isActive={false}
                       setChat={() => handleSelectChat(chat)}
                     />
                   ))}

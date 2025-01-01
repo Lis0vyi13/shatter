@@ -4,9 +4,9 @@ import { forgotPasswordAction } from "./ForgotPassword.action";
 
 import Button from "@/components/ui/Button";
 import CircleLoader from "@/components/ui/CircleLoader";
-import Input from "@/components/ui/Inputs/Input";
 
 import { FaArrowRightLong } from "react-icons/fa6";
+import AuthInput from "@/components/ui/Inputs/AuthInput";
 
 const ForgotPasswordForm = () => {
   const [, action, isPending] = useActionState(forgotPasswordAction, "");
@@ -26,7 +26,7 @@ const ForgotPasswordForm = () => {
       }}
       className="mt-2 w-full px-4 xs:px-0 xs:w-[270px] flex flex-col gap-3 max-w-full"
     >
-      <Input
+      <AuthInput
         name="email"
         placeholder="Email"
         required

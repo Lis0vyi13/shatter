@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
@@ -8,17 +9,18 @@ import useUser from "@/hooks/useUser";
 import useFetchUsersChat from "./hooks/useFetchUsersChat";
 import useActions from "@/hooks/useActions";
 import useActiveChat from "./hooks/useActiveChat";
+import { useDragDropHandler } from "./hooks/useDragDropHandler";
+import { useCreateNewChat } from "./hooks/useCreateNewChat";
 
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import SearchInput from "@/components/ui/Inputs/SearchInput";
 import ChatListItems from "./ChatListItems";
 
 import { IChat } from "@/types/chat";
-import { useDragDropHandler } from "./hooks/useDragDropHandler";
 import { IUser } from "@/types/user";
-import { useCreateNewChat } from "./hooks/useCreateNewChat";
 
 const ChatList = ({ data }: { data: IChat[] | null }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams<{ id: string }>();
   const currentUser = useUser();
   const { activeChat, setActiveChat } = useActiveChat(params?.id);
@@ -32,7 +34,6 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     data,
     debouncedSearchValue
   );
-
   const { onDragEnd } = useDragDropHandler(
     currentUser as IUser,
     setCurrentChats
@@ -51,19 +52,18 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     setDebouncedValue: setDebouncedSearchInputValue,
   };
 
-  const dialogProps = {
-    data,
-    createNewChat,
-    activeChat,
-    setActiveChat,
+  const createNewChatHandler = async (chatData: IChat) => {
+    setIsLoading(true);
+    setSearchInputValue("");
+    setDebouncedSearchInputValue("");
+    await createNewChat(chatData);
+    setIsLoading(false);
   };
 
-  const createNewChatHandler = async (chatData: IChat) => {
-    if (searchValue != "") {
-      setSearchInputValue("");
-      setDebouncedSearchInputValue("");
-    }
-    await createNewChat(chatData);
+  const dialogProps = {
+    data,
+    createChat: createNewChatHandler,
+    setActiveChat,
   };
 
   const setActiveChatHandler = async (id: string) => {
@@ -91,11 +91,12 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
             activeChat={activeChat}
             createNewChat={createNewChatHandler}
             setActiveChat={setActiveChatHandler}
+            loading={isLoading}
           />
         </DragDropContext>
       </div>
 
-      <div className="absolute transition-all duration-200 right-3 bottom-2">
+      <div className="absolute transition-all duration-200 right-3 bottom-3">
         <SearchUserDialog {...dialogProps} />
       </div>
     </section>

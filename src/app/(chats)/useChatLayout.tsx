@@ -14,7 +14,7 @@ import {
 import { IChat } from "@/types/chat";
 
 const useChatLayout = () => {
-  const { setChats } = useActions();
+  const { setChats, setFavorites } = useActions();
   const user = useUser();
 
   const updateChatList = (chats: IChat[], favoriteChat: IChat | null) => {
@@ -43,7 +43,8 @@ const useChatLayout = () => {
     regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
 
     const sortedChats = [...pinnedChats, ...regularChats];
-    console.log("tutsd");
+    console.log("qwerr");
+    setFavorites(favoriteChat);
     setChats(sortedChats);
   };
 

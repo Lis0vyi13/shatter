@@ -3,11 +3,11 @@ import { useActionState, useRef, useState } from "react";
 import { changeUrlWithoutReload } from "@/utils";
 import { signUpAction } from "./SignUp.action";
 
-import Input from "@/components/ui/Inputs/Input";
 import Button from "@/components/ui/Button";
 import AuthLoader from "../AuthLoader";
 
 import { FaArrowRightLong } from "react-icons/fa6";
+import AuthInput from "@/components/ui/Inputs/AuthInput";
 
 const initialState = {
   username: "",
@@ -47,7 +47,7 @@ const SignUpForm = () => {
       }}
       className="mt-4 w-full xs:w-[270px] flex flex-col gap-3 px-4 xs:px-0 max-w-full"
     >
-      <Input
+      <AuthInput
         name="username"
         placeholder="Username"
         required
@@ -55,7 +55,7 @@ const SignUpForm = () => {
         className={inputClassName}
         autoComplete="name"
       />
-      <Input
+      <AuthInput
         name="email"
         type="email"
         placeholder="Email"
@@ -64,7 +64,7 @@ const SignUpForm = () => {
         className={inputClassName}
         autoComplete="email"
       />
-      <Input
+      <AuthInput
         name="password"
         type="password"
         placeholder="Password"
