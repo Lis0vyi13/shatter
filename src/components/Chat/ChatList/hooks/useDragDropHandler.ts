@@ -3,6 +3,9 @@ import { DropResult } from "@hello-pangea/dnd";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
+import useChats from "@/hooks/useChats";
+import useActions from "@/hooks/useActions";
+
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
@@ -10,43 +13,40 @@ export const useDragDropHandler = (
   user: IUser,
   setChats: Dispatch<SetStateAction<IChat[] | null>>
 ) => {
+  const chats = useChats();
+  const { setChats: setReduxChats } = useActions();
+
   const onDragEnd = async (result: DropResult) => {
     const { destination, source } = result;
     if (!destination || destination.index === source.index) return;
 
-    setChats((prevChats) => {
-      const updatedChats = [...(prevChats as IChat[])];
-      const [movedChat] = updatedChats.splice(source.index, 1);
-      updatedChats.splice(destination.index, 0, movedChat);
+    const updatedChats = [...(chats as IChat[])];
+    const [movedChat] = updatedChats.splice(source.index, 1);
+    updatedChats.splice(destination.index, 0, movedChat);
 
-      return updatedChats;
-    });
+    const updatedState: Record<string, number> = {};
 
-    const userId = user?.uid;
-    const chatRef = doc(db, `chats/${userId}`);
+    const firstChat = updatedChats[source.index];
+    const secondChat = updatedChats[destination.index];
 
-    try {
-      const chatDoc = await getDoc(chatRef);
-      if (!chatDoc.exists()) {
-        console.error("Document does not exist!");
-        return;
+    updatedState[firstChat.id] = source.index;
+    updatedState[secondChat.id] = destination.index;
+
+    setChats(updatedChats);
+    setReduxChats(updatedChats);
+
+    for (const id in updatedState) {
+      try {
+        const chatRef = doc(db, "chats", id);
+        const chatDoc = await getDoc(chatRef);
+        const chatData = chatDoc.data();
+
+        await updateDoc(chatRef, {
+          order: { ...chatData?.order, [user.uid]: updatedState[id] },
+        });
+      } catch (error) {
+        console.error("Error updating chat order:", error);
       }
-
-      const chatData = chatDoc.data();
-      const chatsArray: IChat[] = chatData.chats;
-
-      const [movedChat] = chatsArray.splice(source.index, 1);
-      chatsArray.splice(destination.index, 0, movedChat);
-
-      chatsArray.forEach((chat, index) => {
-        if (chat.isPin) {
-          chat.order = index;
-        }
-      });
-
-      await updateDoc(chatRef, { chats: chatsArray });
-    } catch (error) {
-      console.error("Error updating chat order:", error);
     }
   };
 

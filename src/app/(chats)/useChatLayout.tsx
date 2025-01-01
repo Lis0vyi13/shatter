@@ -39,11 +39,24 @@ const useChatLayout = () => {
       targetArray.push(favoriteChat);
     }
 
-    pinnedChats.sort((a, b) => b.updatedAt - a.updatedAt);
+    if (user) {
+      pinnedChats.sort((a, b) => {
+        const orderA = a.order?.[user.uid] ?? null;
+        const orderB = b.order?.[user.uid] ?? null;
+
+        if (orderA === null && orderB === null) {
+          return b.updatedAt - a.updatedAt;
+        }
+        if (orderA === null) return 1;
+        if (orderB === null) return -1;
+
+        return orderA - orderB;
+      });
+    }
+
     regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
 
     const sortedChats = [...pinnedChats, ...regularChats];
-    console.log("qwerr");
     setFavorites(favoriteChat);
     setChats(sortedChats);
   };

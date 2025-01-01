@@ -18,7 +18,6 @@ const initialState = {
 const SignUpForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
-  console.log(isSubmitted);
   const [, action] = useActionState(
     (prevState: unknown, formData: FormData) => {
       return signUpAction(

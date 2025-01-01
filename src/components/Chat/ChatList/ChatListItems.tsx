@@ -1,18 +1,19 @@
 "use client";
 
+import { useState, useCallback, useMemo } from "react";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+
 import useUser from "@/hooks/useUser";
+import { cn } from "@/utils";
 
 import ChatListItem from "./ChatListItem";
 import { ChatListItemMenu } from "@/components/ui/Menus/ChatListItemMenu";
 import SkeletonChatListItem from "./SkeletonChatListItem";
 
 import { IChat } from "@/types/chat";
-import { useState, useCallback } from "react";
-import { cn } from "@/utils";
-import { useRouter } from "next/navigation";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -36,6 +37,21 @@ const ChatListItems = ({
   const [deletingChat, setDeletingChat] = useState("");
   const { push } = useRouter();
 
+  const { pinnedChats, unpinnedChats } = useMemo(() => {
+    if (!chats || !user) return { pinnedChats: [], unpinnedChats: [] };
+    return chats.reduce(
+      (acc, chat) => {
+        if (chat.isPin.includes(user.uid)) {
+          acc.pinnedChats.push(chat);
+        } else {
+          acc.unpinnedChats.push(chat);
+        }
+        return acc;
+      },
+      { pinnedChats: [] as IChat[], unpinnedChats: [] as IChat[] }
+    );
+  }, [chats, user]);
+
   const getChatHandler = useCallback(
     (chat: IChat) =>
       chat.chatType === "none"
@@ -56,14 +72,13 @@ const ChatListItems = ({
   );
 
   const renderChatItem = useCallback(
-    (chat: IChat, index: number) => {
-      const isChatPinned = user && chat.isPin.includes(user.uid);
+    (chat: IChat, index: number, isChatPinned: boolean) => {
       const isActive = chat.id === activeChat;
       const setChatHandler = getChatHandler(chat);
       const isDeleting = deletingChat === chat.id;
 
       const listItemClasses = cn(
-        "transition-all duration-300",
+        "transition-none ",
         isDeleting && "-translate-x-full"
       );
 
@@ -84,7 +99,19 @@ const ChatListItems = ({
         },
       };
 
-      return searchInputValue === "" ? (
+      if (searchInputValue !== "") {
+        return (
+          <li key={chat.id}>
+            <ChatListItem
+              {...chat}
+              index={index}
+              isActive={isActive}
+              setChat={setChatHandler}
+            />
+          </li>
+        );
+      }
+      return (
         <ChatListItemMenu onDelete={setDeletingChat} data={chat} key={chat.id}>
           {isChatPinned ? (
             <Draggable key={chat.id} draggableId={chat.id} index={index}>
@@ -107,7 +134,7 @@ const ChatListItems = ({
           ) : (
             <motion.li
               key={chat.id}
-              className="max-h-16 overflow-hidden"
+              className="max-h-16 transition-none overflow-hidden"
               {...motionListItemProps}
             >
               <ChatListItem
@@ -119,33 +146,38 @@ const ChatListItems = ({
             </motion.li>
           )}
         </ChatListItemMenu>
-      ) : (
-        <li key={chat.id}>
-          <ChatListItem
-            {...chat}
-            index={index}
-            isActive={isActive}
-            setChat={setChatHandler}
-          />
-        </li>
       );
     },
-    [activeChat, deletingChat, getChatHandler, searchInputValue, user]
+    [activeChat, deletingChat, getChatHandler, searchInputValue]
   );
 
+  if (loading || !chats) {
+    return <ul className="list flex flex-col">{renderSkeletons()}</ul>;
+  }
+
   return (
-    <Droppable droppableId="chatListDroppable">
-      {(provided) => (
-        <ul
-          className="list flex flex-col"
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-        >
-          {chats && !loading ? chats.map(renderChatItem) : renderSkeletons()}
-          {provided.placeholder}
-        </ul>
+    <div className="flex flex-col">
+      {pinnedChats.length > 0 && (
+        <Droppable droppableId="pinnedChatsDroppable">
+          {(provided) => (
+            <ul
+              className="list flex flex-col"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {pinnedChats.map((chat, index) =>
+                renderChatItem(chat, index, true)
+              )}
+              {provided.placeholder}
+            </ul>
+          )}
+        </Droppable>
       )}
-    </Droppable>
+
+      <ul className="list flex flex-col">
+        {unpinnedChats.map((chat, index) => renderChatItem(chat, index, false))}
+      </ul>
+    </div>
   );
 };
 

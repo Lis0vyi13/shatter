@@ -10,15 +10,21 @@ import SkeletonSidebarIcon from "./SkeletonSidebarIcon";
 
 import { logOutIcon, settings } from "@/constants";
 import { cn } from "@/utils";
+import useActions from "@/hooks/useActions";
 
 const Sidebar = () => {
   const folders = useFolders();
   const { sidebarItems, handleItemClick, handleLogout, loading } =
     useSidebar(folders);
-
+  const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
+  
+  const onLogoClickHandler = () => {
+    setSearchInputValue("");
+    setDebouncedSearchInputValue("");
+  };
   return (
     <section className="flex min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
-      <Link shallow className="mt-1" href={"/c"}>
+      <Link onClick={onLogoClickHandler} shallow className="mt-1" href={"/c"}>
         <Image priority width={32} height={32} src="/logo.svg" alt="Logo" />
       </Link>
       <div className="flex flex-col gap-3 justify-center">

@@ -41,11 +41,8 @@ const useSidebar = (initialFolders: IFolder[] | null) => {
         try {
           const fetchedFolders = await getAllFolders(user.folders);
           setFolders(fetchedFolders);
-          const transformedFolders = fetchedFolders.map((folder) => ({
-            ...folder,
-            href: `/${folder.id}`,
-          }));
-          localStorage.setItem("folders", JSON.stringify(transformedFolders));
+
+          localStorage.setItem("folders", JSON.stringify(fetchedFolders));
         } catch (error) {
           console.error("Error fetching folders:", error);
         }

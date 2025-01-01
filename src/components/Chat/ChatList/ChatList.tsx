@@ -34,6 +34,7 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     data,
     debouncedSearchValue
   );
+
   const { onDragEnd } = useDragDropHandler(
     currentUser as IUser,
     setCurrentChats

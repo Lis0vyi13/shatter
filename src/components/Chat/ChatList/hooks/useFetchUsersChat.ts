@@ -55,7 +55,6 @@ const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
         }
       }
     };
-
     fetchData();
   }, [searchValue, data, user]);
 
