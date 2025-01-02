@@ -48,11 +48,11 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <Title className="text-center text-5xl line-clamp-none">
+        <Title className="text-center text-4xl xs:text-5xl line-clamp-none">
           Connect with your mate easily
         </Title>
         <motion.h2
-          className="text-center mt-12 max-w-[700px] leading-6 font-[300]"
+          className="text-center mt-12 max-w-[700px] leading-6 font-[400] text-[14px] xs:text-[16px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}

@@ -63,7 +63,7 @@ const SearchInput = ({
   };
 
   return (
-    <div className={`relative ${styles.input}`}>
+    <div className={`relative w-full ${styles.input}`}>
       <Input
         className={cn(
           "pl-[30px] placeholder:text-[12px] text-[12px] bg-lightBlue",

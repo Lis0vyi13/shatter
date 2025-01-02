@@ -21,18 +21,21 @@ const ChatBlock = ({ id }: { id?: string }) => {
   }, [chats, id]);
 
   return (
-    <Block color={"dark"} className={`chat-block flex gap-2 pr-2`}>
+    <Block
+      color={"dark"}
+      className={`chat-block flex gap-2 pl-2 mdLg:pl-0 pr-2`}
+    >
       {activeChat ? (
         <>
           <div className={`flex bg-white rounded-3xl w-full gap-2 pl-4`}>
-            <div className="chat-list-wrapper min-w-[300px] h-full py-4">
+            <div className="chat-list-wrapper min-w-[300px] h-full py-4 hidden mdLg:block">
               <ChatList data={chats} />
             </div>
-            <div className="chat flex flex-col px-3 py-4 flex-1">
+            <div className="chat flex flex-col px-1 md:px-3 py-4 flex-1">
               <Chat data={activeChat} />
             </div>
           </div>
-          <div className="chat-details-wrapper">
+          <div className="chat-details-wrapper hidden xl:block">
             <ChatDetails data={activeChat} />
           </div>
         </>

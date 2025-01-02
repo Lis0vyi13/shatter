@@ -15,7 +15,6 @@ export const sidebarIcons: IFolder[] = [
     type: "all",
     isActive: true,
     unreaded: 0,
-    href: "/c",
   },
   {
     id: "1",

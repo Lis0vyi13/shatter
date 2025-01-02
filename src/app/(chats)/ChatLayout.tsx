@@ -31,7 +31,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   return isLogin ? (
     <div className="px-4 py-2 flex min-h-full">
       <section className="wrapper flex-1 bg-dark rounded-[26px] flex">
-        <aside className="flex justify-center min-w-[96px]">
+        <aside className="hidden justify-center min-w-[96px] lg:flex">
           <Sidebar />
         </aside>
         <main ref={mainRef} className="flex flex-1 py-2">

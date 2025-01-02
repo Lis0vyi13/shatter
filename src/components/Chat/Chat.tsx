@@ -14,6 +14,7 @@ import { IoCallOutline } from "react-icons/io5";
 import { IoMdMore } from "react-icons/io";
 import { GrAttachment, GrMicrophone, GrSend } from "react-icons/gr";
 import { FaRegSmile } from "react-icons/fa";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const messages: IMessage[] = [
   {
@@ -45,7 +46,8 @@ const Chat = ({ data }: { data: IChat }) => {
   return (
     <>
       <header className="chat-header pb-4 bg-white flex justify-between items-center">
-        <div>
+        <div className="flex items-center gap-3">
+          <FaArrowLeftLong className="block mdLg:hidden text-[22px]" />
           <Title className="text-[28px] leading-8">{data?.title}</Title>
           {data?.chatType === "individual" && data?.members?.length > 2 && (
             <p className="members mt-1 font-[400] text-[13px] text-dark text-opacity-70">

@@ -19,6 +19,8 @@ import ChatListItems from "./ChatListItems";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
+import { FaArrowLeftLong } from "react-icons/fa6";
+
 const ChatList = ({ data }: { data: IChat[] | null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const params = useParams<{ id: string }>();
@@ -77,11 +79,14 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
 
   return (
     <section className="chat-list relative user-list flex flex-col custom-scrollbar h-full">
-      <SearchInput
-        autoComplete="off"
-        className="py-[10px]"
-        {...searchInputProps}
-      />
+      <div className="flex items-center gap-2 w-full">
+        <FaArrowLeftLong className="block mdLg:hidden" />
+        <SearchInput
+          autoComplete="off"
+          className="py-[10px] flex-1"
+          {...searchInputProps}
+        />
+      </div>
 
       <div
         className={`mt-2 transition-all duration-0 -ml-2 overflow-auto custom-scrollbar chat-scrollbar`}
