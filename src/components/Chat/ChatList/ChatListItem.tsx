@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,29 +44,36 @@ const ChatListItem = memo(
     const user = useUser();
     const [userStatus, setUserStatus] = useState<IUserStatus | null>(null);
     const rootPath = pathname.split("/")[1];
-    const isUserChatMember = user?.chats.includes(id) || id === user?.favorites;
+    const isFavorite = id === user?.favorites;
+    const isUserChatMember = user?.chats.includes(id) || isFavorite;
     const searchInputDebouncedValue = useAppSelector(
       (store) => store.search.searchInput.debouncedValue
     );
     const animatePosition = searchInputDebouncedValue !== "" ? "-100%" : 0;
-
+    const collocutor = useMemo(
+      () => members.find((id) => id !== user?.uid) || "",
+      [members, user?.uid]
+    );
     useEffect(() => {
       const fetchUserStatus = async () => {
-        const status = await getUserStatus(members[0]);
+        const status = await getUserStatus(collocutor);
         setUserStatus(status);
       };
       fetchUserStatus();
-    }, [members]);
+    }, [collocutor, members]);
+
+    const chatTitle = user ? title[user.uid] : "User";
 
     const ChatMessageContent = () => (
       <>
         <Avatar
           className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px]"
           avatar={avatar}
-          title={title}
+          collocutor={collocutor}
+          title={chatTitle}
         />
         <div className="user-info flex flex-1 flex-col gap-[6px]">
-          <Title className="text-[14px] mt-1">{title}</Title>
+          <Title className="text-[14px] mt-1">{chatTitle}</Title>
           {userStatus && !isUserChatMember ? (
             <LastMessage
               className="pt-[1px]"
@@ -92,7 +99,9 @@ const ChatListItem = memo(
           </strong>
         )}
         <div className="flex gap-1 items-center">
-          {unreadMessages > 0 && <Counter>{unreadMessages}</Counter>}
+          {user && unreadMessages[user.uid] > 0 && (
+            <Counter>{unreadMessages[user.uid]}</Counter>
+          )}
           {user && isPin.includes(user.uid) && (
             <TiPin className="text-blue text-[20px]" />
           )}

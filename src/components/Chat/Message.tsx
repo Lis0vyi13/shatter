@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { StaticImageData } from "next/image";
 import useUser from "@/hooks/useUser";
 
 import Avatar from "../Avatar";
@@ -8,15 +9,25 @@ import Avatar from "../Avatar";
 import { IUser } from "@/types/user";
 import { IMessage } from "@/types/chat";
 
+type TAvatar =
+  | string
+  | StaticImageData
+  | {
+      [key: string]: string;
+    };
 interface IMessageProps {
   data: IMessage;
-  partnerTitle: string;
-  partnerAvatar: string;
+  collocutorTitle: string;
+  collocutorAvatar: TAvatar;
 }
 
-const Message = ({ data, partnerTitle, partnerAvatar }: IMessageProps) => {
+const Message = ({
+  data,
+  collocutorTitle,
+  collocutorAvatar,
+}: IMessageProps) => {
   const [title, setTitle] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [avatar, setAvatar] = useState<TAvatar>("");
   const currentUser = useUser() as IUser;
   const isOwnMessage = currentUser?.uid === data.uid;
 
@@ -25,10 +36,10 @@ const Message = ({ data, partnerTitle, partnerAvatar }: IMessageProps) => {
       setTitle(currentUser.displayName || "");
       setAvatar(currentUser.photoUrl || "");
     } else {
-      setTitle(partnerTitle || "");
-      setAvatar(partnerAvatar || "");
+      setTitle(collocutorTitle || "");
+      setAvatar(collocutorAvatar);
     }
-  }, [data.uid, currentUser, isOwnMessage, partnerTitle, partnerAvatar]);
+  }, [data.uid, currentUser, isOwnMessage, collocutorTitle, collocutorAvatar]);
 
   return (
     <div

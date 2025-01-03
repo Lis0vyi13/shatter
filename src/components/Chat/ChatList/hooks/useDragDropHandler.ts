@@ -34,15 +34,15 @@ export const useDragDropHandler = (
 
     setChats(updatedChats);
     setReduxChats(updatedChats);
-
-    for (const id in updatedState) {
+    for (const chatId in updatedState) {
       try {
-        const chatRef = doc(db, "chats", id);
+        const collection = user.favorites === chatId ? "favorites" : "chats";
+        const chatRef = doc(db, collection, chatId);
         const chatDoc = await getDoc(chatRef);
         const chatData = chatDoc.data();
 
         await updateDoc(chatRef, {
-          order: { ...chatData?.order, [user.uid]: updatedState[id] },
+          order: { ...chatData?.order, [user.uid]: updatedState[chatId] },
         });
       } catch (error) {
         console.error("Error updating chat order:", error);

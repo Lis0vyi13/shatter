@@ -6,11 +6,11 @@ import { searchByDisplayName } from "@/services/user";
 import { createChatTemplate } from "@/templates";
 
 import { IChat } from "@/types/chat";
+import { IUser } from "@/types/user";
 
 const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
   const [currentChats, setCurrentChats] = useState<IChat[] | null>(null);
   const user = useUser();
-
   useEffect(() => {
     const searchUser = async (query: string) => {
       const users = await searchByDisplayName(query);
@@ -22,13 +22,16 @@ const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
         setCurrentChats(data || null);
       } else {
         const chatsByQuery =
-          data?.filter((chat) =>
-            chat.title.toLowerCase().includes(searchValue.toLowerCase())
-          ) || [];
-
+          data?.filter((chat) => {
+            if (user) {
+              return chat.title[user.uid]
+                .toLowerCase()
+                .includes(searchValue.toLowerCase());
+            }
+          }) || [];
         const usersByQuery = await searchUser(searchValue);
-        const usersChats: IChat[] = usersByQuery.map((user) =>
-          createChatTemplate(user)
+        const usersChats: IChat[] = usersByQuery.map((searchedUser) =>
+          createChatTemplate(user as IUser, searchedUser)
         );
 
         const combinedList = [...chatsByQuery, ...usersChats];

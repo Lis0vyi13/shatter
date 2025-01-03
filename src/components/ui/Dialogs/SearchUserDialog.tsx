@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import {
   Command,
   CommandEmpty,
@@ -17,33 +17,42 @@ import {
   DialogTrigger,
 } from "../shadcn/dialog";
 
+import useUser from "@/hooks/useUser";
+
 import AddChat from "../AddChat";
 import SearchInput from "../Inputs/SearchInput";
 import useFetchUsersChat from "@/components/Chat/ChatList/hooks/useFetchUsersChat";
 import ChatListItem from "@/components/Chat/ChatList/ChatListItem";
 
 import { IChat } from "@/types/chat";
-import { useRouter } from "next/navigation";
 
 interface ISearchUserDialog {
   data: IChat[] | null;
   createChat: (chatData: IChat) => Promise<void>;
-  setActiveChat: React.Dispatch<React.SetStateAction<string>>;
+  setActiveChat: (id: string) => Promise<void>;
+  className?: string;
 }
 
 const SearchUserDialog = ({
   data,
   createChat,
   setActiveChat,
+  className,
 }: ISearchUserDialog) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState<string>("");
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { push } = useRouter();
+  const user = useUser();
   const users = useMemo(
-    () => (data ? data.filter((user) => user.title !== "Favorites") : null),
-    [data]
+    () =>
+      data
+        ? data.filter((chat) => {
+            if (user) return chat.title[user?.uid] !== "Favorites";
+          })
+        : null,
+    [data, user]
   );
   const { currentChats } = useFetchUsersChat(users, debouncedSearchValue);
 
@@ -69,8 +78,11 @@ const SearchUserDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className="outline-none" onClick={() => setIsOpen(true)}>
-          <AddChat />
+        <button
+          className={"outline-none rounded-full"}
+          onClick={() => setIsOpen(true)}
+        >
+          <AddChat className={className} />
         </button>
       </DialogTrigger>
 

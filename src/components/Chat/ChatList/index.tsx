@@ -1,18 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
 
+import { cn } from "@/utils";
 import useUser from "@/hooks/useUser";
 import useFetchUsersChat from "./hooks/useFetchUsersChat";
 import useActions from "@/hooks/useActions";
-import useActiveChat from "./hooks/useActiveChat";
 import { useDragDropHandler } from "./hooks/useDragDropHandler";
-import { useCreateNewChat } from "./hooks/useCreateNewChat";
 
-import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import SearchInput from "@/components/ui/Inputs/SearchInput";
 import ChatListItems from "./ChatListItems";
 
@@ -21,11 +17,25 @@ import { IUser } from "@/types/user";
 
 import { FaArrowLeftLong } from "react-icons/fa6";
 
-const ChatList = ({ data }: { data: IChat[] | null }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const params = useParams<{ id: string }>();
+interface IChatList {
+  data: IChat[] | null;
+  loading: boolean;
+  activeChat: string;
+  func: {
+    createNewChat: (chatData: IChat) => Promise<void>;
+    setActiveChat: (id: string) => Promise<void>;
+  };
+  className?: string;
+}
+
+const ChatList = ({
+  data,
+  loading,
+  activeChat,
+  func,
+  className,
+}: IChatList) => {
   const currentUser = useUser();
-  const { activeChat, setActiveChat } = useActiveChat(params?.id);
   const searchValue = useAppSelector((store) => store.search.searchInput.value);
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue
@@ -42,11 +52,6 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     setCurrentChats
   );
 
-  const createNewChat = useCreateNewChat({
-    user: currentUser as IUser,
-    setActiveChat,
-  });
-
   const searchInputProps = {
     name: "search",
     placeholder: "Search...",
@@ -55,30 +60,13 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
     setDebouncedValue: setDebouncedSearchInputValue,
   };
 
-  const createNewChatHandler = async (chatData: IChat) => {
-    setIsLoading(true);
-    setSearchInputValue("");
-    setDebouncedSearchInputValue("");
-    await createNewChat(chatData);
-    setIsLoading(false);
-  };
-
-  const dialogProps = {
-    data,
-    createChat: createNewChatHandler,
-    setActiveChat,
-  };
-
-  const setActiveChatHandler = async (id: string) => {
-    if (searchValue != "") {
-      setSearchInputValue("");
-      setDebouncedSearchInputValue("");
-    }
-    setActiveChat(id);
-  };
-
   return (
-    <section className="chat-list relative user-list flex flex-col custom-scrollbar h-full">
+    <section
+      className={cn(
+        "chat-list relative user-list flex flex-col custom-scrollbar h-full",
+        className
+      )}
+    >
       <div className="flex items-center gap-2 w-full">
         <FaArrowLeftLong className="block mdLg:hidden" />
         <SearchInput
@@ -95,15 +83,11 @@ const ChatList = ({ data }: { data: IChat[] | null }) => {
           <ChatListItems
             chats={currentChats}
             activeChat={activeChat}
-            createNewChat={createNewChatHandler}
-            setActiveChat={setActiveChatHandler}
-            loading={isLoading}
+            createNewChat={func.createNewChat}
+            setActiveChat={func.setActiveChat}
+            loading={loading}
           />
         </DragDropContext>
-      </div>
-
-      <div className="absolute transition-all duration-200 right-3 bottom-3">
-        <SearchUserDialog {...dialogProps} />
       </div>
     </section>
   );

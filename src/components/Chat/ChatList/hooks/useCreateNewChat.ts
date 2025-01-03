@@ -34,7 +34,6 @@ export const useCreateNewChat = ({ user, setActiveChat }: ICreateNewChat) => {
 
       if (chat.success && chat.data?.id) {
         const result = await addChatToUser(uid, chat.data.id);
-
         if (result.success && result.updatedUser) {
           setActiveChat(chat.data.id);
         } else {

@@ -15,6 +15,7 @@ import { IoMdMore } from "react-icons/io";
 import { GrAttachment, GrMicrophone, GrSend } from "react-icons/gr";
 import { FaRegSmile } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import useUser from "@/hooks/useUser";
 
 const messages: IMessage[] = [
   {
@@ -34,10 +35,12 @@ const messages: IMessage[] = [
 const Chat = ({ data }: { data: IChat }) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const user = useUser();
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
+  console.log(data);
+  const usersOnline = []; // todo data?.members...
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -47,11 +50,15 @@ const Chat = ({ data }: { data: IChat }) => {
     <>
       <header className="chat-header pb-4 bg-white flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <FaArrowLeftLong className="block mdLg:hidden text-[22px]" />
-          <Title className="text-[28px] leading-8">{data?.title}</Title>
+          <Icon>
+            <FaArrowLeftLong className="block mdLg:hidden text-[22px]" />
+          </Icon>
+          <Title className="text-[28px] leading-8">
+            {user && data?.title[user?.uid]}
+          </Title>
           {data?.chatType === "individual" && data?.members?.length > 2 && (
             <p className="members mt-1 font-[400] text-[13px] text-dark text-opacity-70">
-              {data?.members?.length} members, {data?.onlineUsers?.length}
+              {data?.members?.length} members, {usersOnline.length}
               online
             </p>
           )}
@@ -74,8 +81,8 @@ const Chat = ({ data }: { data: IChat }) => {
       <main className="chat-main overflow-y-auto overflow-x-hidden flex flex-col gap-3 flex-1">
         {messages.map((m) => (
           <Message
-            partnerTitle={data.title}
-            partnerAvatar={data.avatar as string}
+            collocutorTitle={user && user.uid ? data.title[user?.uid] : ""}
+            collocutorAvatar={data.avatar}
             key={m.id}
             data={m}
           />

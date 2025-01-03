@@ -57,7 +57,6 @@ const DETAILS = [
   },
 ];
 
-// сделать чат дитейлс + добавление в архив через контекстное меню
 const ChatDetails = ({ data }: IChatDetails) => {
   const [isInfoVisible, setIsInfoVisible] = useState(true);
   const [isMembersVisible, setIsMembersVisible] = useState(true);

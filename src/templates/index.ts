@@ -8,16 +8,24 @@ import { IUser } from "@/types/user";
 
 import favoritesLogo from "@/assets/favorites.png";
 
-export const createChatTemplate = (user: IUser): IChat => ({
+export const createChatTemplate = (user: IUser, collocutor: IUser): IChat => ({
   id: uuidv4(),
-  title: user.displayName || "",
-  members: [user.uid],
+  members: [user.uid, collocutor.uid],
+  title: {
+    [user.uid]: collocutor.displayName,
+    [collocutor.uid]: user.displayName,
+  },
+  avatar: {
+    [user.uid]: collocutor.photoUrl,
+    [collocutor.uid]: user.photoUrl,
+  },
   messages: [],
-  onlineUsers: [],
   lastMessage: null,
-  avatar: user.photoUrl || "",
   updatedAt: Date.now(),
-  unreadMessages: 0,
+  unreadMessages: {
+    [user.uid]: 0,
+    [collocutor.uid]: 0,
+  },
   isPin: [],
   chatType: "none",
   info: {
@@ -44,14 +52,13 @@ export const createFavoritesChatTemplate = async (
     const chatId = uuidv4();
     const favoritesChat: IChat = {
       id: chatId,
-      title: "Favorites",
+      title: { [userId]: "Favorites" },
       members: [userId],
       messages: [],
-      onlineUsers: [],
       lastMessage: null,
       avatar: favoritesLogo,
       updatedAt: Date.now(),
-      unreadMessages: 0,
+      unreadMessages: { userId: 0 },
       isPin: [],
       chatType: "individual",
       info: {

@@ -32,14 +32,21 @@ export interface IChatInfo {
 
 export interface IChat {
   id: string;
-  title: string;
+  title: {
+    [key: string]: string;
+  };
+  avatar:
+    | {
+        [key: string]: string;
+      }
+    | StaticImageData;
   members: string[];
   messages: IMessage[];
-  onlineUsers: string[];
   lastMessage: ILastMessage | null;
-  avatar: string | StaticImageData;
   updatedAt: number;
-  unreadMessages: number;
+  unreadMessages: {
+    [key: string]: number;
+  };
   isPin: string[];
   chatType: TChatType;
   info: IChatInfo;
