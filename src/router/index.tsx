@@ -1,104 +1,57 @@
-import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import Loader from "@/components/ui/Loader";
+import AuthLayout from "@/layouts/AuthLayout";
+import ChatLayout from "@/layouts/ChatLayout";
 
-const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
-const ChatLayout = lazy(() => import("@/layouts/ChatLayout"));
-
-const HomePage = lazy(() => import("@/pages/HomePage"));
-const ChatPage = lazy(() => import("@/pages/ChatPage"));
-const ChatRoomPage = lazy(() => import("@/pages/ChatRoomPage"));
-const ArchivePage = lazy(() => import("@/pages/ArchivePage"));
-const AuthPage = lazy(() => import("@/pages/Auth/AuthPage"));
-const CreatePasswordPage = lazy(
-  () => import("@/pages/Auth/CreatePasswordPage")
-);
-const ForgotPasswordPage = lazy(
-  () => import("@/pages/Auth/ForgotPasswordPage")
-);
+import HomePage from "@/pages/HomePage";
+import ChatPage from "@/pages/ChatPage";
+import ChatRoomPage from "@/pages/ChatRoomPage";
+import ArchivePage from "@/pages/ArchivePage";
+import AuthPage from "@/pages/Auth/AuthPage";
+import CreatePasswordPage from "@/pages/Auth/CreatePasswordPage";
+import ForgotPasswordPage from "@/pages/Auth/ForgotPasswordPage";
 
 export const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: (
-        <Suspense fallback={<Loader />}>
-          <HomePage />
-        </Suspense>
-      ),
+      element: <HomePage />,
     },
     {
-      element: (
-        <Suspense fallback={<Loader />}>
-          <AuthLayout />
-        </Suspense>
-      ),
+      element: <AuthLayout />,
       children: [
         {
           path: "login",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <AuthPage />
-            </Suspense>
-          ),
+          element: <AuthPage />,
         },
         {
           path: "sign-up",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <AuthPage />
-            </Suspense>
-          ),
+          element: <AuthPage />,
         },
         {
           path: "create-password",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <CreatePasswordPage />
-            </Suspense>
-          ),
+          element: <CreatePasswordPage />,
         },
         {
           path: "forgot-password",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <ForgotPasswordPage />
-            </Suspense>
-          ),
+          element: <ForgotPasswordPage />,
         },
       ],
     },
     {
-      element: (
-        <Suspense fallback={<Loader />}>
-          <ChatLayout />
-        </Suspense>
-      ),
+      element: <ChatLayout />,
       children: [
         {
           path: "c",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <ChatPage />
-            </Suspense>
-          ),
+          element: <ChatPage />,
         },
         {
           path: "archive",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <ArchivePage />
-            </Suspense>
-          ),
+          element: <ArchivePage />,
         },
         {
           path: "c/:id",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <ChatRoomPage />
-            </Suspense>
-          ),
+          element: <ChatRoomPage />,
         },
       ],
     },
