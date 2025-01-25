@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { cn } from "@/utils";
-import useActiveChat from "./hooks/useActiveChat";
+import useActiveChat from "../../../../hooks/useActiveChat";
 import useChatList from "./hooks/useChatList";
+import useActions from "@/hooks/useActions";
 
 import ChatListHeader from "./ChatListHeader";
 import ChatList from ".";
@@ -16,26 +17,26 @@ interface IChatListBlock {
 }
 
 const ChatListBlock = ({ data, className }: IChatListBlock) => {
-  const [isLoading, setIsLoading] = useState(false);
   const params = useParams<{ id: string }>();
-  const { activeChat, setActiveChat } = useActiveChat(params?.id);
-  const { createNewChatHandler, setActiveChatHandler } = useChatList({
-    setIsLoading,
-    setActiveChat,
-  });
+  const activeChat = useActiveChat();
+  const { setActiveChat } = useActions();
+  const { createNewChatHandler, setActiveChatHandler } = useChatList();
 
+  useEffect(() => {
+    if (params.id && params.id !== activeChat) {
+      setActiveChat(params.id);
+    }
+  }, [params.id]);
   const chatListHeaderProps = {
     data,
     func: {
-      createNewChat: createNewChatHandler,
-      setActiveChat: setActiveChatHandler,
+      handleCreateNewChat: createNewChatHandler,
+      handleSetActiveChat: setActiveChatHandler,
     },
   };
 
   const chatListProps = {
     ...chatListHeaderProps,
-    loading: isLoading,
-    setIsLoading,
     activeChat,
   };
 

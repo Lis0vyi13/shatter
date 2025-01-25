@@ -9,7 +9,7 @@ import ChatFooter from "./ChatFooter";
 import { IChat } from "@/types/chat";
 import { TEST_MESSAGES } from "./Chat.constants";
 
-const Chat = ({ data }: { data: IChat }) => {
+const Chat = ({ data }: { data: IChat | null }) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const user = useUser();
@@ -25,7 +25,7 @@ const Chat = ({ data }: { data: IChat }) => {
   return (
     <>
       <ChatHeader data={data} user={user} usersOnline={usersOnline} />
-      <ChatMain messages={TEST_MESSAGES} data={data} user={user} />
+      <ChatMain data={data} user={user} messages={TEST_MESSAGES} />
       <ChatFooter
         value={value}
         onChangeHandler={onChangeHandler}

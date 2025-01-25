@@ -3,14 +3,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IChatState {
   chats: IChat[] | null;
-  activeChat: IChat | null;
+  activeChat: string;
   favorites: IChat | null;
+  isLoading: boolean;
 }
 
 const initialState: IChatState = {
   chats: null,
-  activeChat: null,
+  activeChat: "",
   favorites: null,
+  isLoading: false,
 };
 
 export const chatSlice = createSlice({
@@ -20,11 +22,14 @@ export const chatSlice = createSlice({
     setChats(state, action: PayloadAction<IChat[] | [] | null>) {
       state.chats = action.payload;
     },
-    setActiveChat(state, action: PayloadAction<IChat>) {
+    setActiveChat(state, action: PayloadAction<string>) {
       state.activeChat = action.payload;
     },
     setFavorites(state, action: PayloadAction<IChat | null>) {
       state.favorites = action.payload;
+    },
+    setIsChatLoading(state, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload;
     },
   },
 });

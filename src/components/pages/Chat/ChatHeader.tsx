@@ -9,7 +9,7 @@ import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
 interface IChatHeader {
-  data: IChat;
+  data: IChat | null;
   user: IUser | null;
   usersOnline: unknown[];
 }

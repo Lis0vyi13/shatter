@@ -16,6 +16,7 @@ const useSidebarActions = (
     setFavorites,
     setSearchInputValue,
     setDebouncedSearchInputValue,
+    setActiveChat,
   } = useActions();
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +36,7 @@ const useSidebarActions = (
   const handleLogoClick = () => {
     setSearchInputValue("");
     setDebouncedSearchInputValue("");
+    setActiveChat("");
   };
 
   const handleLogout = async () => {

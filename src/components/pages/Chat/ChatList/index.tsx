@@ -13,29 +13,20 @@ import ChatSearch from "./ChatSearch";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
-import { Dispatch, SetStateAction } from "react";
-
 interface IChatList {
   data: IChat[] | null;
-  loading: boolean;
   activeChat: string;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
   func: {
-    createNewChat: (chatData: IChat) => Promise<void>;
-    setActiveChat: (id: string) => void;
+    handleCreateNewChat: (chatData: IChat) => Promise<void>;
+    handleSetActiveChat: (id: string) => void;
   };
   className?: string;
 }
 
-const ChatList = ({
-  data,
-  loading,
-  activeChat,
-  setIsLoading,
-  func,
-  className,
-}: IChatList) => {
+const ChatList = ({ data, activeChat, func, className }: IChatList) => {
   const currentUser = useUser();
+
+  const loading = useAppSelector((store) => store.chat.isLoading);
   const searchValue = useAppSelector((store) => store.search.searchInput.value);
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue
@@ -44,11 +35,9 @@ const ChatList = ({
 
   const { currentChats, setCurrentChats } = useFetchUsersChat(
     data,
-    debouncedSearchValue,
-    setIsLoading
+    debouncedSearchValue
   );
 
-  console.log(currentChats);
   const { onDragEnd } = useDragDropHandler(
     currentUser as IUser,
     setCurrentChats
@@ -74,8 +63,8 @@ const ChatList = ({
           <ChatListItems
             chats={currentChats}
             activeChat={activeChat}
-            createNewChat={func.createNewChat}
-            setActiveChat={func.setActiveChat}
+            handleCreateNewChat={func.handleCreateNewChat}
+            handleSetActiveChat={func.handleSetActiveChat}
             loading={loading}
           />
         </DragDropContext>

@@ -7,6 +7,7 @@ import useAuth from "@/hooks/useAuth";
 const AuthLayout = () => {
   const navigate = useNavigate();
   const isAuth = useAuth();
+
   useEffect(() => {
     if (shouldRedirect()) {
       navigate("/c", { replace: true });

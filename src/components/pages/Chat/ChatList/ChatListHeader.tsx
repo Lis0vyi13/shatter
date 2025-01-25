@@ -6,8 +6,8 @@ import { IChat } from "@/types/chat";
 interface IChatListHeader {
   data: IChat[] | null;
   func: {
-    createNewChat: (chatData: IChat) => Promise<void>;
-    setActiveChat: (id: string) => void;
+    handleCreateNewChat: (chatData: IChat) => Promise<void>;
+    handleSetActiveChat: (id: string) => void;
   };
   className?: string;
 }
@@ -15,8 +15,8 @@ interface IChatListHeader {
 const ChatListHeader = ({ data, func, className }: IChatListHeader) => {
   const dialogProps = {
     data,
-    createChat: func.createNewChat,
-    setActiveChat: func.setActiveChat,
+    handleCreateNewChat: func.handleCreateNewChat,
+    handleSetActiveChat: func.handleSetActiveChat,
   };
   return (
     <header className={className}>

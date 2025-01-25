@@ -10,16 +10,16 @@ import { IChat } from "@/types/chat";
 interface ChatListItemsProps {
   chats: IChat[] | null;
   activeChat: string | undefined;
-  setActiveChat: (id: string) => void;
-  createNewChat: (chatData: IChat) => void;
+  handleSetActiveChat: (id: string) => void;
+  handleCreateNewChat: (chatData: IChat) => void;
   loading: boolean;
 }
 
 const ChatListItems = ({
   chats,
   activeChat,
-  setActiveChat,
-  createNewChat,
+  handleSetActiveChat,
+  handleCreateNewChat,
   loading,
 }: ChatListItemsProps) => {
   const searchInputValue = useAppSelector(
@@ -30,10 +30,11 @@ const ChatListItems = ({
   const { handleChatSelection, renderSkeletons, getSortedChats } =
     useChatListItems({
       chats,
-      setActiveChat,
-      createNewChat,
+      handleSetActiveChat,
+      handleCreateNewChat,
     });
   const { pinnedChats, unpinnedChats } = getSortedChats;
+
   if (loading || !chats) {
     return <ul className="list flex flex-col">{renderSkeletons()}</ul>;
   }

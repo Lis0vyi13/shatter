@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import AuthLayout from "@/layouts/AuthLayout";
 import ChatLayout from "@/layouts/ChatLayout";
+import HomeLayout from "@/layouts/HomeLayout";
 
 import HomePage from "@/pages/HomePage";
 import ChatPage from "@/pages/ChatPage";
@@ -15,7 +16,13 @@ export const router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <HomePage />,
+      element: <HomeLayout />,
+      children: [
+        {
+          path: "",
+          element: <HomePage />,
+        },
+      ],
     },
     {
       element: <AuthLayout />,

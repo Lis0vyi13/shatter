@@ -9,14 +9,14 @@ import { IChat } from "@/types/chat";
 
 interface IUseChatListItems {
   chats: IChat[] | null;
-  setActiveChat: (id: string) => void;
-  createNewChat: (chatData: IChat) => void;
+  handleSetActiveChat: (id: string) => void;
+  handleCreateNewChat: (chatData: IChat) => void;
 }
 
 const useChatListItems = ({
   chats,
-  setActiveChat,
-  createNewChat,
+  handleSetActiveChat,
+  handleCreateNewChat,
 }: IUseChatListItems) => {
   const user = useUser();
   const navigate = useNavigate();
@@ -40,13 +40,13 @@ const useChatListItems = ({
     (chat: IChat) =>
       chat.chatType === "none"
         ? async () => {
-            await createNewChat(chat);
+            await handleCreateNewChat(chat);
             navigate("/c/" + chat.id);
           }
         : () => {
-            setActiveChat(chat.id);
+            handleSetActiveChat(chat.id);
           },
-    [setActiveChat, createNewChat]
+    [handleSetActiveChat, handleCreateNewChat]
   );
 
   const renderSkeletons = () =>

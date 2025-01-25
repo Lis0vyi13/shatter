@@ -1,20 +1,19 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import useUser from "@/hooks/useUser";
 import { searchByDisplayName } from "@/services/user";
+import useActions from "@/hooks/useActions";
 
 import { createChatTemplate } from "@/templates";
 
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
-const useFetchUsersChat = (
-  data: IChat[] | null,
-  searchValue: string,
-  setIsLoading?: Dispatch<SetStateAction<boolean>>
-) => {
+const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
   const [currentChats, setCurrentChats] = useState<IChat[] | null>(data);
   const user = useUser();
+  const { setIsChatLoading } = useActions();
+
   useEffect(() => {
     const searchUser = async (query: string): Promise<IUser[]> => {
       const users = await searchByDisplayName(query);
@@ -22,7 +21,7 @@ const useFetchUsersChat = (
     };
 
     const fetchData = async () => {
-      if (setIsLoading) setIsLoading(true);
+      setIsChatLoading(true);
 
       try {
         if (!user) return;
@@ -53,12 +52,12 @@ const useFetchUsersChat = (
       } catch (error) {
         console.error("Error fetching chats:", error);
       } finally {
-        if (setIsLoading) setIsLoading(false);
+        setIsChatLoading(false);
       }
     };
 
     fetchData();
-  }, [searchValue, data, user, setIsLoading]);
+  }, [searchValue, data, user]);
 
   return { currentChats, setCurrentChats };
 };

@@ -29,15 +29,15 @@ import { useNavigate } from "react-router-dom";
 
 interface ISearchUserDialog {
   data: IChat[] | null;
-  createChat: (chatData: IChat) => Promise<void>;
-  setActiveChat: (id: string) => void;
+  handleCreateNewChat: (chatData: IChat) => Promise<void>;
+  handleSetActiveChat: (id: string) => void;
   className?: string;
 }
 
 const SearchUserDialog = ({
   data,
-  createChat,
-  setActiveChat,
+  handleCreateNewChat,
+  handleSetActiveChat,
   className,
 }: ISearchUserDialog) => {
   const [searchValue, setSearchValue] = useState("");
@@ -69,10 +69,10 @@ const SearchUserDialog = ({
     setIsLoading(true);
     try {
       if (chat.chatType === "none") {
-        await createChat(chat);
+        await handleCreateNewChat(chat);
         navigate("/c/" + chat.id);
       } else {
-        await setActiveChat(chat.id);
+        await handleSetActiveChat(chat.id);
       }
     } finally {
       setIsOpen(false);

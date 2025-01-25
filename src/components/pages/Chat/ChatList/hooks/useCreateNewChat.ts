@@ -1,14 +1,12 @@
 import useActions from "@/hooks/useActions";
+import useUser from "@/hooks/useUser";
 import { createChat } from "@/services/chat";
 import { addChatToUser } from "@/services/chat";
 
 import { IChat } from "@/types/chat";
-import { IUser } from "@/types/user";
 
-interface ICreateNewChat {
-  user: IUser;
-}
-export const useCreateNewChat = ({ user }: ICreateNewChat) => {
+export const useCreateNewChat = () => {
+  const user = useUser();
   const { setUser } = useActions();
   const createNewChat = async (chatData: IChat) => {
     try {

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import useChats from "@/hooks/useChats";
+import useActiveChat from "@/hooks/useActiveChat";
+import useActions from "@/hooks/useActions";
 
 import Block from "@/components/ui/Block";
 import ChatDetails from "./ChatDetails";
@@ -10,17 +12,22 @@ import ChatListBlock from "./ChatList/ChatListBlock";
 import { IChat } from "@/types/chat";
 
 const ChatBlock = ({ id }: { id?: string }) => {
-  const [activeChat, setActiveChat] = useState<IChat | null>(null);
+  const activeChatId = useActiveChat();
   const chats = useChats();
+  const { setActiveChat } = useActions();
+  const [activeChat, setActiveChatData] = useState<IChat | null>(null);
 
   useEffect(() => {
     const chat = chats?.find((chat) => chat.id == id);
-    setActiveChat(chat || null);
+    if (chat) {
+      setActiveChatData(chat);
+      setActiveChat(chat.id);
+    }
   }, [chats, id]);
 
   return (
     <Block color={"dark"} className={`chat-block flex gap-2 pl-2 pr-2 lg:pl-0`}>
-      {activeChat ? (
+      {activeChatId ? (
         <>
           <div
             className={`flex bg-white rounded-3xl overflow-hidden w-full gap-2 pl-4`}
