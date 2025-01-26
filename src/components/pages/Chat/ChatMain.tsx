@@ -33,7 +33,7 @@ const ChatMain = ({
         ))
       ) : (
         <>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({ length: 6 }).map((_, index) => (
             <MessageSkeleton key={index} isOwnMessage={index % 2 === 1} />
           ))}
         </>
