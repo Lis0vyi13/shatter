@@ -1,42 +1,59 @@
-import { useState } from "react";
+import { MutableRefObject } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
 
 import useChatListItems from "./hooks/useChatListItems";
 import renderChatListItem from "./utils/renderChatListItem";
 
+import NotFound from "./NotFound";
+
 import { IChat } from "@/types/chat";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
+  listRef: MutableRefObject<HTMLDivElement | null>;
   activeChat: string | undefined;
   handleSetActiveChat: (id: string) => void;
   handleCreateNewChat: (chatData: IChat) => void;
-  loading: boolean;
 }
 
 const ChatListItems = ({
   chats,
+  listRef,
   activeChat,
   handleSetActiveChat,
   handleCreateNewChat,
-  loading,
 }: ChatListItemsProps) => {
   const searchInputValue = useAppSelector(
     (store) => store.search.searchInput.value
   );
-  const [deletingChat, setDeletingChat] = useState("");
+  const debouncedSearchInputValue = useAppSelector(
+    (store) => store.search.searchInput.debouncedValue
+  );
+  const loading = useAppSelector((store) => store.chat.isLoading);
 
-  const { handleChatSelection, renderSkeletons, getSortedChats } =
-    useChatListItems({
-      chats,
-      handleSetActiveChat,
-      handleCreateNewChat,
-    });
-  const { pinnedChats, unpinnedChats } = getSortedChats;
+  const {
+    handleChatSelection,
+    renderSkeletons,
+    pinnedChats,
+    unpinnedChats,
+    onDelete,
+    deletingChat,
+  } = useChatListItems({
+    chats,
+    listRef,
+    handleSetActiveChat,
+    handleCreateNewChat,
+  });
 
   if (loading || !chats) {
     return <ul className="list flex flex-col">{renderSkeletons()}</ul>;
+  }
+
+  if (chats.length === 0) {
+    return (
+      <NotFound value={debouncedSearchInputValue} className="mt-8 text-l" />
+    );
   }
 
   return (
@@ -56,7 +73,7 @@ const ChatListItems = ({
                   isChatPinned: true,
                   activeChat,
                   deletingChat,
-                  setDeletingChat,
+                  onDelete,
                   handleChatSelection,
                   searchInputValue,
                 })
@@ -75,7 +92,7 @@ const ChatListItems = ({
             isChatPinned: false,
             activeChat,
             deletingChat,
-            setDeletingChat,
+            onDelete,
             handleChatSelection,
             searchInputValue,
           })

@@ -23,7 +23,6 @@ export const sidebarIcons: IFolder[] = [
     type: "archive",
     isActive: false,
     unreaded: 0,
-    href: "/archive",
   },
 ];
 

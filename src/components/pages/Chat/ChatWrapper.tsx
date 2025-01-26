@@ -11,7 +11,7 @@ import ChatListBlock from "./ChatList/ChatListBlock";
 
 import { IChat } from "@/types/chat";
 
-const ChatBlock = ({ id }: { id?: string }) => {
+const ChatWrapper = ({ id }: { id?: string }) => {
   const activeChatId = useActiveChat();
   const chats = useChats();
   const { setActiveChat } = useActions();
@@ -57,4 +57,4 @@ const ChatBlock = ({ id }: { id?: string }) => {
   );
 };
 
-export default ChatBlock;
+export default ChatWrapper;

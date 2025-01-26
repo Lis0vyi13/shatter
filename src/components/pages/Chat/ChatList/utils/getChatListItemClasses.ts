@@ -1,30 +1,35 @@
 import { cn } from "@/utils";
-import { Transition, Variants } from "framer-motion";
+import { Variants } from "framer-motion";
 
 const getChatListItemClasses = (isDeleting: boolean) => {
   const listItemClasses = cn(
-    "transition-none ",
-    isDeleting && "-translate-x-full"
+    "overflow-hidden",
+    isDeleting
+      ? "transition-all max-h-0 opacity-0 scale-95 duration-500 transform -translate-x-full"
+      : "max-h-96"
   );
 
-  const transition: Transition = {
-    type: "tween",
-    duration: 0.3,
-    ease: "easeOut",
-    maxHeight: {
-      type: "tween",
-      duration: 0.3,
-      delay: isDeleting ? 0.3 : 0,
-    },
+  const transition = {
+    duration: 0.4,
+    ease: "easeInOut",
   };
 
   const motionListItemProps: Variants = {
-    initial: { x: 0, maxHeight: "4rem" },
-    animate: {
-      x: isDeleting ? "-100%" : 0,
-      maxHeight: isDeleting ? 0 : "4rem",
+    initial: {
+      opacity: 1,
+      x: 0,
+      height: "4rem",
     },
-    exit: { x: "-100%", maxHeight: 0 },
+    animate: {
+      opacity: isDeleting ? 0 : 1,
+      x: isDeleting ? "-100%" : 0,
+      height: isDeleting ? 0 : "4rem",
+    },
+    exit: {
+      opacity: 0,
+      x: "-100%",
+      height: 0,
+    },
     transition,
   };
 

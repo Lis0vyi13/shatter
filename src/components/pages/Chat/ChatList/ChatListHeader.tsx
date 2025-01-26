@@ -10,11 +10,18 @@ interface IChatListHeader {
     handleSetActiveChat: (id: string) => void;
   };
   className?: string;
+  listRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-const ChatListHeader = ({ data, func, className }: IChatListHeader) => {
+const ChatListHeader = ({
+  data,
+  listRef,
+  func,
+  className,
+}: IChatListHeader) => {
   const dialogProps = {
     data,
+    listRef,
     handleCreateNewChat: func.handleCreateNewChat,
     handleSetActiveChat: func.handleSetActiveChat,
   };

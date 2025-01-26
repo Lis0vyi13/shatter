@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { cn } from "@/utils";
@@ -21,18 +21,21 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
   const activeChat = useActiveChat();
   const { setActiveChat } = useActions();
   const { createNewChatHandler, setActiveChatHandler } = useChatList();
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (params.id && params.id !== activeChat) {
       setActiveChat(params.id);
     }
   }, [params.id]);
+
   const chatListHeaderProps = {
     data,
     func: {
       handleCreateNewChat: createNewChatHandler,
       handleSetActiveChat: setActiveChatHandler,
     },
+    listRef,
   };
 
   const chatListProps = {

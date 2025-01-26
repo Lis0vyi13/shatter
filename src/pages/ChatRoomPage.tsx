@@ -5,7 +5,7 @@ import { auth } from "@/firebase/firebaseConfig";
 import { getChatById } from "@/services/chat";
 import { getUserById } from "@/services/user";
 
-import ChatBlock from "@/components/pages/Chat/ChatBlock";
+import ChatWrapper from "@/components/pages/Chat/ChatWrapper";
 
 import { IChat } from "@/types/chat";
 
@@ -30,7 +30,7 @@ const ChatRoomPage = () => {
   return (
     <>
       <div className="chat-page overflow-hidden flex flex-1">
-        <ChatBlock id={id as string} />
+        <ChatWrapper id={id as string} />
       </div>
     </>
   );

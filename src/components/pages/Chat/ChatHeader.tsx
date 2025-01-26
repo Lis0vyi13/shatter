@@ -7,6 +7,7 @@ import { IoMdMore } from "react-icons/io";
 import { IoCallOutline } from "react-icons/io5";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
+import ChatTitleSkeleton from "./skeletons/ChatTitle.skeleton";
 
 interface IChatHeader {
   data: IChat | null;
@@ -20,7 +21,7 @@ const ChatHeader = ({ data, user, usersOnline }: IChatHeader) => (
         <FaArrowLeftLong className="block mdLg:hidden text-[22px]" />
       </Icon>
       <Title className="text-[28px] leading-8">
-        {user && data?.title[user?.uid]}
+        {user && data ? data?.title[user?.uid] : <ChatTitleSkeleton />}
       </Title>
       {data?.chatType === "individual" && data?.members?.length > 2 && (
         <p className="members mt-1 font-[400] text-[13px] text-dark text-opacity-70">

@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useMemo,
-} from "react";
+import { ReactNode, useCallback, useMemo } from "react";
 
 import useUser from "@/hooks/useUser";
 import { useChatActions } from "./useChatActions";
@@ -29,7 +23,7 @@ import { IChat } from "@/types/chat";
 interface IChatListItemMenu {
   data: IChat;
   children: ReactNode;
-  onDelete: Dispatch<SetStateAction<string>>;
+  onDelete: (chatId: string) => void;
 }
 
 export function ChatListItemMenu({
@@ -41,8 +35,7 @@ export function ChatListItemMenu({
     "absolute left-[2rem] top-1/2 -translate-y-1/2";
   const user = useUser();
   const chats = useChats();
-  const { setChats, setUser } = useActions();
-
+  const { setChats, setUser, setActiveChat } = useActions();
   const { openChat, doTogglePinChat, doDeleteChat } = useChatActions();
 
   const handlePinToggle = useCallback(
@@ -124,15 +117,22 @@ export function ChatListItemMenu({
         label: "Delete chat",
         isDanger: true,
         separator: false,
-        action: async () => {
-          if (user) {
-            onDelete(data.id);
-            const updatedChats = user.chats?.filter((id) => id != data.id);
-            const updatedUser = { ...user, chats: updatedChats };
-            setTimeout(() => {
-              setUser(updatedUser);
-              doDeleteChat(user?.uid, data.id);
-            }, 400);
+        action: () => {
+          try {
+            if (user) {
+              onDelete(data.id);
+              setActiveChat("");
+              const updatedChats = user.chats?.filter((id) => id != data.id);
+              const updatedUser = { ...user, chats: updatedChats };
+              setTimeout(async () => {
+                setUser(updatedUser);
+                await doDeleteChat(user?.uid, data.id);
+              }, 400);
+            }
+          } catch (error) {
+            console.log(error);
+          } finally {
+            window.history.replaceState(null, "", "/c");
           }
         },
       },

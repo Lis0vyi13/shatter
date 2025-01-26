@@ -185,7 +185,7 @@ export const fetchChats = async (userChats: string[]): Promise<IChat[]> => {
   if (!userChats || userChats.length === 0) return [];
 
   const chatsSnapshot = await getDocs(
-    query(collection(db, "chats"), where("id", "in", userChats))
+    query(collection(db, "chats"), where("id", "in", userChats.slice(0, 30)))
   );
 
   return chatsSnapshot.docs.map((doc) => ({

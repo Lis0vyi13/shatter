@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import useUser from "@/hooks/useUser";
-import { searchByDisplayName } from "@/services/user";
+import { searchUsersByDisplayName } from "@/services/user";
 import useActions from "@/hooks/useActions";
 
 import { createChatTemplate } from "@/templates";
@@ -9,20 +9,22 @@ import { createChatTemplate } from "@/templates";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
-const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
+const useFetchUsersChat = (
+  data: IChat[] | null,
+  searchValue: string,
+  loading: boolean = true
+) => {
   const [currentChats, setCurrentChats] = useState<IChat[] | null>(data);
   const user = useUser();
   const { setIsChatLoading } = useActions();
 
   useEffect(() => {
-    const searchUser = async (query: string): Promise<IUser[]> => {
-      const users = await searchByDisplayName(query);
+    const searchUsers = async (query: string): Promise<IUser[]> => {
+      const users = await searchUsersByDisplayName(query);
       return users.filter((u) => u.uid !== user?.uid);
     };
 
     const fetchData = async () => {
-      setIsChatLoading(true);
-
       try {
         if (!user) return;
 
@@ -30,6 +32,7 @@ const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
           setCurrentChats(data);
           return;
         }
+        if (loading) setIsChatLoading(true);
 
         const chatsByQuery =
           data?.filter((chat) =>
@@ -38,21 +41,25 @@ const useFetchUsersChat = (data: IChat[] | null, searchValue: string) => {
               .includes(searchValue.toLowerCase())
           ) || [];
 
-        const usersByQuery = await searchUser(searchValue);
+        const usersByQuery = await searchUsers(searchValue);
         const usersChats: IChat[] = usersByQuery.map((searchedUser) =>
           createChatTemplate(user, searchedUser)
         );
 
-        const combinedList = [...chatsByQuery, ...usersChats];
-        const uniqueChats = Array.from(
-          new Map(combinedList.map((chat) => [chat.id, chat])).values()
+        const existingMembers = new Set(
+          chatsByQuery.map((chat) => chat.members[1])
+        );
+        const filteredUsersChats = usersChats.filter(
+          (chat) =>
+            !existingMembers.has(chat.members[1]) && chat.members[1] != user.uid
         );
 
-        setCurrentChats(uniqueChats);
+        const combinedList = [...chatsByQuery, ...filteredUsersChats];
+
+        setCurrentChats(combinedList);
+        if (loading) setIsChatLoading(false);
       } catch (error) {
         console.error("Error fetching chats:", error);
-      } finally {
-        setIsChatLoading(false);
       }
     };
 

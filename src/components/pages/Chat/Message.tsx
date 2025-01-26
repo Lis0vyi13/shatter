@@ -38,7 +38,7 @@ const Message = ({
 
   const wrapperClassName = cn(
     "message-block flex gap-2 w-fit",
-    isOwnMessage && "justify-end self-end flex-row-reverse"
+    isOwnMessage && "justify-end self-end flex-row-reverse pr-1"
   );
 
   const messageClassName = cn(

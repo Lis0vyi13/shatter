@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
-import { HTMLMotionProps, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Draggable } from "@hello-pangea/dnd";
 
 import getChatListItemClasses from "./getChatListItemClasses";
@@ -16,14 +15,9 @@ interface RenderChatItemProps {
   isChatPinned: boolean;
   activeChat: string | undefined;
   deletingChat: string;
-  setDeletingChat: Dispatch<SetStateAction<string>>;
+  onDelete: (chatId: string) => void;
   handleChatSelection: (chat: IChat) => () => void;
   searchInputValue: string;
-}
-
-interface CustomMotionProps extends HTMLMotionProps<"li"> {
-  "data-rfd-drag-handle-draggable-id"?: string;
-  "data-rfd-drag-handle-context-id"?: string;
 }
 
 const renderChatListItem = ({
@@ -32,16 +26,15 @@ const renderChatListItem = ({
   isChatPinned,
   activeChat,
   deletingChat,
-  setDeletingChat,
+  onDelete,
   handleChatSelection,
   searchInputValue,
 }: RenderChatItemProps) => {
   const isActive = chat.id === activeChat;
   const setChatHandler = handleChatSelection(chat);
-
-  const isDeleting = deletingChat === chat.id;
+  const isDeleted = deletingChat === chat.id;
   const { listItemClasses, motionListItemProps } =
-    getChatListItemClasses(isDeleting);
+    getChatListItemClasses(isDeleted);
 
   return searchInputValue !== "" ? (
     <li key={chat.id}>
@@ -53,16 +46,15 @@ const renderChatListItem = ({
       />
     </li>
   ) : (
-    <ChatListItemMenu onDelete={setDeletingChat} data={chat} key={chat.id}>
+    <ChatListItemMenu onDelete={onDelete} data={chat} key={chat.id}>
       {isChatPinned ? (
         <Draggable key={chat.id} draggableId={chat.id} index={index}>
           {(provided) => (
-            <motion.li
+            <li
               className={cn(listItemClasses)}
               ref={provided.innerRef}
               {...provided.draggableProps}
-              {...(provided.dragHandleProps as unknown as CustomMotionProps)}
-              {...motionListItemProps}
+              {...provided.dragHandleProps}
             >
               <ChatListItem
                 {...chat}
@@ -70,7 +62,7 @@ const renderChatListItem = ({
                 isActive={isActive}
                 setChat={setChatHandler}
               />
-            </motion.li>
+            </li>
           )}
         </Draggable>
       ) : (

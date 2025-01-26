@@ -55,3 +55,15 @@ export const handleEnterKey = (
     ref.current.focus();
   }
 };
+
+export const scrollToChatLink = (
+  wrapperRef: RefObject<HTMLElement>,
+  activeChat: string
+) => {
+  const targetElement = wrapperRef?.current?.querySelector<HTMLDivElement>(
+    `a[href="/c/${activeChat}"]`
+  );
+  if (targetElement) {
+    targetElement.scrollIntoView({ block: "nearest" });
+  }
+};

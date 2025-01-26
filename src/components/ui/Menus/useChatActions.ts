@@ -2,12 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { deleteChat, togglePinChat } from "@/services/chat";
 
 export const useChatActions = () => {
-  const pathname = window.location.pathname;
   const navigate = useNavigate();
 
   const openChat = (id: string) => {
-    const category = pathname?.split("/")[1];
-    navigate(`/${category}/${id}`);
+    navigate(`/c/${id}`);
   };
 
   const doTogglePinChat = async (

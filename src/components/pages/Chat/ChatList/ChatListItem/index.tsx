@@ -12,16 +12,14 @@ import { IChat } from "@/types/chat";
 
 interface IChatListItemProps extends IChat {
   isActive: boolean;
-  setChat: () => void;
+  setChat: () => Promise<void> | void;
   index: number;
 }
 
 const ChatListItem = memo((props: IChatListItemProps) => {
   const { isActive, setChat, index, ...chat } = props;
 
-  const pathname = window.location.pathname;
   const user = useUser();
-  const rootPath = pathname.split("/")[1];
   const isFavorite = chat.id === user?.favorites;
   const isUserChatMember = user?.chats.includes(chat.id) || isFavorite;
   const searchInputDebouncedValue = useAppSelector(
@@ -47,11 +45,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
       }}
     >
       {isUserChatMember ? (
-        <Link
-          to={`/${rootPath}/${chat.id}`}
-          onClick={setChat}
-          className={itemClassName}
-        >
+        <Link to={`/c/${chat.id}`} onClick={setChat} className={itemClassName}>
           <ChatListItemContent {...chatItemContentProps} />
         </Link>
       ) : (

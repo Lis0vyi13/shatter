@@ -11,7 +11,6 @@ const useChatLayout = () => {
   const user = useUser();
 
   useEffect(() => {
-    console.log(4);
     const initializeChats = async () => {
       if (!user || !user.uid) return;
 

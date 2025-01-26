@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
 
-import { cn } from "@/utils";
+import { cn, scrollToChatLink } from "@/utils";
 import useUser from "@/hooks/useUser";
 import useFetchUsersChat from "./hooks/useFetchUsersChat";
 import useActions from "@/hooks/useActions";
@@ -21,12 +22,18 @@ interface IChatList {
     handleSetActiveChat: (id: string) => void;
   };
   className?: string;
+  listRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-const ChatList = ({ data, activeChat, func, className }: IChatList) => {
+const ChatList = ({
+  data,
+  activeChat,
+  func,
+  className,
+  listRef,
+}: IChatList) => {
   const currentUser = useUser();
 
-  const loading = useAppSelector((store) => store.chat.isLoading);
   const searchValue = useAppSelector((store) => store.search.searchInput.value);
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue
@@ -43,6 +50,14 @@ const ChatList = ({ data, activeChat, func, className }: IChatList) => {
     setCurrentChats
   );
 
+  useEffect(() => {
+    listRef.current?.scrollTo(0, 0);
+  }, [searchValue]);
+
+  useEffect(() => {
+    scrollToChatLink(listRef, activeChat);
+  }, [currentChats]);
+
   return (
     <section
       className={cn(
@@ -56,16 +71,17 @@ const ChatList = ({ data, activeChat, func, className }: IChatList) => {
         setDebouncedSearchInputValue={setDebouncedSearchInputValue}
       />
       <div
+        ref={listRef}
         style={{ maxHeight: "calc(100% - 90px)" }}
         className={`mt-2 transition-all duration-0 -ml-2 overflow-auto custom-scrollbar chat-scrollbar`}
       >
         <DragDropContext onDragEnd={onDragEnd}>
           <ChatListItems
             chats={currentChats}
+            listRef={listRef}
             activeChat={activeChat}
             handleCreateNewChat={func.handleCreateNewChat}
             handleSetActiveChat={func.handleSetActiveChat}
-            loading={loading}
           />
         </DragDropContext>
       </div>

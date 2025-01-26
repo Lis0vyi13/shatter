@@ -1,4 +1,6 @@
-import { useMemo, useState } from "react";
+import { MutableRefObject, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/redux/app/hooks";
 import {
   Command,
   CommandEmpty,
@@ -15,7 +17,7 @@ import {
   DialogTrigger,
 } from "../shadcn/dialog";
 
-import { cn } from "@/utils";
+import { cn, scrollToChatLink } from "@/utils";
 import useUser from "@/hooks/useUser";
 
 import AddChatButton from "../AddChatButton";
@@ -25,10 +27,10 @@ import ChatListItem from "@/components/pages/Chat/ChatList/ChatListItem";
 import Loader from "../Loader";
 
 import { IChat } from "@/types/chat";
-import { useNavigate } from "react-router-dom";
 
 interface ISearchUserDialog {
   data: IChat[] | null;
+  listRef: MutableRefObject<HTMLDivElement | null>;
   handleCreateNewChat: (chatData: IChat) => Promise<void>;
   handleSetActiveChat: (id: string) => void;
   className?: string;
@@ -36,14 +38,16 @@ interface ISearchUserDialog {
 
 const SearchUserDialog = ({
   data,
+  listRef,
   handleCreateNewChat,
   handleSetActiveChat,
   className,
 }: ISearchUserDialog) => {
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const loading = useAppSelector((store) => store.chat.isLoading);
+
   const navigate = useNavigate();
   const user = useUser();
   const users = useMemo(
@@ -55,7 +59,11 @@ const SearchUserDialog = ({
         : null,
     [data, user]
   );
-  const { currentChats } = useFetchUsersChat(users, debouncedSearchValue);
+  const { currentChats } = useFetchUsersChat(
+    users,
+    debouncedSearchValue,
+    false
+  );
 
   const searchInputProps = {
     name: "search",
@@ -66,17 +74,16 @@ const SearchUserDialog = ({
   };
 
   const handleSelectChat = async (chat: IChat) => {
-    setIsLoading(true);
     try {
       if (chat.chatType === "none") {
-        await handleCreateNewChat(chat);
+        handleCreateNewChat(chat);
         navigate("/c/" + chat.id);
       } else {
-        await handleSetActiveChat(chat.id);
+        handleSetActiveChat(chat.id);
+        scrollToChatLink(listRef, chat.id);
       }
     } finally {
       setIsOpen(false);
-      setIsLoading(false);
     }
   };
   return (
@@ -99,7 +106,7 @@ const SearchUserDialog = ({
           <DialogHeader>
             <DialogTitle className="text-[16px]">Search user...</DialogTitle>
           </DialogHeader>
-          {isLoading && (
+          {loading && (
             <div className="-mt-2 flex justify-center items-center">
               <Loader isDefault />
             </div>
@@ -107,10 +114,10 @@ const SearchUserDialog = ({
           <Command
             className={cn(
               "w-full border-none",
-              !isLoading && "rounded-lg border shadow-md"
+              !loading && "rounded-lg border shadow-md"
             )}
           >
-            {!isLoading && (
+            {!loading && (
               <>
                 <SearchInput
                   autoComplete="off"

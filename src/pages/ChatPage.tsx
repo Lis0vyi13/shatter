@@ -1,9 +1,9 @@
-import ChatBlock from "@/components/pages/Chat/ChatBlock";
+import ChatWrapper from "@/components/pages/Chat/ChatWrapper";
 
 const ChatPage = () => {
   return (
     <div className="chat-page overflow-hidden flex flex-1">
-      <ChatBlock />
+      <ChatWrapper />
     </div>
   );
 };

@@ -83,7 +83,7 @@ export const getUserById = async (uid: string): Promise<IUser | null> => {
   }
 };
 
-export const searchByDisplayName = async (
+export const searchUsersByDisplayName = async (
   searchTerm: string
 ): Promise<IUser[]> => {
   try {
