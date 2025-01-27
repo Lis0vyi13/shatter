@@ -88,7 +88,7 @@ const ChatListItems = ({
         {unpinnedChats.map((chat, index) =>
           renderChatListItem({
             chat,
-            index,
+            index: index + pinnedChats.length,
             isChatPinned: false,
             activeChat,
             deletingChat,

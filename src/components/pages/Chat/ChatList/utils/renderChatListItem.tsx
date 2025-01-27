@@ -37,7 +37,7 @@ const renderChatListItem = ({
     getChatListItemClasses(isDeleted);
 
   return searchInputValue !== "" ? (
-    <li key={chat.id}>
+    <li key={chat.id + index}>
       <ChatListItem
         {...chat}
         index={index}

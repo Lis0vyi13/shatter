@@ -55,11 +55,12 @@ const useFetchUsersChat = (
         );
 
         const combinedList = [...chatsByQuery, ...filteredUsersChats];
-
-        setCurrentChats(combinedList);
+        console.log(combinedList);
+        setCurrentChats([...combinedList]);
         if (loading) setIsChatLoading(false);
       } catch (error) {
         console.error("Error fetching chats:", error);
+        if (loading) setIsChatLoading(false);
       }
     };
 

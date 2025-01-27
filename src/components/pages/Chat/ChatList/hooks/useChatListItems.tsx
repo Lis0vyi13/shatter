@@ -1,4 +1,4 @@
-import { MutableRefObject, useMemo, useState } from "react";
+import { MutableRefObject, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useUser from "@/hooks/useUser";
@@ -29,7 +29,7 @@ const useChatListItems = ({
     setDeletingChat(chatId);
   };
 
-  const getSortedChats = useMemo(() => {
+  const getSortedChats = () => {
     if (!chats || !user) return { pinnedChats: [], unpinnedChats: [] };
     return chats.reduce(
       (acc, chat) => {
@@ -42,7 +42,7 @@ const useChatListItems = ({
       },
       { pinnedChats: [] as IChat[], unpinnedChats: [] as IChat[] }
     );
-  }, [chats, user]);
+  };
 
   const handleChatSelection = (chat: IChat) =>
     chat.chatType === "none"
@@ -60,7 +60,7 @@ const useChatListItems = ({
       <SkeletonChatListItem key={index} />
     ));
 
-  const { pinnedChats, unpinnedChats } = getSortedChats;
+  const { pinnedChats, unpinnedChats } = getSortedChats();
 
   return {
     pinnedChats,

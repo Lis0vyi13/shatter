@@ -18,7 +18,6 @@ interface IChatListItemProps extends IChat {
 
 const ChatListItem = memo((props: IChatListItemProps) => {
   const { isActive, setChat, index, ...chat } = props;
-
   const user = useUser();
   const isFavorite = chat.id === user?.favorites;
   const isUserChatMember = user?.chats.includes(chat.id) || isFavorite;
@@ -33,6 +32,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     `chat-list-item cursor-pointer flex gap-2 p-2 rounded-xl w-full transition-colors`,
     isActive ? "bg-lightBlue" : "bg-white hover:bg-blue hover:bg-opacity-15"
   );
+
   return (
     <motion.div
       initial={{ x: animatePosition }}
