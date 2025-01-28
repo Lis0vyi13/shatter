@@ -1,9 +1,8 @@
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 import useUser from "@/hooks/useUser";
 import { useChatActions } from "./useChatActions";
 import useActions from "@/hooks/useActions";
-import useChats from "@/hooks/useChats";
 
 import {
   ContextMenu,
@@ -34,53 +33,8 @@ export function ChatListItemMenu({
   const labelWithIconClassName =
     "absolute left-[2rem] top-1/2 -translate-y-1/2";
   const user = useUser();
-  const chats = useChats();
-  const { setChats, setUser, setActiveChat } = useActions();
+  const { setUser } = useActions();
   const { openChat, doTogglePinChat, doDeleteChat } = useChatActions();
-
-  const handlePinToggle = useCallback(
-    async (chatId: string) => {
-      if (!user || !chats) return;
-      const updatedChats = chats.map((chat) => {
-        if (chat.id === chatId) {
-          const isPinned = chat.isPin.includes(user.uid);
-
-          const updatedIsPin = isPinned
-            ? chat.isPin.filter((pinnedUid) => pinnedUid !== user.uid)
-            : [...chat.isPin, user.uid];
-
-          return { ...chat, isPin: updatedIsPin };
-        }
-        return chat;
-      });
-
-      const { pinnedChats, regularChats } = updatedChats.reduce(
-        (acc, chat) => {
-          if (chat.isPin.includes(user?.uid)) {
-            acc.pinnedChats.push(chat);
-          } else {
-            acc.regularChats.push(chat);
-          }
-          return acc;
-        },
-        { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
-      );
-
-      pinnedChats.sort((a, b) => b.updatedAt - a.updatedAt);
-      regularChats.sort((a, b) => b.updatedAt - a.updatedAt);
-
-      const sortedChats = [...pinnedChats, ...regularChats];
-
-      setChats(sortedChats);
-
-      await doTogglePinChat(
-        user.uid,
-        chatId,
-        chatId === user.favorites ? "favorites" : "chats"
-      );
-    },
-    [chats, doTogglePinChat, setChats, user]
-  );
 
   const menuItems = useMemo(
     () => [
@@ -95,9 +49,7 @@ export function ChatListItemMenu({
         label: user && data.isPin.includes(user.uid) ? "Unpin" : "Pin",
         separator: false,
         action: async () => {
-          if (user && chats) {
-            await handlePinToggle(data.id);
-          }
+          await doTogglePinChat(data.id);
         },
       },
       {
@@ -117,37 +69,12 @@ export function ChatListItemMenu({
         label: "Delete chat",
         isDanger: true,
         separator: false,
-        action: () => {
-          try {
-            if (user) {
-              onDelete(data.id);
-              setActiveChat("");
-              const updatedChats = user.chats?.filter((id) => id != data.id);
-              const updatedUser = { ...user, chats: updatedChats };
-              setTimeout(async () => {
-                setUser(updatedUser);
-                await doDeleteChat(user?.uid, data.id);
-              }, 400);
-            }
-          } catch (error) {
-            console.log(error);
-          } finally {
-            window.history.replaceState(null, "", "/c");
-          }
+        action: async () => {
+          await doDeleteChat(data.id, onDelete);
         },
       },
     ],
-    [
-      chats,
-      data.id,
-      data.isPin,
-      doDeleteChat,
-      handlePinToggle,
-      onDelete,
-      openChat,
-      setUser,
-      user,
-    ]
+    [data.id, data.isPin, doDeleteChat, onDelete, openChat, setUser, user]
   );
 
   return (

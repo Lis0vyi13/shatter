@@ -55,7 +55,6 @@ const useFetchUsersChat = (
         );
 
         const combinedList = [...chatsByQuery, ...filteredUsersChats];
-        console.log(combinedList);
         setCurrentChats([...combinedList]);
         if (loading) setIsChatLoading(false);
       } catch (error) {

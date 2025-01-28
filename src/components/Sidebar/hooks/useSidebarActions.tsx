@@ -47,6 +47,7 @@ const useSidebarActions = (
       await signOut(auth);
       setChats(null);
       setFavorites(null);
+      setActiveChat("");
 
       const currentUser = auth.currentUser;
 

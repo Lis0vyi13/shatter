@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { auth } from "@/firebase/firebaseConfig";
 
 import { getChatById } from "@/services/chat";
@@ -11,7 +12,7 @@ import { IChat } from "@/types/chat";
 
 const ChatRoomPage = () => {
   const { id } = useParams();
-  const [_, setTitle] = useState("Loading...");
+  const [title, setTitle] = useState("Loading...");
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -25,10 +26,14 @@ const ChatRoomPage = () => {
     };
 
     fetchMetadata();
-  }, []);
+  }, [id]);
 
   return (
     <>
+      <Helmet>
+        <title>{title} | Shatter</title>
+        <meta name="description" content="Shatter chat" />
+      </Helmet>
       <div className="chat-page overflow-hidden flex flex-1">
         <ChatWrapper id={id as string} />
       </div>

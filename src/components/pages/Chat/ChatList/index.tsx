@@ -40,6 +40,7 @@ const ChatList = ({
   );
   const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
 
+  // chats that includes user chats OR chats by query
   const { currentChats, setCurrentChats } = useFetchUsersChat(
     data,
     debouncedSearchValue

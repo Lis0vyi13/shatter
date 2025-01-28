@@ -1,30 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
-import { auth } from "@/firebase/firebaseConfig";
+import useAuth from "@/hooks/useAuth";
 
 const HomeLayout = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const authState = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(() => {
-      setIsLoggedIn(true);
-    });
+    if (authState === false) {
+      return;
+    }
 
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn) {
+    if (authState === true) {
       navigate("/c", { replace: true });
     }
-  }, [navigate, isLoggedIn]);
+  }, [authState, navigate]);
 
   return (
-    <section className="text-white overflow-y-auto min-h-full bg-home bg-cover">
-      <Outlet />
-    </section>
+    <>
+      <Helmet>
+        <title>Shatter</title>
+        <meta name="description" content="Shatter web messenger" />
+      </Helmet>
+      <section className="text-white overflow-y-auto min-h-full bg-home bg-cover">
+        <Outlet />
+      </section>
+    </>
   );
 };
 

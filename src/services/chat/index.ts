@@ -1,6 +1,5 @@
 import {
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -9,6 +8,7 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 
@@ -118,6 +118,34 @@ export const togglePinChat = async (
   });
 };
 
+export const updateChatOrder = async (updatedPinnedChats: IChat) => {
+  try {
+    const chatRef = doc(db, "chats", updatedPinnedChats.id);
+    await updateDoc(chatRef, { order: updatedPinnedChats.order });
+  } catch (error) {
+    console.error("Error updating chat order:", error);
+    throw error;
+  }
+};
+
+export const updateChatOrders = async (updatedPinnedChats: IChat[]) => {
+  try {
+    const batch = writeBatch(db);
+
+    updatedPinnedChats.forEach((chat) => {
+      const chatRef = doc(db, "chats", chat.id);
+      batch.update(chatRef, { order: chat.order });
+    });
+
+    await batch.commit();
+
+    console.log("Pinned chat orders updated successfully.");
+  } catch (error) {
+    console.error("Error updating pinned chat orders:", error);
+    throw error;
+  }
+};
+
 export const addChatToUser = async (uid: string, chatId: string) => {
   try {
     const userDocRef = doc(db, "users", uid);
@@ -149,35 +177,44 @@ export const addChatToUser = async (uid: string, chatId: string) => {
 };
 
 export const deleteChat = async (uid: string, chatId: string) => {
+  const batch = writeBatch(db);
+
   try {
     const userDocRef = doc(db, "users", uid);
     const userDocSnap = await getDoc(userDocRef);
 
     if (!userDocSnap.exists()) {
-      console.error(`User with uid ${uid} does not exist.`);
-      return { success: false, error: "User not found" };
+      throw new Error(`User with uid ${uid} does not exist`);
     }
 
     const userData = userDocSnap.data() as IUser;
     const existingChats = userData.chats || [];
 
     if (!existingChats.includes(chatId)) {
-      return { success: false, error: "Chat not found in user's list" };
+      throw new Error("Chat not found in user's list");
     }
 
     const updatedChats = existingChats.filter((id) => id !== chatId);
-    await updateDoc(userDocRef, { chats: updatedChats });
-
     const chatDocRef = doc(db, "chats", chatId);
-    await deleteDoc(chatDocRef);
+
+    batch.update(userDocRef, { chats: updatedChats });
+    batch.delete(chatDocRef);
+
+    await batch.commit();
 
     const updatedUserDocSnap = await getDoc(userDocRef);
     const updatedUser = updatedUserDocSnap.data() as IUser;
 
     return { success: true, updatedUser };
   } catch (error) {
-    console.error("Error deleting chat from user:", error);
-    return { success: false, error: "Error deleting chat from user." };
+    console.error("Error in deleteChat:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Error deleting chat from user",
+    };
   }
 };
 

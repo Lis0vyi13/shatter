@@ -6,12 +6,13 @@ const useAuth = () => {
   const [authState, setAuthState] = useState<null | boolean>(null);
 
   useEffect(() => {
+    if (!auth) {
+      setAuthState(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setAuthState(true);
-      } else {
-        setAuthState(false);
-      }
+      setAuthState(!!user);
     });
 
     return () => unsubscribe();

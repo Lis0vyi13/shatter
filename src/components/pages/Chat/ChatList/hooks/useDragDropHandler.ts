@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { DropResult } from "@hello-pangea/dnd";
 import { db } from "@/firebase/firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, writeBatch } from "firebase/firestore";
 
 import useChats from "@/hooks/useChats";
 import useActions from "@/hooks/useActions";
@@ -11,7 +11,7 @@ import { IUser } from "@/types/user";
 
 export const useDragDropHandler = (
   user: IUser,
-  setChats: Dispatch<SetStateAction<IChat[] | null>>
+  setLocalChats: Dispatch<SetStateAction<IChat[] | null>>
 ) => {
   const chats = useChats();
   const { setChats: setReduxChats } = useActions();
@@ -32,8 +32,11 @@ export const useDragDropHandler = (
     updatedState[firstChat.id] = source.index;
     updatedState[secondChat.id] = destination.index;
 
-    setChats(updatedChats);
+    setLocalChats(updatedChats);
     setReduxChats(updatedChats);
+
+    const batch = writeBatch(db);
+
     for (const chatId in updatedState) {
       try {
         const collection = user.favorites === chatId ? "favorites" : "chats";
@@ -41,12 +44,18 @@ export const useDragDropHandler = (
         const chatDoc = await getDoc(chatRef);
         const chatData = chatDoc.data();
 
-        await updateDoc(chatRef, {
+        batch.update(chatRef, {
           order: { ...chatData?.order, [user.uid]: updatedState[chatId] },
         });
       } catch (error) {
         console.error("Error updating chat order:", error);
       }
+    }
+
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("Error committing batch update:", error);
     }
   };
 
