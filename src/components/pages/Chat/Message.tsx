@@ -59,7 +59,7 @@ const Message = ({
   return (
     <div className={wrapperClassName}>
       <Avatar
-        avatar={avatar}
+        src={avatar}
         title={title}
         className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] self-end"
       />

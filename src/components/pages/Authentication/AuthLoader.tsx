@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 
-import LoadingIndicator from "@/components/common/LoadingIndicator";
+import LoadingIndicator from "@/components/pages/Authentication/LoadingIndicator";
 import Logo from "@/components/common/Logo";
-import ProgressBar from "@/components/common/ProgressBar";
+import ProgressBar from "@/components/pages/Authentication/ProgressBar";
 
 interface IAuthLoaderProps {
   value: number;

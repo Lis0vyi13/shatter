@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 import Button from "@/components/ui/Button";
 import Title from "@/components/ui/Title";
+import Logo from "@/components/common/Logo";
 
 const Home = () => {
   return (
@@ -14,7 +15,7 @@ const Home = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <Link to={"/"}>
-          <img width={40} height={40} src="/logo.svg" alt="Shatter" />
+          <Logo width={40} height={40} />
         </Link>
         <Link className="rounded-xl" to="/login">
           <Button className="w-full text-[14px] border-2 rounded-xl hover:bg-blue">

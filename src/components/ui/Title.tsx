@@ -1,3 +1,4 @@
+import { cn } from "@/utils";
 import { ReactNode } from "react";
 
 interface ITitleProps {
@@ -6,11 +7,9 @@ interface ITitleProps {
 }
 
 const Title = ({ children, className }: ITitleProps) => {
-  return (
-    <h1 className={`font-[600] line-clamp-1 break-words ${className}`}>
-      {children}
-    </h1>
-  );
+  const titleClassName = cn("font-[600] line-clamp-1 break-words", className);
+
+  return <h1 className={titleClassName}>{children}</h1>;
 };
 
 export default Title;

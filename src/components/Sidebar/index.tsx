@@ -7,6 +7,7 @@ import useSidebar from "./hooks/useSidebar";
 import CircleLoader from "../ui/CircleLoader";
 import SidebarIcon from "./SidebarIcon";
 import SkeletonSidebarIcon from "./SkeletonSidebarIcon";
+import Logo from "../common/Logo";
 
 import { logOutIcon, settings } from "@/constants";
 
@@ -27,7 +28,7 @@ const Sidebar = () => {
   return (
     <section className="flex flex-1 min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
       <Link onClick={handleLogoClick} className="mt-1" to="/c">
-        <img width={32} height={32} src="/logo.svg" alt="Logo" />
+        <Logo width={32} height={32} />
       </Link>
       <div className="flex flex-col gap-3 justify-center">
         <ul className={sidebarIconsListClassName}>

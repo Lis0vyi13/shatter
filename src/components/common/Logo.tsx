@@ -1,12 +1,9 @@
 import { ImgHTMLAttributes } from "react";
 
-interface ILogo extends ImgHTMLAttributes<HTMLImageElement> {
-  src?: string;
-  alt?: string;
-}
-
-const Logo = (props: ILogo) => {
-  return <img {...props} src="/logo.svg" alt="logo" />;
+const Logo = (
+  props: Omit<ImgHTMLAttributes<HTMLImageElement>, "alt" | "src">
+) => {
+  return <img {...props} src="/logo.svg" alt="Shatter logo" />;
 };
 
 export default Logo;

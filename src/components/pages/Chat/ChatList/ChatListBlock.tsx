@@ -43,10 +43,7 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
     activeChat,
   };
 
-  const wrapperClassName = cn(
-    `chat-list-wrapper h-full py-4 hidden mdLg:block w-[min(300px,_100%)]`,
-    className
-  );
+  const wrapperClassName = cn(`chat-list-wrapper h-full py-4`, className);
 
   return (
     <section className={wrapperClassName}>

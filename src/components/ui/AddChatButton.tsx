@@ -1,15 +1,15 @@
 import { cn } from "@/utils";
-import { FaPen } from "react-icons/fa";
+import { FaPenToSquare } from "react-icons/fa6";
 
 const AddChatButton = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "relative cursor-pointer flex justify-center items-center w-11 h-11 p-2 rounded-full bg-dark text-white transition-all hover:bg-[#444444]",
+        "relative transition-all cursor-pointer flex justify-center items-center w-11 h-11 p-2 rounded-xl bg-lightBlue bg-opacity-100 text-[#1c062a] hover:bg-[#9b9bbf]",
         className
       )}
     >
-      <FaPen size={14} />
+      <FaPenToSquare size={16} />
     </div>
   );
 };

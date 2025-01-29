@@ -31,7 +31,6 @@ const ChatListItems = ({
     (store) => store.search.searchInput.debouncedValue
   );
   const loading = useAppSelector((store) => store.chat.isLoading);
-
   const {
     handleChatSelection,
     renderSkeletons,
@@ -55,7 +54,6 @@ const ChatListItems = ({
       <NotFound value={debouncedSearchInputValue} className="mt-8 text-l" />
     );
   }
-  console.log(pinnedChats.map((chat) => [chat.title, chat.order]));
 
   return (
     <div className="flex flex-col">

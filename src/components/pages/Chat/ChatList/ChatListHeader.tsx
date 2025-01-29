@@ -1,5 +1,6 @@
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import Title from "@/components/ui/Title";
+import UsersOnlineList from "./UsersOnline/UsersOnlineList";
 
 import { IChat } from "@/types/chat";
 
@@ -30,6 +31,9 @@ const ChatListHeader = ({
       <div className="flex items-center justify-between tracking-tight">
         <Title className="font-bold text-[18px]">Messages</Title>
         <SearchUserDialog className="w-8 h-8" {...dialogProps} />
+      </div>
+      <div className="mt-4 overflow-hidden">
+        <UsersOnlineList data={data} />
       </div>
     </header>
   );

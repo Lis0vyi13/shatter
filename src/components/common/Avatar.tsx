@@ -1,19 +1,21 @@
 import { useMemo } from "react";
 import { cn, getInitials } from "@/utils";
+import useUser from "@/hooks/useUser";
 
 type TAvatar = {
-  avatar: string | Record<string, string>;
+  src: string | Record<string, string>;
   title: string;
   collocutor?: string;
   className?: string;
 };
 
-const Avatar = ({ avatar, collocutor, title, className }: TAvatar) => {
+const Avatar = ({ src, collocutor, title, className }: TAvatar) => {
+  const user = useUser();
   const chatAvatar = useMemo(() => {
-    if (!avatar) return null;
-    if (typeof avatar === "string") return avatar;
-    return collocutor ? avatar[collocutor] : "";
-  }, [avatar, collocutor]);
+    if (!src) return null;
+    if (typeof src === "string") return src;
+    return collocutor && user ? src[user.uid] : "";
+  }, [src, collocutor]);
 
   const avatarClasses = cn(
     "avatar cursor-pointer text-[18px] font-[400] flex overflow-hidden text-center text-white justify-center items-center rounded-xl",

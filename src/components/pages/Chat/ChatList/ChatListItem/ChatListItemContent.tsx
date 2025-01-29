@@ -4,7 +4,7 @@ import { getUserStatus } from "@/services/user";
 import { getTimeAgo } from "@/utils";
 
 import Avatar from "@/components/common/Avatar";
-import LastMessage from "@/components/common/LastMessage";
+import LastMessage from "@/components/pages/Chat/ChatList/LastMessage";
 import Title from "@/components/ui/Title";
 import ChatListItemStatus from "./ChatListItemStatus";
 
@@ -39,7 +39,7 @@ const ChatListItemContent = (props: IChatListItemContent) => {
     <>
       <Avatar
         className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px]"
-        avatar={chat.avatar}
+        src={chat.avatar}
         collocutor={collocutor}
         title={chatTitle}
       />
