@@ -12,6 +12,8 @@ import AuthPage from "@/pages/Auth/AuthPage";
 import CreatePasswordPage from "@/pages/Auth/CreatePasswordPage";
 import ForgotPasswordPage from "@/pages/Auth/ForgotPasswordPage";
 
+import ChatAccessGuard from "@/components/pages/Chat/ChatAccessGuard";
+
 export const router = createBrowserRouter(
   [
     {
@@ -58,7 +60,11 @@ export const router = createBrowserRouter(
         },
         {
           path: "c/:id",
-          element: <ChatRoomPage />,
+          element: (
+            <ChatAccessGuard>
+              <ChatRoomPage />
+            </ChatAccessGuard>
+          ),
         },
       ],
     },
@@ -69,7 +75,7 @@ export const router = createBrowserRouter(
       v7_relativeSplatPath: true,
       v7_skipActionErrorRevalidation: true,
     },
-  }
+  },
 );
 
 export default router;

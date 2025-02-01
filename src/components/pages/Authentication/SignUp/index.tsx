@@ -7,7 +7,7 @@ import { handleSocialAuth } from "@/services/auth/socialAuth";
 import AuthWrapper from "../AuthWrapper";
 import AuthHeader from "../AuthHeader";
 import SignUpForm from "./SignUpForm";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 
 import { authDefaultVariants } from "@/constants/animations";
 import { AUTH_SERVICES } from "../Auth.constants";
@@ -37,7 +37,7 @@ const SignUp = ({ pathname }: { pathname: string | null }) => {
               }}
               key={title}
               className={cn(
-                "rounded-lg w-[80px] text-[18px] flex items-center justify-center border border-gray hover:bg-[#4287f5]"
+                "rounded-lg w-[80px] text-[18px] flex items-center justify-center border border-gray hover:bg-[#4287f5]",
               )}
             >
               {Icon}

@@ -12,14 +12,14 @@ type TAvatar = string | Record<string, string>;
 
 interface IMessageProps {
   data: IMessage;
-  collocutorTitle: string;
-  collocutorAvatar: TAvatar;
+  participantTitle: string;
+  participantAvatar: TAvatar;
 }
 
 const Message = ({
   data,
-  collocutorTitle,
-  collocutorAvatar,
+  participantTitle,
+  participantAvatar,
 }: IMessageProps) => {
   const [title, setTitle] = useState("");
   const [avatar, setAvatar] = useState<TAvatar>("");
@@ -31,35 +31,42 @@ const Message = ({
       setTitle(currentUser.displayName || "");
       setAvatar(currentUser.photoUrl || "");
     } else {
-      setTitle(collocutorTitle || "");
-      setAvatar(collocutorAvatar);
+      setTitle(participantTitle || "");
+      setAvatar(participantAvatar);
     }
-  }, [data.uid, currentUser, isOwnMessage, collocutorTitle, collocutorAvatar]);
+  }, [
+    data.uid,
+    currentUser,
+    isOwnMessage,
+    participantTitle,
+    participantAvatar,
+  ]);
 
   const wrapperClassName = cn(
     "message-block flex gap-2 w-fit",
-    isOwnMessage && "justify-end self-end flex-row-reverse pr-1"
+    isOwnMessage && "justify-end self-end flex-row-reverse pr-1",
   );
 
   const messageClassName = cn(
     "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl rounded-br-md shadow-lg",
-    isOwnMessage ? "bg-blue text-white" : "bg-[#e0e0f9] text-[#000]"
+    isOwnMessage ? "bg-blue text-white" : "bg-[#e0e0f9] text-[#000]",
   );
 
   const bubbleWrapperClassName = cn(
     "absolute bottom-0 scale-y-[-1]",
-    isOwnMessage ? "right-[-8px]" : "left-[-8px] scale-x-[-1] "
+    isOwnMessage ? "right-[-8px]" : "left-[-8px] scale-x-[-1] ",
   );
 
   const bubbleClassName = cn(
     "w-0 h-0 border-t-[15px] border-r-[15px] border-r-transparent",
-    isOwnMessage ? "border-t-blue" : "border-t-[#e0e0f9]"
+    isOwnMessage ? "border-t-blue" : "border-t-[#e0e0f9]",
   );
 
   return (
     <div className={wrapperClassName}>
       <Avatar
         src={avatar}
+        participant={data.uid}
         title={title}
         className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] self-end"
       />

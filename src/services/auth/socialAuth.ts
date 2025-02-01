@@ -16,7 +16,7 @@ export const handleSocialAuth = async ({ navigate }: SocialAuthProps) => {
     const user = await signInWithProvider(googleProvider);
 
     const isPasswordProvider = user?.providerData.some(
-      (data) => data.providerId === "password"
+      (data) => data.providerId === "password",
     );
 
     if (user && !isPasswordProvider) {

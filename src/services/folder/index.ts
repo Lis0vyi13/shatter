@@ -11,7 +11,7 @@ import { db } from "@/firebase/firebaseConfig";
 import { IFolder } from "@/types/sidebar";
 
 export const getFolderById = async (
-  folderId: string
+  folderId: string,
 ): Promise<IFolder | null> => {
   const folderDocRef = doc(db, "folders", folderId);
   const folderDoc = await getDoc(folderDocRef);
@@ -24,7 +24,7 @@ export const getFolderById = async (
 };
 
 export const getAllFolders = async (
-  folderIds: string[]
+  folderIds: string[],
 ): Promise<IFolder[]> => {
   if (!folderIds.length) {
     return [];

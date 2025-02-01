@@ -37,7 +37,7 @@ export const useApp = () => {
     };
 
     const unsubscribe = onAuthStateChanged(auth, (user) =>
-      handleUserAuth(user)
+      handleUserAuth(user),
     );
 
     return () => {

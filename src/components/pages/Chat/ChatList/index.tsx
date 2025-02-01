@@ -36,34 +36,36 @@ const ChatList = ({
 
   const searchValue = useAppSelector((store) => store.search.searchInput.value);
   const debouncedSearchValue = useAppSelector(
-    (store) => store.search.searchInput.debouncedValue
+    (store) => store.search.searchInput.debouncedValue,
   );
   const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
 
   // chats that includes user chats OR chats by query
   const { currentChats, setCurrentChats } = useFetchUsersChat(
     data,
-    debouncedSearchValue
+    debouncedSearchValue,
   );
 
   const { onDragEnd } = useDragDropHandler(
     currentUser as IUser,
-    setCurrentChats
+    setCurrentChats,
   );
 
   useEffect(() => {
     listRef.current?.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   useEffect(() => {
     scrollToChatLink(listRef, activeChat);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChats]);
 
   return (
     <section
       className={cn(
-        "chat-list relative user-list flex flex-col custom-scrollbar h-full",
-        className
+        "chat-list relative user-list flex flex-col custom-scrollbar h-full mt-2",
+        className,
       )}
     >
       <ChatSearch

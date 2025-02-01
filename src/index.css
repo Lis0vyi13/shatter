@@ -32,6 +32,27 @@ h1 {
   height: 100%;
 }
 
+.users-online-scrollbar::-webkit-scrollbar {
+  @media (min-width: 768px) {
+    width: 2px;
+    cursor: auto;
+    height: 6px;
+  }
+}
+
+.users-online-scrollbar::-webkit-scrollbar-thumb {
+  background: #7678ed;
+  border-radius: 8px;
+  visibility: hidden;
+  border: 2px solid transparent;
+}
+.users-online-scrollbar:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+.users-online-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #4f54d3;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
@@ -69,6 +90,20 @@ h1 {
   visibility: visible;
 }
 .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #4f54d3;
+}
+
+.blue-scrollbar::-webkit-scrollbar-track {
+  background: #dadada;
+}
+
+.blue-scrollbar::-webkit-scrollbar-thumb {
+  background: #7678ed;
+  border-radius: 8px;
+  border: 2px solid transparent;
+}
+
+.blue-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #4f54d3;
 }
 

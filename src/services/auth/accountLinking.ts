@@ -29,7 +29,7 @@ export const linkGoogleWithPassword = async ({
 
     const { user: linkedUser } = await linkWithCredential(
       auth.currentUser as User,
-      credential
+      credential,
     );
 
     await updateProfile(linkedUser, {

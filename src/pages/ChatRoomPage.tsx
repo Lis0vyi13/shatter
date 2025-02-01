@@ -18,11 +18,11 @@ const ChatRoomPage = () => {
     const fetchMetadata = async () => {
       const user = auth.currentUser;
       const chat: IChat | null = await getChatById(id as string);
-      const collocutorId = chat?.members.filter((uid) => uid !== user?.uid)[0];
-      const collocutor =
-        chat && collocutorId ? await getUserById(collocutorId) : null;
+      const participantId = chat?.members.filter((uid) => uid !== user?.uid)[0];
+      const participant =
+        chat && participantId ? await getUserById(participantId) : null;
 
-      setTitle(collocutor ? collocutor.displayName : "Favorites");
+      setTitle(participant ? participant.displayName : "Favorites");
     };
 
     fetchMetadata();

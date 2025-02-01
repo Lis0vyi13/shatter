@@ -6,7 +6,7 @@ import useSidebar from "./hooks/useSidebar";
 
 import CircleLoader from "../ui/CircleLoader";
 import SidebarIcon from "./SidebarIcon";
-import SkeletonSidebarIcon from "./SkeletonSidebarIcon";
+import SkeletonSidebarIcon from "./SidebarIcon.skeleton";
 import Logo from "../common/Logo";
 
 import { logOutIcon, settings } from "@/constants";
@@ -23,7 +23,7 @@ const Sidebar = () => {
 
   const sidebarIconsListClassName = cn(
     "sidebar-icons flex flex-col justify-center pt-2",
-    sidebarItems.length > 0 ? "gap-1" : "gap-9 mb-2"
+    sidebarItems.length > 0 ? "gap-1" : "gap-9 mb-2",
   );
   return (
     <section className="flex flex-1 min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">

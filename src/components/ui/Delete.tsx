@@ -26,7 +26,12 @@ const positionStyles: { [key: string]: string } = {
   "center-right": "top-1/2 right-2 -translate-y-1/2",
 };
 
-const Delete = ({ handler, isDark, position = "top-right", className = "" }: IDelete) => {
+const Delete = ({
+  handler,
+  isDark,
+  position = "top-right",
+  className = "",
+}: IDelete) => {
   return (
     <button
       type="button"

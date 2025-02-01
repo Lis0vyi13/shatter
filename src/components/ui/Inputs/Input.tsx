@@ -14,12 +14,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         type={type}
         className={cn(
           "relative focus:shadow-lg text-dark placeholder:text-dark placeholder:text-opacity-60 pr-4 py-2 font-[400] rounded-xl outline-none w-full transition duration-300",
-          className
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
+
+Input.displayName = "Input";
 
 export default Input;

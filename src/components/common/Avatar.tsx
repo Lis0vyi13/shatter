@@ -5,22 +5,22 @@ import useUser from "@/hooks/useUser";
 type TAvatar = {
   src: string | Record<string, string>;
   title: string;
-  collocutor?: string;
+  participant?: string;
   className?: string;
 };
 
-const Avatar = ({ src, collocutor, title, className }: TAvatar) => {
+const Avatar = ({ src, participant, title, className }: TAvatar) => {
   const user = useUser();
   const chatAvatar = useMemo(() => {
     if (!src) return null;
     if (typeof src === "string") return src;
-    return collocutor && user ? src[user.uid] : "";
-  }, [src, collocutor]);
+    return participant && user ? src[user.uid] : "";
+  }, [src, participant, user]);
 
   const avatarClasses = cn(
-    "avatar cursor-pointer text-[18px] font-[400] flex overflow-hidden text-center text-white justify-center items-center rounded-xl",
+    "avatar w-full h-full cursor-pointer text-[18px] font-[400] flex overflow-hidden text-center text-white justify-center items-center rounded-full",
     !chatAvatar && "bg-dark",
-    className
+    className,
   );
 
   return (
@@ -29,6 +29,7 @@ const Avatar = ({ src, collocutor, title, className }: TAvatar) => {
         <img
           className="w-full bg-cover h-full object-cover"
           src={chatAvatar}
+          draggable={false}
           width={48}
           title={title}
           height={48}

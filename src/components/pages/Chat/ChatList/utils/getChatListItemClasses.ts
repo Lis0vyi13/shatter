@@ -6,13 +6,8 @@ const getChatListItemClasses = (isDeleting: boolean) => {
     "overflow-hidden",
     isDeleting
       ? "transition-all max-h-0 opacity-0 scale-95 duration-500 transform -translate-x-full"
-      : "max-h-96"
+      : "max-h-96",
   );
-
-  const transition = {
-    duration: 0.4,
-    ease: "easeInOut",
-  };
 
   const motionListItemProps: Variants = {
     initial: {
@@ -24,13 +19,20 @@ const getChatListItemClasses = (isDeleting: boolean) => {
       opacity: isDeleting ? 0 : 1,
       x: isDeleting ? "-100%" : 0,
       height: isDeleting ? 0 : "4rem",
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut",
+      },
     },
     exit: {
       opacity: 0,
       x: "-100%",
       height: 0,
+      transition: {
+        duration: 0.4,
+        ease: "easeInOut",
+      },
     },
-    transition,
   };
 
   return { listItemClasses, motionListItemProps };

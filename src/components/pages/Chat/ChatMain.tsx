@@ -19,18 +19,21 @@ const ChatMain = ({
     <main
       className={cn(
         "chat-main custom-scrollbar chat-scrollbar overflow-x-hidden flex flex-col gap-3 flex-1",
-        data ? "overflow-y-auto" : "overflow-y-hidden"
+        data ? "overflow-y-auto" : "overflow-y-hidden",
       )}
     >
       {data ? (
-        messages.map((m) => (
-          <Message
-            collocutorTitle={user && user.uid ? data.title[user?.uid] : ""}
-            collocutorAvatar={data.avatar}
-            key={m.id}
-            data={m}
-          />
-        ))
+        messages.map((m) => {
+          // когда сообщения будут работать убрать проп messages и получить из data
+          return (
+            <Message
+              participantTitle={user && user.uid ? data.title[user?.uid] : ""}
+              participantAvatar={data.avatar}
+              key={m.id}
+              data={m}
+            />
+          );
+        })
       ) : (
         <>
           {Array.from({ length: 6 }).map((_, index) => (

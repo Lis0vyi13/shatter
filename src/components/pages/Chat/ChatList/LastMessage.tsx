@@ -18,7 +18,7 @@ const LastMessage = ({ data, className }: ILastMessageProps) => {
   const messageClassName = cn(
     "last-message font-normal text-[12px] line-clamp-1",
     isAction ? "text-blue" : "text-dark text-opacity-70",
-    className
+    className,
   );
 
   return (

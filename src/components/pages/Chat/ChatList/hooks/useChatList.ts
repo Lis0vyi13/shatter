@@ -63,7 +63,7 @@ const useChatList = () => {
       setActiveChat,
       setDebouncedSearchInputValue,
       setSearchInputValue,
-    ]
+    ],
   );
   return { createNewChatHandler, setActiveChatHandler };
 };

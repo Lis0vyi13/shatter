@@ -10,7 +10,7 @@ const NotFound = ({ value, className }: INotFound) => {
       <img width={90} height={90} src="/loupe.png" alt="loupe" />
       <div className="mt-4 max-w-[220px]">
         <p className="text-[16px] break-words tracking-wide leading-5">
-          Sorry we couldn't find any matches for <strong>{value}</strong>
+          Sorry we couldn&apos;t find any matches for <strong>{value}</strong>
         </p>
         <div className="">
           <span className="text-[11px] text-gray">

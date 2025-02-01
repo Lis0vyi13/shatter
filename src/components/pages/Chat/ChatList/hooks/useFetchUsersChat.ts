@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 
 import useUser from "@/hooks/useUser";
 import { searchUsersByDisplayName } from "@/services/user";
@@ -12,7 +12,8 @@ import { IUser } from "@/types/user";
 const useFetchUsersChat = (
   data: IChat[] | null,
   searchValue: string,
-  loading: boolean = true
+  loading: boolean = true,
+  setLoading?: Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const [currentChats, setCurrentChats] = useState<IChat[] | null>(data);
   const user = useUser();
@@ -33,38 +34,41 @@ const useFetchUsersChat = (
           return;
         }
         if (loading) setIsChatLoading(true);
-
+        if (setLoading) setLoading(true);
         const chatsByQuery =
           data?.filter((chat) =>
             chat.title[user.uid]
               ?.toLowerCase()
-              .includes(searchValue.toLowerCase())
+              .includes(searchValue.toLowerCase()),
           ) || [];
 
         const usersByQuery = await searchUsers(searchValue);
         const usersChats: IChat[] = usersByQuery.map((searchedUser) =>
-          createChatTemplate(user, searchedUser)
+          createChatTemplate(user, searchedUser),
         );
 
         const existingMembers = new Set(
-          chatsByQuery.map((chat) => chat.members[1])
+          chatsByQuery.map((chat) => chat.members[1]),
         );
         const filteredUsersChats = usersChats.filter(
           (chat) =>
-            !existingMembers.has(chat.members[1]) && chat.members[1] != user.uid
+            !existingMembers.has(chat.members[1]) &&
+            chat.members[1] != user.uid,
         );
 
         const combinedList = [...chatsByQuery, ...filteredUsersChats];
         setCurrentChats([...combinedList]);
         if (loading) setIsChatLoading(false);
+        if (setLoading) setLoading(false);
       } catch (error) {
         console.error("Error fetching chats:", error);
         if (loading) setIsChatLoading(false);
+        if (setLoading) setLoading(false);
       }
     };
 
     fetchData();
-  }, [searchValue, data, user]);
+  }, [searchValue, data, user, loading, setIsChatLoading, setLoading]);
 
   return { currentChats, setCurrentChats };
 };

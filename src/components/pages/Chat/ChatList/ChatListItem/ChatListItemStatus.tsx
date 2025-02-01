@@ -20,7 +20,7 @@ const ChatListItemStatus = ({
   const duration = chat ? formatTimestampToDate(chat.updatedAt) : null;
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="flex flex-col items-end gap-1 mt-[1px]">
       {chat?.id && isUserChatMember && (
         <strong className="text-[12px] mt-[5px] font-normal opacity-80">
           {duration}

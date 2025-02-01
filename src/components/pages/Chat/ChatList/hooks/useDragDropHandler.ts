@@ -11,7 +11,7 @@ import { IUser } from "@/types/user";
 
 export const useDragDropHandler = (
   user: IUser,
-  setLocalChats: Dispatch<SetStateAction<IChat[] | null>>
+  setLocalChats: Dispatch<SetStateAction<IChat[] | null>>,
 ) => {
   const chats = useChats();
   const { setChats: setReduxChats } = useActions();

@@ -22,7 +22,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const isFavorite = chat.id === user?.favorites;
   const isUserChatMember = user?.chats.includes(chat.id) || isFavorite;
   const searchInputDebouncedValue = useAppSelector(
-    (store) => store.search.searchInput.debouncedValue
+    (store) => store.search.searchInput.debouncedValue,
   );
   const animatePosition = searchInputDebouncedValue !== "" ? "-100%" : 0;
 
@@ -30,7 +30,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
 
   const itemClassName = cn(
     `chat-list-item cursor-pointer flex gap-2 p-2 rounded-xl w-full transition-colors`,
-    isActive ? "bg-lightBlue" : "bg-white hover:bg-blue hover:bg-opacity-15"
+    isActive ? "bg-lightBlue" : "bg-white hover:bg-blue hover:bg-opacity-15",
   );
 
   return (

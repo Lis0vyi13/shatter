@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "esnext",
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
@@ -11,6 +11,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
@@ -20,4 +21,3 @@
   },
   "include": ["vite.config.ts"]
 }
-

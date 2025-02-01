@@ -5,7 +5,9 @@ interface ILoader {
 }
 
 const Loader = ({ isDefault, isVertical, className }: ILoader) => {
-  const loaderClass = isDefault ? "flex justify-center items-center mt-10" : "custom-loader";
+  const loaderClass = isDefault
+    ? "flex justify-center items-center mt-10"
+    : "custom-loader";
   const dotClass = isVertical ? "dot vertical" : "dot";
 
   return (

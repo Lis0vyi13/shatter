@@ -84,7 +84,7 @@ export const getUserById = async (uid: string): Promise<IUser | null> => {
 };
 
 export const searchUsersByDisplayName = async (
-  searchTerm: string
+  searchTerm: string,
 ): Promise<IUser[]> => {
   try {
     const usersRef = collection(db, "users");
@@ -95,7 +95,7 @@ export const searchUsersByDisplayName = async (
     return querySnapshot.docs
       .map((doc) => doc.data() as IUser)
       .filter((userData) =>
-        userData.displayName?.toLowerCase().includes(lowerSearchTerm)
+        userData.displayName?.toLowerCase().includes(lowerSearchTerm),
       );
   } catch (error) {
     console.error("Error searching users:", error);

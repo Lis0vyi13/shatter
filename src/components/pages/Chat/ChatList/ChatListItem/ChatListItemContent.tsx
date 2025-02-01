@@ -20,30 +20,32 @@ interface IChatListItemContent {
 const ChatListItemContent = (props: IChatListItemContent) => {
   const [userStatus, setUserStatus] = useState<IUserStatus | null>(null);
   const { chat, user } = props;
-
-  const collocutor = useMemo(
-    () => chat?.members.find((id) => id !== user?.uid) || "",
-    [chat?.members, user?.uid]
-  );
+  console.log(chat?.avatar);
   const chatTitle = user && chat ? chat.title[user.uid] : "User";
+
+  const participantId = useMemo(() => {
+    if (!chat || !user) return;
+    return chat.members.find((id) => id !== user.uid);
+  }, [chat, user]);
 
   useEffect(() => {
     const fetchUserStatus = async () => {
-      const status = await getUserStatus(collocutor);
+      if (!participantId) return;
+      const status = await getUserStatus(participantId);
       setUserStatus(status);
     };
     fetchUserStatus();
-  }, [collocutor, chat?.members]);
+  }, [participantId, chat?.members]);
 
   return chat ? (
     <>
       <Avatar
         className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px]"
         src={chat.avatar}
-        collocutor={collocutor}
+        participant={participantId}
         title={chatTitle}
       />
-      <div className="user-info flex flex-1 flex-col gap-[6px] overflow-hidden">
+      <div className="user-info flex flex-1 mt-[1px] flex-col gap-[6px] overflow-hidden">
         <Title className="text-[14px] mt-1">{chatTitle}</Title>
         {userStatus && !props.isUserChatMember ? (
           <LastMessage

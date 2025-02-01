@@ -25,10 +25,10 @@ const ChatListItems = ({
   handleCreateNewChat,
 }: ChatListItemsProps) => {
   const searchInputValue = useAppSelector(
-    (store) => store.search.searchInput.value
+    (store) => store.search.searchInput.value,
   );
   const debouncedSearchInputValue = useAppSelector(
-    (store) => store.search.searchInput.debouncedValue
+    (store) => store.search.searchInput.debouncedValue,
   );
   const loading = useAppSelector((store) => store.chat.isLoading);
   const {
@@ -75,7 +75,7 @@ const ChatListItems = ({
                   onDelete,
                   handleChatSelection,
                   searchInputValue,
-                })
+                }),
               )}
               {provided.placeholder}
             </ul>
@@ -94,7 +94,7 @@ const ChatListItems = ({
             onDelete,
             handleChatSelection,
             searchInputValue,
-          })
+          }),
         )}
       </ul>
     </div>

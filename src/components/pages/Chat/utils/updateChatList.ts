@@ -20,7 +20,7 @@ export const updateChatList = ({
       }
       return acc;
     },
-    { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
+    { pinnedChats: [] as IChat[], regularChats: [] as IChat[] },
   );
 
   if (favoriteChat) {

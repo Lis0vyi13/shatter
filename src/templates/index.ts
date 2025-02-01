@@ -6,23 +6,23 @@ import { getUserById, updateUser } from "@/services/user";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
-export const createChatTemplate = (user: IUser, collocutor: IUser): IChat => ({
+export const createChatTemplate = (user: IUser, participant: IUser): IChat => ({
   id: uuidv4(),
-  members: [user.uid, collocutor.uid],
+  members: [user.uid, participant.uid],
   title: {
-    [user.uid]: collocutor.displayName,
-    [collocutor.uid]: user.displayName,
+    [user.uid]: participant.displayName,
+    [participant.uid]: user.displayName,
   },
   avatar: {
-    [user.uid]: collocutor.photoUrl,
-    [collocutor.uid]: user.photoUrl,
+    [user.uid]: participant.photoUrl,
+    [participant.uid]: user.photoUrl,
   },
   messages: [],
   lastMessage: null,
   updatedAt: Date.now(),
   unreadMessages: {
     [user.uid]: 0,
-    [collocutor.uid]: 0,
+    [participant.uid]: 0,
   },
   isPin: [],
   chatType: "none",
@@ -38,7 +38,7 @@ export const createChatTemplate = (user: IUser, collocutor: IUser): IChat => ({
 });
 
 export const createFavoritesChatTemplate = async (
-  userId: string
+  userId: string,
 ): Promise<IChat | null> => {
   try {
     const user = await getUserById(userId);

@@ -26,7 +26,7 @@ const ChatDetails = ({ data }: IChatDetails) => {
 
   const wrapperClassName = cn(
     "chat-details flex flex-col h-full gap-2",
-    !isInfoVisible && !isMembersVisible ? "w-0" : "w-[300px]"
+    !isInfoVisible && !isMembersVisible ? "w-0" : "w-[300px]",
   );
 
   return (

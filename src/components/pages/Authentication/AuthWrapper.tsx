@@ -11,7 +11,7 @@ interface IAuthWrapper {
 const AuthWrapper = ({ children, className }: IAuthWrapper) => {
   const blockClassName = cn(
     `flex overflow-auto transition-all duration-700 relative flex-col min-w-full items-center text-center text-white w-full`,
-    className
+    className,
   );
   return (
     <Block color="dark" className={blockClassName}>

@@ -2,7 +2,6 @@ import { ReactNode, useMemo } from "react";
 
 import useUser from "@/hooks/useUser";
 import { useChatActions } from "./useChatActions";
-import useActions from "@/hooks/useActions";
 
 import {
   ContextMenu,
@@ -33,7 +32,6 @@ export function ChatListItemMenu({
   const labelWithIconClassName =
     "absolute left-[2rem] top-1/2 -translate-y-1/2";
   const user = useUser();
-  const { setUser } = useActions();
   const { openChat, doTogglePinChat, doDeleteChat } = useChatActions();
 
   const menuItems = useMemo(
@@ -74,7 +72,15 @@ export function ChatListItemMenu({
         },
       },
     ],
-    [data.id, data.isPin, doDeleteChat, onDelete, openChat, setUser, user]
+    [
+      data.id,
+      data.isPin,
+      doDeleteChat,
+      doTogglePinChat,
+      onDelete,
+      openChat,
+      user,
+    ],
   );
 
   return (

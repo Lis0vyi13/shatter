@@ -4,7 +4,7 @@ import { handleSocialAuth } from "@/services/auth/socialAuth";
 
 import AuthWrapper from "../AuthWrapper";
 import AuthHeader from "../AuthHeader";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 import LoginForm from "./LoginForm";
 
 import { authDefaultVariants } from "@/constants/animations";

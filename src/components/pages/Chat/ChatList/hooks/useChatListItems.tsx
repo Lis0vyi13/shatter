@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import useUser from "@/hooks/useUser";
 
-import SkeletonChatListItem from "../SkeletonChatListItem";
+import SkeletonChatListItem from "../ChatListItem.skeleton";
 
 import { IChat } from "@/types/chat";
 import { scrollToChatLink } from "@/utils";
@@ -40,7 +40,7 @@ const useChatListItems = ({
         }
         return acc;
       },
-      { pinnedChats: [] as IChat[], unpinnedChats: [] as IChat[] }
+      { pinnedChats: [] as IChat[], unpinnedChats: [] as IChat[] },
     );
   };
 

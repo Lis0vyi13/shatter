@@ -83,5 +83,6 @@ export default {
       xl: "1280px",
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

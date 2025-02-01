@@ -27,6 +27,7 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
     if (params.id && params.id !== activeChat) {
       setActiveChat(params.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const chatListHeaderProps = {
@@ -48,7 +49,7 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
   return (
     <section className={wrapperClassName}>
       <ChatListHeader {...chatListHeaderProps} />
-      <ChatList {...chatListProps} className="mt-6" />
+      <ChatList {...chatListProps} />
     </section>
   );
 };

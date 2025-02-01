@@ -6,7 +6,7 @@ import { handleEnterKey } from "@/utils";
 import useLogin from "./hooks/useLogin";
 
 import CircleLoader from "@/components/ui/CircleLoader";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 import AuthInput from "@/components/ui/Inputs/AuthInput";
 
 import { FaArrowRightLong } from "react-icons/fa6";

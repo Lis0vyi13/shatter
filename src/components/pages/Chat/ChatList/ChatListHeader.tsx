@@ -1,3 +1,5 @@
+import useUsersOnline from "./hooks/useChatListHeader";
+
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import Title from "@/components/ui/Title";
 import UsersOnlineList from "./UsersOnline/UsersOnlineList";
@@ -20,21 +22,30 @@ const ChatListHeader = ({
   func,
   className,
 }: IChatListHeader) => {
+  const [usersOnline, setUsersOnline] = useUsersOnline(data);
+
   const dialogProps = {
     data,
     listRef,
     handleCreateNewChat: func.handleCreateNewChat,
     handleSetActiveChat: func.handleSetActiveChat,
   };
+
   return (
     <header className={className}>
       <div className="flex items-center justify-between tracking-tight">
         <Title className="font-bold text-[18px]">Messages</Title>
         <SearchUserDialog className="w-8 h-8" {...dialogProps} />
       </div>
-      <div className="mt-4 overflow-hidden">
-        <UsersOnlineList data={data} />
-      </div>
+
+      {usersOnline?.length != 0 && (
+        <div className="mt-3 overflow-hidden">
+          <UsersOnlineList
+            setParticipants={setUsersOnline}
+            data={usersOnline}
+          />
+        </div>
+      )}
     </header>
   );
 };

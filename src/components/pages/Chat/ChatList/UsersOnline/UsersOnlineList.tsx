@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { Dispatch, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { onValue, ref } from "firebase/database";
 import { dbRealtime } from "@/firebase/firebaseConfig";
-import useUser from "@/hooks/useUser";
-import { getUserStatus } from "@/services/user";
 
 import UsersOnlineCard from "./UsersOnlineCard";
+import UsersOnlineCardSkeleton from "./UsersOnlineCard.skeleton";
+import UsersOnlineRestCard from "./UsersOnlineRestCard";
 
-import { IChat } from "@/types/chat";
 import { IUserStatus } from "@/types/user";
-import { Link } from "react-router-dom";
+import { cn } from "@/utils";
 
 export interface IChatParticipantsCard {
   chatId: string;
@@ -17,56 +17,74 @@ export interface IChatParticipantsCard {
   avatar: string;
   userStatus: IUserStatus | null;
 }
-const UsersOnlineList = ({ data }: { data: IChat[] | null }) => {
-  const [chatParticipantsData, setChatParticipantData] = useState<
-    IChatParticipantsCard[] | null
-  >(null);
-  const user = useUser();
+
+const UsersOnlineList = ({
+  data,
+  setParticipants,
+}: {
+  data: IChatParticipantsCard[] | null;
+  setParticipants: Dispatch<
+    React.SetStateAction<IChatParticipantsCard[] | null>
+  >;
+}) => {
+  const listRef = useRef<HTMLElement | null>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   useEffect(() => {
-    const chatParticipants = data?.reduce((acc, chat) => {
-      if (chat.id !== user?.favorites && user) {
-        const participantId = chat.members[1];
-        const avatar = chat.avatar as Record<string, string>;
-        acc.push({
-          chatId: chat.id,
-          participant: participantId,
-          title: chat.title?.[user?.uid],
-          avatar: avatar[user.uid],
-          userStatus: null,
-        });
-      }
-      return acc;
-    }, [] as IChatParticipantsCard[]);
+    const list = listRef.current;
 
-    const getUsersStatus = async () => {
-      if (chatParticipants) {
-        const statuses = (await Promise.all(
-          chatParticipants.map((chat) => getUserStatus(chat.participant))
-        )) as IUserStatus[];
-        const updatedData = chatParticipants?.map((chat, i) => ({
-          ...chat,
-          userStatus: statuses[i],
-        }));
-        setChatParticipantData(updatedData);
+    if (list) {
+      // Check if the device supports touch events
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+      if (isTouchDevice) {
+        const handleTouchStart = (e: TouchEvent) => {
+          isDragging.current = true;
+          startX.current = e.touches[0].pageX - list.offsetLeft;
+          scrollLeft.current = list.scrollLeft;
+        };
+
+        const handleTouchEnd = () => {
+          isDragging.current = false;
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+          if (!isDragging.current) return;
+          e.preventDefault();
+          const x = e.touches[0].pageX - list.offsetLeft;
+          const walk = x - startX.current;
+          list.scrollLeft = scrollLeft.current - walk;
+        };
+
+        list.addEventListener("touchstart", handleTouchStart);
+        list.addEventListener("touchend", handleTouchEnd);
+        list.addEventListener("touchmove", handleTouchMove);
+
+        return () => {
+          list.removeEventListener("touchstart", handleTouchStart);
+          list.removeEventListener("touchend", handleTouchEnd);
+          list.removeEventListener("touchmove", handleTouchMove);
+        };
       }
-    };
-    getUsersStatus();
-  }, [data]);
+    }
+  }, []);
 
   useEffect(() => {
-    chatParticipantsData?.forEach((chat) => {
+    data?.forEach((chat) => {
       const userStatusRef = ref(dbRealtime, `users/${chat.participant}/status`);
 
       const unsubscribe = onValue(userStatusRef, (snapshot) => {
         const status = snapshot.val();
         if (status) {
-          setChatParticipantData((prevStatus) => {
+          setParticipants((prevStatus) => {
             if (prevStatus) {
               return prevStatus.map((data) =>
                 data.participant === chat.participant
                   ? { ...data, status }
-                  : data
+                  : data,
               );
             }
             return prevStatus;
@@ -78,16 +96,21 @@ const UsersOnlineList = ({ data }: { data: IChat[] | null }) => {
         unsubscribe();
       };
     });
-  }, []);
+  }, [data, setParticipants]);
+
   return (
-    <section className="flex gap-1">
-      {chatParticipantsData?.slice(0, 4)?.map((data) => (
-        <Link key={data.chatId} to={`/c/${data.chatId}`}>
-          <UsersOnlineCard key={data.chatId} data={data} />
+    <section
+      ref={listRef}
+      className="flex items-center gap-1 overflow-x-auto users-online-scrollbar"
+    >
+      {!data &&
+        Array.from({ length: 5 }).map((_, index) => (
+          <UsersOnlineCardSkeleton key={index} />
+        ))}
+      {data?.map((chat) => (
+        <Link draggable={false} key={chat.chatId} to={`/c/${chat.chatId}`}>
+          <UsersOnlineCard key={chat.chatId} data={chat} />
         </Link>
-      ))}
-      {chatParticipantsData?.slice(4, 5)?.map((data) => (
-        <UsersOnlineCard key={data.chatId} data={data} />
       ))}
     </section>
   );

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 import Title from "@/components/ui/Title";
 import Logo from "@/components/common/Logo";
 

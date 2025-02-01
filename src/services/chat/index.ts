@@ -41,7 +41,7 @@ export const createFavoritesChat = async (data: IChat | null) => {
 };
 
 export const getFavoriteChat = async (
-  chatId: string
+  chatId: string,
 ): Promise<IChat | null> => {
   try {
     const chatDocRef = doc(db, "favorites", chatId);
@@ -97,7 +97,7 @@ export const getAllChats = async (chatsId: string[]): Promise<IChat[]> => {
 export const togglePinChat = async (
   uid: string,
   chatId: string,
-  collectionName: "favorites" | "chats" = "chats"
+  collectionName: "favorites" | "chats" = "chats",
 ): Promise<void> => {
   await runTransaction(db, async (transaction) => {
     const chatDocRef = doc(db, collectionName, chatId);
@@ -222,7 +222,7 @@ export const fetchChats = async (userChats: string[]): Promise<IChat[]> => {
   if (!userChats || userChats.length === 0) return [];
 
   const chatsSnapshot = await getDocs(
-    query(collection(db, "chats"), where("id", "in", userChats.slice(0, 30)))
+    query(collection(db, "chats"), where("id", "in", userChats.slice(0, 30))),
   );
 
   return chatsSnapshot.docs.map((doc) => ({

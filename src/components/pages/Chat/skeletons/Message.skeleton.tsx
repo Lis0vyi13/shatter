@@ -8,11 +8,11 @@ interface IMessageSkeletonProps {
 const MessageSkeleton = ({ isOwnMessage = false }: IMessageSkeletonProps) => {
   const wrapperClassName = cn(
     "message-block flex gap-2 w-fit",
-    isOwnMessage && "justify-end self-end flex-row-reverse pr-1"
+    isOwnMessage && "justify-end self-end flex-row-reverse pr-1",
   );
 
   const messageClassName = cn(
-    "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl rounded-br-md shadow-lg"
+    "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl rounded-br-md shadow-lg",
   );
 
   return (
@@ -22,7 +22,7 @@ const MessageSkeleton = ({ isOwnMessage = false }: IMessageSkeletonProps) => {
       <div
         className={cn(
           messageClassName,
-          "bg-dark bg-opacity-20 h-[70px] w-[300px]"
+          "bg-dark bg-opacity-20 h-[70px] w-[300px]",
         )}
       >
         <Skeleton className="h-[14px] w-3/4 mb-2 bg-dark bg-opacity-15" />

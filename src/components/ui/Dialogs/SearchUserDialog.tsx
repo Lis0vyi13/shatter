@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/app/hooks";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandList,
+  CommandEmpty,
 } from "../shadcn/command";
 import {
   Dialog,
@@ -27,6 +27,8 @@ import ChatListItem from "@/components/pages/Chat/ChatList/ChatListItem";
 import Loader from "../Loader";
 
 import { IChat } from "@/types/chat";
+import SkeletonChatListItem from "@/components/pages/Chat/ChatList/ChatListItem.skeleton";
+import NotFound from "@/components/pages/Chat/ChatList/NotFound";
 
 interface ISearchUserDialog {
   data: IChat[] | null;
@@ -47,7 +49,7 @@ const SearchUserDialog = ({
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const loading = useAppSelector((store) => store.chat.isLoading);
-
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const user = useUser();
   const users = useMemo(
@@ -57,12 +59,13 @@ const SearchUserDialog = ({
             if (user) return chat.title[user?.uid] !== "Favorites";
           })
         : null,
-    [data, user]
+    [data, user],
   );
   const { currentChats } = useFetchUsersChat(
     users,
     debouncedSearchValue,
-    false
+    false,
+    setIsLoading,
   );
 
   const searchInputProps = {
@@ -100,7 +103,7 @@ const SearchUserDialog = ({
       <DialogOverlay className="fixed cursor-auto inset-0 bg-[#000] bg-opacity-80">
         <DialogContent
           className={cn(
-            "fixed outline-none top-1/2 left-1/2 transform border-none -translate-x-1/2 sm:w-[450px] -translate-y-1/2 bg-white p-6 rounded-md shadow-lg"
+            "fixed outline-none top-1/2 left-1/2 transform border-none -translate-x-1/2 sm:w-[450px] -translate-y-1/2 bg-white p-6 rounded-md shadow-lg",
           )}
         >
           <DialogHeader>
@@ -114,35 +117,40 @@ const SearchUserDialog = ({
           <Command
             className={cn(
               "w-full border-none",
-              !loading && "rounded-lg border shadow-md"
+              !isLoading && "rounded-lg border shadow-md",
             )}
           >
-            {!loading && (
-              <>
-                <SearchInput
-                  autoComplete="off"
-                  className="py-3 text-[14px] placeholder:text-[14px] bg-white rounded-b-none"
-                  {...searchInputProps}
-                />
-                <CommandList className="max-h-[200px]">
-                  {currentChats && currentChats.length > 0 ? (
-                    <CommandGroup>
-                      {currentChats.map((chat, index) => (
-                        <ChatListItem
-                          key={chat.id}
-                          index={index}
-                          {...chat}
-                          isActive={false}
-                          setChat={() => handleSelectChat(chat)}
-                        />
-                      ))}
-                    </CommandGroup>
-                  ) : (
-                    <CommandEmpty>No results found.</CommandEmpty>
-                  )}
-                </CommandList>
-              </>
-            )}
+            <>
+              <SearchInput
+                autoComplete="off"
+                className="py-3 text-[14px] placeholder:text-[14px] bg-lightBlue rounded-b-none"
+                {...searchInputProps}
+              />
+
+              <CommandList className="max-h-[200px] custom-scrollbar blue-scrollbar">
+                {isLoading ? (
+                  Array.from({ length: 4 }).map((_, key) => (
+                    <SkeletonChatListItem key={key} />
+                  ))
+                ) : currentChats && currentChats?.length > 0 ? (
+                  <CommandGroup>
+                    {currentChats.map((chat, index) => (
+                      <ChatListItem
+                        key={chat.id}
+                        {...chat}
+                        index={index}
+                        isActive={false}
+                        setChat={() => handleSelectChat(chat)}
+                      />
+                    ))}
+                  </CommandGroup>
+                ) : (
+                  <CommandEmpty className="py-4">
+                    <NotFound value={searchValue} />
+                  </CommandEmpty>
+                )}
+              </CommandList>
+            </>
           </Command>
           <DialogDescription className="hidden" />
         </DialogContent>

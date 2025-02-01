@@ -67,7 +67,7 @@ const SearchInput = ({
       <Input
         className={cn(
           "pl-[30px] placeholder:text-[12px] text-[12px] bg-lightBlue",
-          className
+          className,
         )}
         onKeyDown={onBackspaceKeyDown}
         onChange={handleInputChange}

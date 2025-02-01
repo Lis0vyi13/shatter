@@ -37,7 +37,7 @@ const ChatLayout = () => {
             <Sidebar />
           </aside>
           <main ref={mainRef} className="flex flex-1 py-2 pr-2">
-            <div className="bg-white box-content pr-2 rounded-3xl rounded-r-none overflow-hidden gap-2 pl-4 hidden mdLg:block w-[min(300px,_100%)]">
+            <div className="bg-white box-content pr-2 rounded-3xl rounded-r-none overflow-hidden gap-2 pl-4 w-[min(300px,_100%)]">
               <ChatListBlock data={chats} />
             </div>
             <Outlet />

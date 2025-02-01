@@ -70,14 +70,14 @@ export const useChatActions = () => {
 
           return acc;
         },
-        { pinnedChats: [] as IChat[], regularChats: [] as IChat[] }
+        { pinnedChats: [] as IChat[], regularChats: [] as IChat[] },
       );
 
       const sortedPinnedChats = pinnedChats.sort(
-        (a, b) => (a.order?.[user?.uid] ?? 0) - (b.order?.[user?.uid] ?? 0)
+        (a, b) => (a.order?.[user?.uid] ?? 0) - (b.order?.[user?.uid] ?? 0),
       );
       const sortedRegularChats = regularChats.sort(
-        (a, b) => b.updatedAt - a.updatedAt
+        (a, b) => b.updatedAt - a.updatedAt,
       );
 
       const sortedChats = [...sortedPinnedChats, ...sortedRegularChats];
@@ -91,7 +91,7 @@ export const useChatActions = () => {
         await togglePinChat(
           user.uid,
           chatId,
-          chatId === user.favorites ? "favorites" : "chats"
+          chatId === user.favorites ? "favorites" : "chats",
         );
         if (pinnedChatsToUpdate) {
           await updateChatOrders(pinnedChatsToUpdate);
@@ -104,7 +104,7 @@ export const useChatActions = () => {
         return false;
       }
     },
-    [chats, setChats, user]
+    [chats, setChats, user],
   );
 
   const archiveChat = () => {
@@ -117,7 +117,7 @@ export const useChatActions = () => {
 
   const doDeleteChat = async (
     chatId: string,
-    onDelete: (chatId: string) => void
+    onDelete: (chatId: string) => void,
   ) => {
     if (user) {
       try {

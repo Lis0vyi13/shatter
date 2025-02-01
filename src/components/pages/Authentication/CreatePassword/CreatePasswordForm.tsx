@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { handleEnterKey } from "@/utils";
 import useCreatePassword from "./hooks/useCreatePassword";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 import CircleLoader from "@/components/ui/CircleLoader";
 import AuthInput from "@/components/ui/Inputs/AuthInput";
 

@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { forgotPasswordAction } from "./ForgotPassword.action";
 import { handleEnterKey } from "@/utils";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 import CircleLoader from "@/components/ui/CircleLoader";
 import AuthInput from "@/components/ui/Inputs/AuthInput";
 

@@ -16,7 +16,7 @@ import { toast } from "sonner";
 export type ProgressHandler = React.Dispatch<React.SetStateAction<number>>;
 
 export const signInWithProvider = async (
-  provider: AuthProvider
+  provider: AuthProvider,
 ): Promise<User | null> => {
   try {
     const { user } = await signInWithPopup(auth, provider);
@@ -33,27 +33,23 @@ export const signInWithProvider = async (
 
 export const signInWithEmail = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<User | null> => {
-  try {
-    const { user } = await signInWithEmailAndPassword(auth, email, password);
-    return user;
-  } catch (error) {
-    throw error;
-  }
+  const { user } = await signInWithEmailAndPassword(auth, email, password);
+  return user;
 };
 
 export const createUserAccount = async (
   email: string,
   password: string,
   displayName: string,
-  handleProgress: ProgressHandler
+  handleProgress: ProgressHandler,
 ) => {
   try {
     const { user } = await createUserWithEmailAndPassword(
       auth,
       email,
-      password
+      password,
     );
     handleProgress(40);
 
@@ -66,7 +62,7 @@ export const createUserAccount = async (
     handleProgress(100);
 
     toast.info(
-      "Verification email sent. Please confirm your email to continue."
+      "Verification email sent. Please confirm your email to continue.",
     );
   } catch (error) {
     const errorMessage =

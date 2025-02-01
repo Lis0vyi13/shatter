@@ -24,11 +24,11 @@ export async function loginAction(formData: FormData) {
           toast.error("The email address is not valid.");
         } else if (error.code === AuthErrorCodes.INVALID_LOGIN_CREDENTIALS) {
           toast.error(
-            "Invalid email or password. Please check your details and try again."
+            "Invalid email or password. Please check your details and try again.",
           );
         } else {
           toast.error(
-            `An unexpected Firebase error occurred: ${error.message}`
+            `An unexpected Firebase error occurred: ${error.message}`,
           );
         }
       } else {

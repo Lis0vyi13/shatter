@@ -5,7 +5,7 @@ import { createUserAccount } from "@/services/auth";
 type TSignUpAction = (
   formData: FormData,
   setProgressValue: Dispatch<SetStateAction<number>>,
-  setIsSubmitted: Dispatch<SetStateAction<boolean>>
+  setIsSubmitted: Dispatch<SetStateAction<boolean>>,
 ) => Promise<{
   username: string | null;
   email: string | null;
@@ -15,7 +15,7 @@ type TSignUpAction = (
 export const signUpAction: TSignUpAction = async (
   formData,
   setProgressValue,
-  setIsSubmitted
+  setIsSubmitted,
 ) => {
   const data = {
     username: formData.get("email") as string | null,
@@ -40,7 +40,7 @@ export const signUpAction: TSignUpAction = async (
       data.email,
       data.password,
       data.username,
-      setProgressValue
+      setProgressValue,
     );
   } catch (error) {
     console.error("Error during sign-up:", error);

@@ -49,7 +49,7 @@ export const shouldRedirect = () => {
 
 export const handleEnterKey = (
   e: React.KeyboardEvent,
-  ref: RefObject<HTMLElement>
+  ref: RefObject<HTMLElement>,
 ) => {
   if (e.key === "Enter" && ref.current) {
     ref.current.focus();
@@ -58,10 +58,10 @@ export const handleEnterKey = (
 
 export const scrollToChatLink = (
   wrapperRef: RefObject<HTMLElement>,
-  activeChat: string
+  activeChat: string,
 ) => {
   const targetElement = wrapperRef?.current?.querySelector<HTMLDivElement>(
-    `a[href="/c/${activeChat}"]`
+    `a[href="/c/${activeChat}"]`,
   );
   if (targetElement) {
     targetElement.scrollIntoView({ block: "nearest" });

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { handleEnterKey } from "@/utils";
 import { signUpAction } from "./SignUp.action";
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Buttons/Button";
 import AuthInput from "@/components/ui/Inputs/AuthInput";
 import AuthLoader from "../AuthLoader";
 

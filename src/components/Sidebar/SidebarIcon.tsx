@@ -21,7 +21,7 @@ const SidebarIcon = ({
   const className = cn(
     "icon transition-all w-full bg-transparent text-white hover:bg-white hover:bg-opacity-10 py-3 rounded-xl text-center flex gap-1 flex-col justify-center items-center transform-gpu",
     isActive ? "text-opacity-100" : "text-opacity-30 hover:text-opacity-100",
-    "active:scale-95 active:bg-opacity-20"
+    "active:scale-95 active:bg-opacity-20",
   );
   const Icon = propsIcon || <FaFolder />;
   const iconWithClasses = cloneElement(Icon, {

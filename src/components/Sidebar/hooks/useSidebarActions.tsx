@@ -8,7 +8,7 @@ import useActions from "@/hooks/useActions";
 import { IFolder } from "@/types/sidebar";
 
 const useSidebarActions = (
-  setSidebarItems: (value: SetStateAction<IFolder[]>) => void
+  setSidebarItems: (value: SetStateAction<IFolder[]>) => void,
 ) => {
   const {
     logout,
@@ -26,11 +26,11 @@ const useSidebarActions = (
         prevItems.map((item) =>
           item.id === folderId
             ? { ...item, isActive: true }
-            : { ...item, isActive: false }
-        )
+            : { ...item, isActive: false },
+        ),
       );
     },
-    [setSidebarItems]
+    [setSidebarItems],
   );
 
   const handleLogoClick = () => {

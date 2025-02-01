@@ -14,5 +14,5 @@ createRoot(document.getElementById("root")!).render(
       <Toaster toastOptions={{ className: "toaster" }} richColors />
       <App />
     </Provider>
-  </HelmetProvider>
+  </HelmetProvider>,
 );

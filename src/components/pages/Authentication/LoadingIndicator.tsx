@@ -20,7 +20,7 @@ const LoadingIndicator = ({ value }: ILoadingIndicatorProps) => {
 
           const labelClassName = cn(
             "transition-transform transform duration-500 ease-out",
-            isActive ? "scale-110 text-white" : "scale-100 text-gray-500"
+            isActive ? "scale-110 text-white" : "scale-100 text-gray-500",
           );
           return (
             <p key={index} className={labelClassName}>

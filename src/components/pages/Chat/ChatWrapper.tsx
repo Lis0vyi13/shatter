@@ -22,6 +22,7 @@ const ChatWrapper = ({ id }: { id?: string }) => {
       setActiveChatData(chat);
       setActiveChat(chat.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chats, id]);
 
   return (
