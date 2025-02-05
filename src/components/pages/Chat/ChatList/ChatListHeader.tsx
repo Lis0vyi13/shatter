@@ -1,4 +1,4 @@
-import useUsersOnline from "./hooks/useChatListHeader";
+import useUsersOnline from "./UsersOnline/hooks/useUsersOnline";
 
 import SearchUserDialog from "@/components/ui/Dialogs/SearchUserDialog";
 import Title from "@/components/ui/Title";

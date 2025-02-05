@@ -1,6 +1,6 @@
 import Avatar from "@/components/common/Avatar";
 import Title from "@/components/ui/Title";
-import { IChatParticipantsCard } from "./UsersOnlineList";
+import { IChatParticipantsCard } from "./hooks/useUsersOnlineList";
 
 const UsersOnlineRestCard = ({ data }: { data: IChatParticipantsCard[] }) => {
   const [firstUser, secondUser, thirdUser] = data;

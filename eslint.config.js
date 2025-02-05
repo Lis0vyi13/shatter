@@ -42,7 +42,7 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/no-unknown-property": "off",
       "import/no-unresolved": "error",
-      allowImportingTsExtensions: true,
+      // allowImportingTsExtensions: "error",
     },
   },
 ];

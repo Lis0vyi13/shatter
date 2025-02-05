@@ -1,8 +1,12 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { cn } from "@/utils";
+
 import SearchInput from "@/components/ui/Inputs/SearchInput";
+
 import { FaArrowLeftLong } from "react-icons/fa6";
 
 interface ChatSearchProps {
+  className: string;
   searchValue: string;
   setSearchInputValue: ActionCreatorWithPayload<
     string,
@@ -15,6 +19,7 @@ interface ChatSearchProps {
 }
 
 const ChatSearch = ({
+  className,
   searchValue,
   setSearchInputValue,
   setDebouncedSearchInputValue,
@@ -28,7 +33,7 @@ const ChatSearch = ({
   };
 
   return (
-    <div className="flex items-center gap-2 w-full">
+    <div className={cn("flex items-center gap-2 w-full", className)}>
       <FaArrowLeftLong className="block mdLg:hidden" />
       <SearchInput
         autoComplete="off"

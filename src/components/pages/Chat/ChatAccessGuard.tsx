@@ -19,6 +19,10 @@ const ChatAccessGuard = ({ children }: ChatAccessGuardProps) => {
 
   useEffect(() => {
     const checkChatAccess = async () => {
+      const isDirectNavigation = window.history.length === 1;
+
+      if (!isDirectNavigation) return;
+
       if (!id || !currentUser) {
         navigate("/c");
         return;
@@ -61,7 +65,6 @@ const ChatAccessGuard = ({ children }: ChatAccessGuardProps) => {
 
     checkChatAccess();
   }, [currentUser, id, navigate]);
-
   return <>{children}</>;
 };
 

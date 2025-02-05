@@ -32,14 +32,19 @@ h1 {
   height: 100%;
 }
 
-.users-online-scrollbar::-webkit-scrollbar {
-  @media (min-width: 768px) {
-    width: 2px;
-    cursor: auto;
-    height: 6px;
+@media (max-width: 767px) {
+  .users-online-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
   }
 }
 
+@media (min-width: 768px) {
+  .users-online-scrollbar::-webkit-scrollbar {
+    width: 2px;
+    height: 5px;
+  }
+}
 .users-online-scrollbar::-webkit-scrollbar-thumb {
   background: #7678ed;
   border-radius: 8px;

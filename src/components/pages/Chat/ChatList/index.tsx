@@ -5,11 +5,9 @@ import { useAppSelector } from "@/redux/app/hooks";
 import { cn, scrollToChatLink } from "@/utils";
 import useUser from "@/hooks/useUser";
 import useFetchUsersChat from "./hooks/useFetchUsersChat";
-import useActions from "@/hooks/useActions";
 import { useDragDropHandler } from "./hooks/useDragDropHandler";
 
 import ChatListItems from "./ChatListItems";
-import ChatSearch from "./ChatSearch";
 
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
@@ -34,11 +32,9 @@ const ChatList = ({
 }: IChatList) => {
   const currentUser = useUser();
 
-  const searchValue = useAppSelector((store) => store.search.searchInput.value);
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue,
   );
-  const { setSearchInputValue, setDebouncedSearchInputValue } = useActions();
 
   // chats that includes user chats OR chats by query
   const { currentChats, setCurrentChats } = useFetchUsersChat(
@@ -52,32 +48,19 @@ const ChatList = ({
   );
 
   useEffect(() => {
-    listRef.current?.scrollTo(0, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue]);
-
-  useEffect(() => {
     scrollToChatLink(listRef, activeChat);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChats]);
 
+  //  overflow-auto
   return (
     <section
       className={cn(
-        "chat-list relative user-list flex flex-col custom-scrollbar h-full mt-2",
+        "chat-list flex-1 relative h-full user-list custom-scrollbar chat-scrollbar -ml-2 mt-2 overflow-auto",
         className,
       )}
     >
-      <ChatSearch
-        searchValue={searchValue}
-        setSearchInputValue={setSearchInputValue}
-        setDebouncedSearchInputValue={setDebouncedSearchInputValue}
-      />
-      <div
-        ref={listRef}
-        style={{ maxHeight: "calc(100% - 90px)" }}
-        className={`mt-2 transition-all duration-0 -ml-2 overflow-auto custom-scrollbar chat-scrollbar`}
-      >
+      <div ref={listRef} className={`flex flex-col transition-all duration-0`}>
         <DragDropContext onDragEnd={onDragEnd}>
           <ChatListItems
             chats={currentChats}

@@ -56,7 +56,7 @@ const ChatListItems = ({
   }
 
   return (
-    <div className="flex flex-col">
+    <>
       {pinnedChats.length > 0 && (
         <Droppable droppableId="pinnedChatsDroppable">
           {(provided) => (
@@ -97,7 +97,7 @@ const ChatListItems = ({
           }),
         )}
       </ul>
-    </div>
+    </>
   );
 };
 

@@ -1,8 +1,8 @@
 import useActiveChat from "@/hooks/useActiveChat";
 import { cn } from "@/utils";
+import { IChatParticipantsCard } from "./hooks/useUsersOnlineList";
 
 import Title from "@/components/ui/Title";
-import { IChatParticipantsCard } from "./UsersOnlineList";
 import Avatar from "@/components/common/Avatar";
 
 const UsersOnlineCard = ({ data }: { data: IChatParticipantsCard }) => {
@@ -10,9 +10,8 @@ const UsersOnlineCard = ({ data }: { data: IChatParticipantsCard }) => {
 
   return (
     <div
-      draggable={false}
       className={cn(
-        "relative w-14 mb-1 overflow-x-auto rounded-xl transition-all bg-transparent duration-300",
+        "relative w-14 overflow-x-auto rounded-xl transition-all bg-transparent duration-300 select-none",
         activeChat === data.chatId
           ? "bg-lightBlue"
           : "hover:bg-dark hover:bg-opacity-20",

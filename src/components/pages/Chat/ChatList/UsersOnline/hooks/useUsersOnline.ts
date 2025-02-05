@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useUser from "@/hooks/useUser";
 import { getUserById, getUserStatus } from "@/services/user";
 
-import { IChatParticipantsCard } from "../UsersOnline/UsersOnlineList";
+import { IChatParticipantsCard } from "./useUsersOnlineList";
 
 import { IUserStatus } from "@/types/user";
 import { IChat } from "@/types/chat";
