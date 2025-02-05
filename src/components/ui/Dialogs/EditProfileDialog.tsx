@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import useUser from "@/hooks/useUser";
+// import useUser from "@/hooks/useUser";
 
 import {
   Dialog,
@@ -17,7 +17,7 @@ import { X } from "lucide-react";
 
 const EditProfileDialog = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useUser();
+  // const user = useUser();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

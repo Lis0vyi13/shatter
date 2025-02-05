@@ -1,8 +1,9 @@
 import Avatar from "@/components/common/Avatar";
 import Title from "@/components/ui/Title";
-import { IChatParticipantsCard } from "./hooks/useUsersOnlineList";
 
-const UsersOnlineRestCard = ({ data }: { data: IChatParticipantsCard[] }) => {
+import { IParticipantOnline } from "@/types/chat";
+
+const UsersOnlineRestCard = ({ data }: { data: IParticipantOnline[] }) => {
   const [firstUser, secondUser, thirdUser] = data;
   const remainingCount = data.slice(3).length;
 
