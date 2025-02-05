@@ -1,11 +1,13 @@
-import { IChat } from "@/types/chat";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+import { IChat, IParticipantOnline } from "@/types/chat";
 
 interface IChatState {
   chats: IChat[] | null;
   activeChat: string;
   favorites: IChat | null;
   isLoading: boolean;
+  onlineParticipants: IParticipantOnline[] | null;
 }
 
 const initialState: IChatState = {
@@ -13,6 +15,7 @@ const initialState: IChatState = {
   activeChat: "",
   favorites: null,
   isLoading: false,
+  onlineParticipants: null,
 };
 
 export const chatSlice = createSlice({
@@ -30,6 +33,12 @@ export const chatSlice = createSlice({
     },
     setIsChatLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
+    },
+    setOnlineParticipants(
+      state,
+      action: PayloadAction<IParticipantOnline[] | null>,
+    ) {
+      state.onlineParticipants = action.payload;
     },
   },
 });

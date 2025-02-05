@@ -1,21 +1,12 @@
 import { useEffect, useRef, Dispatch } from "react";
 import { onValue, ref } from "firebase/database";
 import { dbRealtime } from "@/firebase/firebaseConfig";
-import { IUserStatus } from "@/types/user";
 
-export interface IChatParticipantsCard {
-  chatId: string;
-  participant: string;
-  title: string;
-  avatar: string;
-  userStatus: IUserStatus | null;
-}
+import { IParticipantOnline } from "@/types/chat";
 
 const useUsersOnlineList = (
-  data: IChatParticipantsCard[] | null,
-  setParticipants: Dispatch<
-    React.SetStateAction<IChatParticipantsCard[] | null>
-  >,
+  data: IParticipantOnline[] | null,
+  setParticipants: Dispatch<React.SetStateAction<IParticipantOnline[] | null>>,
 ) => {
   const listRef = useRef<HTMLElement | null>(null);
   const isDragging = useRef(false);

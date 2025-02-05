@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Poppins:100,200,300,regular,500,600,700,800,900);
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -16,9 +16,12 @@ a {
   font-family: "Poppins", sans-serif;
 }
 
+:lang(ru) {
+  font-family: "Roboto", sans-serif;
+}
+
 body {
   background-color: #202022;
-  /* background: url("/bg.jpg"); */
   background-color: #0f0f0f;
   font-weight: normal;
   overflow: hidden;

@@ -7,6 +7,7 @@ export interface IUser {
   chats: string[];
   folders: string[];
   favorites: string;
+  banner: string;
 }
 
 export interface IUserStatus {

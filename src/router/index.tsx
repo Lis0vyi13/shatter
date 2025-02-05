@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import AuthLayout from "@/layouts/AuthLayout";
-import ChatLayout from "@/layouts/ChatLayout";
 import HomeLayout from "@/layouts/HomeLayout";
+import AuthLayout from "@/layouts/AuthLayout";
+import MainLayout from "@/layouts/MainLayout";
+import ChatLayout from "@/layouts/ChatLayout";
 
 import HomePage from "@/pages/HomePage";
 import ChatPage from "@/pages/ChatPage";
@@ -48,28 +49,32 @@ export const router = createBrowserRouter(
       ],
     },
     {
-      element: <ChatLayout />,
+      element: <MainLayout />,
       children: [
         {
-          path: "c",
-          element: <ChatPage />,
-        },
-        {
-          path: "archive",
-          element: <ArchivePage />,
-        },
-        {
-          path: "c/:id",
-          element: (
-            <ChatAccessGuard>
-              <ChatRoomPage />
-            </ChatAccessGuard>
-          ),
+          element: <ChatLayout />,
+          children: [
+            {
+              path: "c",
+              element: <ChatPage />,
+            },
+            {
+              path: "archive",
+              element: <ArchivePage />,
+            },
+            {
+              path: "c/:id",
+              element: (
+                <ChatAccessGuard>
+                  <ChatRoomPage />
+                </ChatAccessGuard>
+              ),
+            },
+          ],
         },
       ],
     },
   ],
-
   {
     future: {
       v7_relativeSplatPath: true,

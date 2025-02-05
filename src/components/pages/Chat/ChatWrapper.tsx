@@ -32,11 +32,11 @@ const ChatWrapper = ({ id }: { id?: string }) => {
           <div
             className={`flex bg-white rounded-3xl rounded-l-none overflow-hidden w-full gap-2`}
           >
-            <div className="chat flex flex-col px-1 md:px-3 py-4 flex-1">
+            <div className="chat w-0 flex flex-col px-1 md:px-3 py-4 flex-1">
               <Chat data={activeChat} />
             </div>
           </div>
-          <div className="chat-details-wrapper hidden xl:block">
+          <div className="w-[300px] chat-details-wrapper hidden xl:block">
             <ChatDetails data={activeChat} />
           </div>
         </>

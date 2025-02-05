@@ -27,6 +27,9 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
   const { createNewChatHandler, setActiveChatHandler } = useChatList();
   const listRef = useRef<HTMLDivElement | null>(null);
   const [usersOnline] = useUsersOnline(data);
+  const participantsList = useAppSelector(
+    (store) => store.chat.onlineParticipants,
+  );
   const searchValue = useAppSelector((store) => store.search.searchInput.value);
 
   useEffect(() => {
@@ -55,7 +58,7 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
   };
 
   const wrapperClassName = cn(
-    `chat-list-wrapper flex flex-col h-full pt-4`,
+    `chat-list-wrapper flex flex-col h-full pt-4 pb-1`,
     className,
   );
 
@@ -66,7 +69,12 @@ const ChatListBlock = ({ data, className }: IChatListBlock) => {
         searchValue={searchValue}
         setSearchInputValue={setSearchInputValue}
         setDebouncedSearchInputValue={setDebouncedSearchInputValue}
-        className={usersOnline && usersOnline.length > 0 ? "mt-2" : "mt-3"}
+        className={
+          (usersOnline && usersOnline.length > 0) ||
+          (participantsList && participantsList.length > 0)
+            ? "mt-2"
+            : "mt-3"
+        }
       />
       <ChatList {...chatListProps} />
     </section>

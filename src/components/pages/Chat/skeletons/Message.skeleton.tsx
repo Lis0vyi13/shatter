@@ -12,7 +12,7 @@ const MessageSkeleton = ({ isOwnMessage = false }: IMessageSkeletonProps) => {
   );
 
   const messageClassName = cn(
-    "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl rounded-br-md shadow-lg",
+    "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl shadow-lg",
   );
 
   return (

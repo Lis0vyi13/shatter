@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import useUser from "@/hooks/useUser";
 
-import SkeletonChatListItem from "../ChatListItem.skeleton";
+import SkeletonChatListItem from "../ChatListItem/ChatListItem.skeleton";
 
 import { IChat } from "@/types/chat";
 import { scrollToChatLink } from "@/utils";

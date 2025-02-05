@@ -5,6 +5,7 @@ import useFolders from "@/hooks/useFolders";
 import useSidebar from "./hooks/useSidebar";
 
 import CircleLoader from "../ui/CircleLoader";
+import EditProfileDialog from "../ui/Dialogs/EditProfileDialog";
 import SidebarIcon from "./SidebarIcon";
 import SkeletonSidebarIcon from "./SidebarIcon.skeleton";
 import Logo from "../common/Logo";
@@ -53,13 +54,23 @@ const Sidebar = () => {
 
         <hr className="border-white border-opacity-40 border-1 w-3/5 self-center" />
         <div className="sidebar-icons flex gap-1 flex-col justify-center">
-          {settings?.map((iconData, i) => (
-            <SidebarIcon
-              onClick={() => handleItemClick(iconData.id || "0")}
-              key={i}
-              {...iconData}
-            />
-          ))}
+          {settings?.map((iconData, i) =>
+            iconData.title === "Profile" ? (
+              <EditProfileDialog key={i}>
+                <SidebarIcon
+                  onClick={() => handleItemClick(iconData.id || "0")}
+                  key={i}
+                  {...iconData}
+                />
+              </EditProfileDialog>
+            ) : (
+              <SidebarIcon
+                onClick={() => handleItemClick(iconData.id || "0")}
+                key={i}
+                {...iconData}
+              />
+            ),
+          )}
         </div>
       </div>
       <div className={`w-full`}>

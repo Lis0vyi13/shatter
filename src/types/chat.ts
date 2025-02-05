@@ -1,3 +1,5 @@
+import { IUserStatus } from "./user";
+
 type TMessageType = "text" | "action";
 export type TChatType = "individual" | "group" | "none";
 
@@ -41,4 +43,12 @@ export interface IChat {
   chatType: TChatType;
   info: IChatInfo;
   order: Record<string, number> | null;
+}
+
+export interface IParticipantOnline {
+  chatId: string;
+  participant: string;
+  title: string;
+  avatar: string;
+  userStatus: IUserStatus | null;
 }

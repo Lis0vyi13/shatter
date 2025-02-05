@@ -37,6 +37,7 @@ export const createUser = async (user: User): Promise<IUser> => {
         folders: [],
         createdAt: Date.now(),
         favorites: "",
+        banner: "",
       };
 
       await setDoc(userDocRef, userData);

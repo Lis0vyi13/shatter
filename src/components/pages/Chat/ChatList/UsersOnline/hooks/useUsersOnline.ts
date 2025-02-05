@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import useUser from "@/hooks/useUser";
 import { getUserById, getUserStatus } from "@/services/user";
 
-import { IChatParticipantsCard } from "./useUsersOnlineList";
+import useUser from "@/hooks/useUser";
+import useActions from "@/hooks/useActions";
 
 import { IUserStatus } from "@/types/user";
-import { IChat } from "@/types/chat";
+import { IChat, IParticipantOnline } from "@/types/chat";
 
 const useUsersOnline = (data: IChat[] | null) => {
   const [chatParticipantsData, setChatParticipantData] = useState<
-    IChatParticipantsCard[] | null
+    IParticipantOnline[] | null
   >(null);
+  const { setOnlineParticipants: setReduxOnlineParticipants } = useActions();
   const user = useUser();
 
   useEffect(() => {
@@ -47,13 +48,14 @@ const useUsersOnline = (data: IChat[] | null) => {
         }));
 
         setChatParticipantData(updatedData);
+        setReduxOnlineParticipants(updatedData);
       };
 
       getUsersStatus();
     };
 
     fetchChatParticipants();
-  }, [data, user]);
+  }, [data, setReduxOnlineParticipants, user]);
 
   return [chatParticipantsData, setChatParticipantData] as const;
 };

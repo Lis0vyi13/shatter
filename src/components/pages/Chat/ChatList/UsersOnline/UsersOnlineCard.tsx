@@ -1,12 +1,16 @@
+import { memo } from "react";
+
 import useActiveChat from "@/hooks/useActiveChat";
-import { cn } from "@/utils";
-import { IChatParticipantsCard } from "./hooks/useUsersOnlineList";
+import { cn, getLanguage } from "@/utils";
 
 import Title from "@/components/ui/Title";
 import Avatar from "@/components/common/Avatar";
 
-const UsersOnlineCard = ({ data }: { data: IChatParticipantsCard }) => {
+import { IParticipantOnline } from "@/types/chat";
+
+const UsersOnlineCard = memo(({ data }: { data: IParticipantOnline }) => {
   const activeChat = useActiveChat();
+  const titleLang = getLanguage(data.title.split(" ")[0]);
 
   return (
     <div
@@ -27,10 +31,20 @@ const UsersOnlineCard = ({ data }: { data: IChatParticipantsCard }) => {
           <div className="absolute bottom-[-2px] right-[-1px] w-3 h-3 bg-[green] rounded-full border-2 border-white" />
         </div>
 
-        <Title className="text-[11px]">{data.title.split(" ")[0]}</Title>
+        <Title
+          lang={titleLang}
+          className={
+            titleLang === "ru"
+              ? "text-[12px] mt-[-1px] font-[600]"
+              : "text-[11px]"
+          }
+        >
+          {data.title.split(" ")[0]}
+        </Title>
       </div>
     </div>
   );
-};
+});
 
+UsersOnlineCard.displayName = "UsersOnlineCard";
 export default UsersOnlineCard;

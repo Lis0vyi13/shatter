@@ -67,3 +67,13 @@ export const scrollToChatLink = (
     targetElement.scrollIntoView({ block: "nearest" });
   }
 };
+
+export const getLanguage = (text: string) => {
+  const cyrillicRegExp = /[а-яА-Я]/;
+
+  if (cyrillicRegExp.test(text)) {
+    return "ru";
+  } else {
+    return "en";
+  }
+};

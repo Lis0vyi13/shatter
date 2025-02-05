@@ -52,7 +52,6 @@ const ChatList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChats]);
 
-  //  overflow-auto
   return (
     <section
       className={cn(

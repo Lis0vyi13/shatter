@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { getUserStatus } from "@/services/user";
-import { getTimeAgo } from "@/utils";
+import { getLanguage, getTimeAgo } from "@/utils";
 
 import Avatar from "@/components/common/Avatar";
 import LastMessage from "@/components/pages/Chat/ChatList/LastMessage";
@@ -20,7 +20,6 @@ interface IChatListItemContent {
 const ChatListItemContent = (props: IChatListItemContent) => {
   const [userStatus, setUserStatus] = useState<IUserStatus | null>(null);
   const { chat, user } = props;
-  console.log(chat?.avatar);
   const chatTitle = user && chat ? chat.title[user.uid] : "User";
 
   const participantId = useMemo(() => {
@@ -37,6 +36,8 @@ const ChatListItemContent = (props: IChatListItemContent) => {
     fetchUserStatus();
   }, [participantId, chat?.members]);
 
+  const titleLang = getLanguage(chatTitle);
+
   return chat ? (
     <>
       <Avatar
@@ -46,7 +47,9 @@ const ChatListItemContent = (props: IChatListItemContent) => {
         title={chatTitle}
       />
       <div className="user-info flex flex-1 mt-[1px] flex-col gap-[6px] overflow-hidden">
-        <Title className="text-[14px] mt-1">{chatTitle}</Title>
+        <Title lang={titleLang} className="text-[14px] mt-1">
+          {chatTitle}
+        </Title>
         {userStatus && !props.isUserChatMember ? (
           <LastMessage
             className="pt-[1px]"

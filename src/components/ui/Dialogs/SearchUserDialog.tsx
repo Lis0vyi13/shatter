@@ -9,6 +9,7 @@ import {
 } from "../shadcn/command";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -25,10 +26,12 @@ import SearchInput from "../Inputs/SearchInput";
 import useFetchUsersChat from "@/components/pages/Chat/ChatList/hooks/useFetchUsersChat";
 import ChatListItem from "@/components/pages/Chat/ChatList/ChatListItem";
 import Loader from "../Loader";
+import SkeletonChatListItem from "@/components/pages/Chat/ChatList/ChatListItem/ChatListItem.skeleton";
+import NotFound from "@/components/pages/Chat/ChatList/NotFound";
+import Icon from "../Icon";
 
 import { IChat } from "@/types/chat";
-import SkeletonChatListItem from "@/components/pages/Chat/ChatList/ChatListItem.skeleton";
-import NotFound from "@/components/pages/Chat/ChatList/NotFound";
+import { X } from "lucide-react";
 
 interface ISearchUserDialog {
   data: IChat[] | null;
@@ -152,6 +155,12 @@ const SearchUserDialog = ({
               </CommandList>
             </>
           </Command>
+          <DialogClose className="rounded-full flex items-center justify-center absolute right-4 top-4">
+            <Icon className="inline-flex py-1 px-1">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </Icon>
+          </DialogClose>
           <DialogDescription className="hidden" />
         </DialogContent>
       </DialogOverlay>

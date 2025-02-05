@@ -31,13 +31,11 @@ export const settings: ISettings[] = [
     Icon: <FaUser />,
     title: "Profile",
     isActive: false,
-    href: "/profile",
   },
   {
     Icon: <CgOptions />,
     title: "Edit",
     isActive: false,
-    href: "/edit",
   },
 ];
 

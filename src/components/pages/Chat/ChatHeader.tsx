@@ -17,8 +17,8 @@ interface IChatHeader {
 const ChatHeader = ({ data, user, usersOnline }: IChatHeader) => (
   <header className="chat-header pb-4 bg-white flex justify-between items-center">
     <div className="flex items-center gap-3">
-      <Icon>
-        <FaArrowLeftLong className="block mdLg:hidden text-[22px]" />
+      <Icon className="block mdLg:hidden">
+        <FaArrowLeftLong className=" text-[22px]" />
       </Icon>
       <Title className="text-[28px] leading-8">
         {user && data ? data?.title[user?.uid] : <ChatTitleSkeleton />}
