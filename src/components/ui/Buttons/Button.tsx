@@ -1,5 +1,7 @@
 import { ButtonHTMLAttributes, forwardRef, ReactNode, RefObject } from "react";
 
+import { cn } from "@/utils";
+
 interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   className?: string;
@@ -11,7 +13,10 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>(
     return (
       <button
         ref={ref}
-        className={`w-full transition-all duration-200 px-4 py-2 hover:bg-opacity-80 h-full focus:outline-none focus:opacity-50 inline-block active:scale-90 ${className}`}
+        className={cn(
+          "w-full transition-all duration-200 px-4 py-2 hover:bg-opacity-80 h-full focus:outline-none focus:opacity-50 inline-block active:scale-90",
+          className,
+        )}
         {...rest}
       >
         {children}

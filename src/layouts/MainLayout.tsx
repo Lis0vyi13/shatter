@@ -24,7 +24,7 @@ const MainLayout = () => {
   }, [isLogin, navigate]);
   return isLogin ? (
     <Suspense fallback={<Loader />}>
-      <div className="px-4 py-2 flex h-full min-h-full">
+      <div className="p-1 flex h-full min-h-full">
         <section className="wrapper flex-1 bg-dark rounded-[26px] flex">
           <aside className="hidden justify-center min-w-[96px] sm:flex">
             <Sidebar />

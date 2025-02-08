@@ -36,9 +36,7 @@ const ChatWrapper = ({ id }: { id?: string }) => {
               <Chat data={activeChat} />
             </div>
           </div>
-          <div className="w-[300px] chat-details-wrapper hidden xl:block">
-            <ChatDetails data={activeChat} />
-          </div>
+          <ChatDetails data={activeChat} />
         </>
       ) : (
         <div

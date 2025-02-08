@@ -11,7 +11,7 @@ export default {
   theme: {
     colors: {
       transparent: "transparent",
-      dark: "#202022",
+      dark: "#0d0e12",
       gray: "#979797",
       blue: "#7678ed",
       lightBlue: "#dcdcff",

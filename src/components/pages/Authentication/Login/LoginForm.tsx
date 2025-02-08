@@ -16,7 +16,6 @@ const LoginForm = () => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const loadingBarRef = useRef<LoadingBarRef>(null);
   const [isPending, setIsPending] = useState(false);
-  console.log(isPending);
   const { handleSubmit, isTransitionPending } = useLogin(loadingBarRef);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

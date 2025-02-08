@@ -22,7 +22,6 @@ const Avatar = ({ src, participant, title, className }: TAvatar) => {
     !chatAvatar && "bg-dark",
     className,
   );
-
   return (
     <div className={avatarClasses}>
       {chatAvatar ? (
