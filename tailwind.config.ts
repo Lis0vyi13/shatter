@@ -18,6 +18,7 @@ export default {
       orange: "#ff7a55",
       white: "#f9fafc",
       skeleton: "#434343",
+      separator: "#323232",
     },
     extend: {
       backgroundImage: {

@@ -14,7 +14,7 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "w-full transition-all duration-200 px-4 py-2 hover:bg-opacity-80 h-full focus:outline-none focus:opacity-50 inline-block active:scale-90",
+          "w-full transition-all duration-300 px-4 py-2 hover:bg-opacity-80 h-full focus:outline-none focus:opacity-50 inline-block active:scale-90",
           className,
         )}
         {...rest}

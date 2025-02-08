@@ -8,6 +8,7 @@ export interface IUser {
   folders: string[];
   favorites: string;
   banner: string;
+  updatedAt: string;
 }
 
 export interface IUserStatus {
