@@ -9,6 +9,9 @@ export interface IUser {
   favorites: string;
   banner: string;
   updatedAt: string;
+  birthday: number | null;
+  username: string;
+  phoneNumber: string;
 }
 
 export interface IUserStatus {

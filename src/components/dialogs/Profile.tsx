@@ -3,17 +3,20 @@ import { DialogClose, DialogContent, DialogTitle } from "../ui/shadcn/dialog";
 import { Badge } from "../ui/shadcn/badge";
 
 import { cn, getLanguage } from "@/utils";
+import { usePasswordChange } from "@/hooks/usePasswordChange";
 
 import Avatar from "@/components/common/Avatar";
 import EditOverlay from "../ui/EditOverlay";
 import Banner from "../ui/Banner";
 import Icon from "../ui/Icon";
 import ProfileInfoList from "./ProfileInfoList";
-
-import { X } from "lucide-react";
-
-import { IUser } from "@/types/user";
 import Button from "../ui/Buttons/Button";
+
+import { Lock, X } from "lucide-react";
+import { IUser } from "@/types/user";
+
+const buttonClassName =
+  "text-[11px] py-[2px] px-3 rounded-md border border-separator hover:bg-separator inline-flex items-center";
 
 const Profile = ({
   user,
@@ -22,6 +25,8 @@ const Profile = ({
   user: IUser | null;
   children?: ReactNode;
 }) => {
+  const { onPasswordChange, loading, error } = usePasswordChange();
+
   return (
     <DialogContent
       className={cn(
@@ -35,7 +40,7 @@ const Profile = ({
       </div>
 
       <div className="relative px-4">
-        <div className="-mt-12 w-fit relative z-30">
+        <div className="flex w-full gap-2 justify-between -mt-12">
           <EditOverlay isRounded className="w-16 h-16">
             <Avatar
               className="text-[24px] border-[3px] border-[#0d0e12]"
@@ -43,6 +48,16 @@ const Profile = ({
               title={user?.displayName || ""}
             />
           </EditOverlay>
+          <div className="mt-10">
+            <button className="pointer-events-none w-0 h-0" />
+
+            <Button className={buttonClassName}>
+              <div className="inline-flex items-center gap-1">
+                <Lock size={12} />
+                <span className="leading-7">Change Password</span>
+              </div>
+            </Button>
+          </div>
         </div>
         <div className="flex items-center gap-2 mt-4">
           <DialogTitle
@@ -62,22 +77,6 @@ const Profile = ({
         </div>
 
         {children}
-
-        <section className="flex justify-end mt-4 text-[12px]">
-          <div className="flex gap-2 w-fit">
-            <button className="pointer-events-none" />
-            <DialogClose asChild>
-              <div>
-                <Button className="border-separator hover:bg-separator text-white border rounded-md px-3 whitespace-nowrap">
-                  Cancel
-                </Button>
-              </div>
-            </DialogClose>
-            <Button className="border-separator border rounded-md px-3 whitespace-nowrap bg-blue hover:bg-[#6f64c7]">
-              Save changes
-            </Button>
-          </div>
-        </section>
       </div>
 
       <DialogClose className="rounded-full flex items-center justify-center absolute z-20 right-2 top-2">

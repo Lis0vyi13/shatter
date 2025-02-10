@@ -26,6 +26,7 @@ body {
   font-weight: normal;
   overflow: hidden;
   background-size: cover;
+  background-repeat: no-repeat;
   height: 100vh;
 }
 h1 {
@@ -370,4 +371,8 @@ select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
   color: white;
   caret-color: white;
+}
+
+.rdp-vhidden {
+  @apply hidden;
 }

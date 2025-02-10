@@ -1,11 +1,11 @@
 import { RefObject } from "react";
-
+import moment from "moment";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { User } from "firebase/auth";
 import { auth } from "@/firebase/firebaseConfig";
 
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import moment from "moment";
+import { SelectedDate } from "@/components/ui/BirthdayPicker";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -76,4 +76,36 @@ export const getLanguage = (text: string) => {
   } else {
     return "en";
   }
+};
+
+export const getDaysInMonth = (month: number, year: number) => {
+  if (month === 2) {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+  }
+  if ([4, 6, 9, 11].includes(month)) {
+    return 30;
+  }
+  return 31;
+};
+
+export const getMonthNumber = (month: string) => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return (months.indexOf(month) + 1).toString().padStart(2, "0");
+};
+
+export const getFormattedBirthday = (date: SelectedDate) => {
+  return `${date.day} ${date.month}, ${date.year}`;
 };

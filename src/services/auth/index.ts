@@ -1,10 +1,13 @@
 import {
   AuthProvider,
+  EmailAuthProvider,
   getAuth,
+  reauthenticateWithCredential,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updatePassword,
   User,
 } from "firebase/auth";
 import { actionCodeSettings, auth } from "@/firebase/firebaseConfig";
@@ -101,4 +104,29 @@ export const resetPassword = async (email: string): Promise<void> => {
     toast.error(errorMessage);
     throw error;
   }
+};
+
+export const updateUserPassword = (
+  user: User | null,
+  oldPassword: string,
+  newPassword: string,
+) => {
+  if (!user || !user.email)
+    throw new Error("User is not authenticated or email is missing");
+
+  const credential = EmailAuthProvider.credential(user.email, oldPassword);
+
+  reauthenticateWithCredential(user, credential)
+    .then(() => {
+      updatePassword(user, newPassword)
+        .then(() => {
+          console.log("Password updated successfully");
+        })
+        .catch((error) => {
+          throw new Error(`Error updating password: ${error.message}`);
+        });
+    })
+    .catch((error) => {
+      throw new Error(`Incorrect old password: ${error.message}`);
+    });
 };

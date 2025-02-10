@@ -38,6 +38,10 @@ export const createUser = async (user: User): Promise<IUser> => {
         createdAt: Date.now(),
         favorites: "",
         banner: "",
+        updatedAt: "",
+        birthday: null,
+        username: "@",
+        phoneNumber: "",
       };
 
       await setDoc(userDocRef, userData);

@@ -20,6 +20,7 @@ const ChatFooter = ({
       <Input
         ref={inputRef}
         value={value}
+        autoComplete="off"
         onChange={onChangeHandler}
         className="bg-opacity-70 bg-lightBlue pl-9 text-dark placeholder:text-opacity-70 text-xs placeholder:text-xs py-4"
         name="message"
