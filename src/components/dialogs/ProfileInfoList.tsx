@@ -43,16 +43,16 @@ const ProfileInfoList = ({ user }: { user: IUser | null }) => {
       <li className="border-r border-separator border-separate pr-4">
         <ProfileInfoItem title="Last seen" value={lastSeenValue} />
       </li>
-      <li>
-        {user?.birthday && (
+      {user?.birthday && (
+        <li>
           <ProfileInfoItem
             title="Date of Birth"
             value={getFormattedBirthday(
               getDateFromTimestamp(user.birthday) as SelectedDate,
             )}
           />
-        )}
-      </li>
+        </li>
+      )}
     </ul>
   );
 };

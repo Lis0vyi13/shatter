@@ -1,4 +1,5 @@
 import { cn, getFormattedBirthday } from "@/utils";
+import useEditProfileForm from "./hooks/useEditProfileForm";
 
 import {
   Popover,
@@ -12,7 +13,8 @@ import CustomPhoneInput from "@/components/ui/CustomPhoneInput";
 import EditProfileButtons from "./EditProfileButtons";
 
 import { IUser } from "@/types/user";
-import useEditProfileForm from "./hooks/useEditProfileForm";
+import { X } from "lucide-react";
+import Icon from "@/components/ui/Icon";
 
 const inputClassName =
   "text-left transition-all border-none bg-transparent placeholder:text-white text-white outline-separator px-2 py-2 text-[12px] focus:outline-gray";
@@ -67,26 +69,36 @@ const EditProfileForm = ({
           </EditProfileFormItem>
           <EditProfileFormItem name="Date of Birth">
             <Popover modal>
-              <PopoverTrigger className="w-[70%]">
-                <Input
-                  className={cn(
-                    "cursor-pointer hover:bg-separator",
-                    inputClassName,
-                  )}
-                  name={"birthday"}
-                  onClick={() => {
-                    if (!birthday)
-                      setBirthday({
-                        day: "1",
-                        month: "January",
-                        year: "2025",
-                      });
-                  }}
-                  value={birthday ? getFormattedBirthday(birthday) : ""}
-                  placeholder="Pick a Date"
-                  type="button"
-                />
-              </PopoverTrigger>
+              <div className="relative w-[70%]">
+                <PopoverTrigger className="w-full">
+                  <Input
+                    className={cn(
+                      "cursor-pointer hover:bg-separator",
+                      inputClassName,
+                    )}
+                    name={"birthday"}
+                    onClick={() => {
+                      if (!birthday)
+                        setBirthday({
+                          day: "1",
+                          month: "January",
+                          year: "2025",
+                        });
+                    }}
+                    value={birthday ? getFormattedBirthday(birthday) : ""}
+                    placeholder="Pick a Date"
+                    type="button"
+                  />
+                </PopoverTrigger>
+                {birthday && (
+                  <div className="absolute top-[3px] right-1">
+                    <Icon isDark>
+                      <X onClick={() => setBirthday(null)} size={18} />
+                    </Icon>
+                  </div>
+                )}
+              </div>
+
               <PopoverContent className="p-0 bg-dark text-white border-none outline-none">
                 <BirthdayPicker value={birthday} onChange={setBirthday} />
               </PopoverContent>

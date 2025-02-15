@@ -103,7 +103,7 @@ const SearchUserDialog = ({
         </button>
       </DialogTrigger>
 
-      <DialogOverlay className="fixed cursor-auto inset-0 bg-[#000] bg-opacity-80">
+      <DialogOverlay className="fixed cursor-auto inset-0 bg-[#000] bg-opacity-10">
         <DialogContent
           className={cn(
             "fixed outline-none top-1/2 left-1/2 transform border-none -translate-x-1/2 sm:w-[450px] -translate-y-1/2 bg-white p-6 rounded-md shadow-lg",

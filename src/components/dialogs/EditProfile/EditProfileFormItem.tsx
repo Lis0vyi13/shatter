@@ -16,7 +16,7 @@ const EditProfileFormItem = ({
   return (
     <li
       className={cn(
-        `flex justify-between gap-3 border-b pb-3 border-separator`,
+        `relative flex justify-between gap-3 border-b pb-3 border-separator`,
         className,
       )}
     >
