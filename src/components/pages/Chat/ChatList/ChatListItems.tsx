@@ -1,6 +1,7 @@
 import { MutableRefObject } from "react";
 import { Droppable } from "@hello-pangea/dnd";
 import { useAppSelector } from "@/redux/app/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 
 import useChatListItems from "./hooks/useChatListItems";
 import renderChatListItem from "./utils/renderChatListItem";
@@ -8,7 +9,6 @@ import renderChatListItem from "./utils/renderChatListItem";
 import NotFound from "./NotFound";
 
 import { IChat } from "@/types/chat";
-import { AnimatePresence } from "framer-motion";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -57,48 +57,55 @@ const ChatListItems = ({
   }
 
   return (
-    <AnimatePresence>
-      {pinnedChats.length > 0 && (
-        <Droppable droppableId="pinnedChatsDroppable">
-          {(provided) => (
-            <ul
-              className="list flex flex-col"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {pinnedChats.map((chat, index) =>
-                renderChatListItem({
-                  chat,
-                  index,
-                  isChatPinned: true,
-                  activeChat,
-                  deletingChat,
-                  onDelete,
-                  handleChatSelection,
-                  searchInputValue,
-                }),
-              )}
-              {provided.placeholder}
-            </ul>
-          )}
-        </Droppable>
-      )}
-
-      <ul className="list flex flex-col">
-        {unpinnedChats.map((chat, index) =>
-          renderChatListItem({
-            chat,
-            index: index + pinnedChats.length,
-            isChatPinned: false,
-            activeChat,
-            deletingChat,
-            onDelete,
-            handleChatSelection,
-            searchInputValue,
-          }),
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <AnimatePresence>
+        {pinnedChats.length > 0 && (
+          <Droppable droppableId="pinnedChatsDroppable">
+            {(provided) => (
+              <ul
+                className="list flex flex-col"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {pinnedChats.map((chat, index) =>
+                  renderChatListItem({
+                    chat,
+                    index,
+                    isChatPinned: true,
+                    activeChat,
+                    deletingChat,
+                    onDelete,
+                    handleChatSelection,
+                    searchInputValue,
+                  }),
+                )}
+                {provided.placeholder}
+              </ul>
+            )}
+          </Droppable>
         )}
-      </ul>
-    </AnimatePresence>
+
+        <ul className="list flex flex-col">
+          {unpinnedChats.map((chat, index) =>
+            renderChatListItem({
+              chat,
+              index: index + pinnedChats.length,
+              isChatPinned: false,
+              activeChat,
+              deletingChat,
+              onDelete,
+              handleChatSelection,
+              searchInputValue,
+            }),
+          )}
+        </ul>
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

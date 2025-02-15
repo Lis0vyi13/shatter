@@ -28,7 +28,11 @@ const Sidebar = () => {
   );
   return (
     <section className="flex flex-1 min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
-      <Link onClick={handleLogoClick} className="mt-1" to="/c">
+      <Link
+        onClick={handleLogoClick}
+        className="mt-1 transition-all duration-300 hover:scale-110 active:scale-90"
+        to="/c"
+      >
         <Logo width={32} height={32} />
       </Link>
       <div className="flex flex-col gap-3 justify-center">

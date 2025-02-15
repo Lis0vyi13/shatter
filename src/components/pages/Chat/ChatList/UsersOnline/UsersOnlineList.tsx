@@ -1,6 +1,7 @@
 import { Dispatch, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "@/redux/app/hooks";
+import { motion } from "framer-motion";
 
 import useUsersOnlineList from "./hooks/useUsersOnlineList";
 import { scrollToChatLink } from "@/utils";
@@ -23,6 +24,7 @@ const UsersOnlineList = ({
     (store) => store.chat.onlineParticipants,
   );
   const usersOnlineListRef = useUsersOnlineList(data, setParticipants);
+
   useEffect(() => {
     const container = usersOnlineListRef.current;
     if (!container) return;
@@ -58,8 +60,15 @@ const UsersOnlineList = ({
         Array.from({ length: 5 }).map((_, index) => (
           <UsersOnlineCardSkeleton key={index} />
         ))}
-      {data
-        ? data.map((chat) => (
+      {data ? (
+        <motion.div
+          className="flex gap-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {data.map((chat) => (
             <Link
               className="rounded-full w-fit h-fit"
               key={chat.chatId}
@@ -68,16 +77,19 @@ const UsersOnlineList = ({
             >
               <UsersOnlineCard key={chat.chatId} data={chat} />
             </Link>
-          ))
-        : participantsList?.map((chat) => (
-            <Link
-              className="rounded-full w-fit h-fit"
-              key={chat.chatId}
-              to={`/c/${chat.chatId}`}
-            >
-              <UsersOnlineCard key={chat.chatId} data={chat} />
-            </Link>
           ))}
+        </motion.div>
+      ) : (
+        participantsList?.map((chat) => (
+          <Link
+            className="rounded-full w-fit h-fit"
+            key={chat.chatId}
+            to={`/c/${chat.chatId}`}
+          >
+            <UsersOnlineCard key={chat.chatId} data={chat} />
+          </Link>
+        ))
+      )}
     </section>
   );
 };
