@@ -23,7 +23,7 @@ const EditProfileDialog = ({ children }: { children: ReactNode }) => {
         <div onClick={() => setIsOpen(true)}>{children}</div>
       </DialogTrigger>
 
-      <DialogOverlay className="bg-[#000] opacity-60">
+      <DialogOverlay className="opacity-10">
         <DialogTitle></DialogTitle>
         <DialogDescription></DialogDescription>
 
