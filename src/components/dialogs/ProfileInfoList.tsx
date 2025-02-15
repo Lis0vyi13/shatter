@@ -1,9 +1,11 @@
 import { memo, useEffect, useState } from "react";
-import { formatTimestampToDate } from "@/utils";
+import { formatTimestampToDate, getFormattedBirthday } from "@/utils";
 import { getUserStatus } from "@/services/user";
 import useActions from "@/hooks/useActions";
+import { getDateFromTimestamp } from "./EditProfile/hooks/useEditProfileForm";
 
 import ProfileInfoItem from "./ProfileInfoItem";
+import { SelectedDate } from "../ui/BirthdayPicker";
 
 import { IUser } from "@/types/user";
 
@@ -42,7 +44,14 @@ const ProfileInfoList = ({ user }: { user: IUser | null }) => {
         <ProfileInfoItem title="Last seen" value={lastSeenValue} />
       </li>
       <li>
-        <ProfileInfoItem title="Date of Birth" value={"16 March, 2004"} />
+        {user?.birthday && (
+          <ProfileInfoItem
+            title="Date of Birth"
+            value={getFormattedBirthday(
+              getDateFromTimestamp(user.birthday) as SelectedDate,
+            )}
+          />
+        )}
       </li>
     </ul>
   );

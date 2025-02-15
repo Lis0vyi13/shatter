@@ -9,7 +9,9 @@ import { SelectedDate } from "@/components/ui/BirthdayPicker";
 
 import { IUser } from "@/types/user";
 
-const getDateFromTimestamp = (timestamp: number | null) => {
+export const getDateFromTimestamp = (
+  timestamp: number | null,
+): SelectedDate | null => {
   if (!timestamp) return null;
   const date = new Date(timestamp);
 
