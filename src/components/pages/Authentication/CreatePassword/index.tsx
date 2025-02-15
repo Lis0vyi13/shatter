@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import useAuth from "@/hooks/useAuth";
 
@@ -13,16 +13,14 @@ import { authDefaultVariants } from "@/constants/animations";
 const CreatePassword = () => {
   const isAuth = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const oob = searchParams.get("oobCode");
 
   useEffect(() => {
-    if (!localStorage.getItem("googleUserData")) {
-      if (isAuth) {
-        navigate("/c", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
+    if (!localStorage.getItem("googleUserData") && !oob) {
+      navigate(isAuth ? "/c" : "/login", { replace: true });
     }
-  }, [isAuth, navigate]);
+  }, [isAuth, navigate, oob]);
 
   return (
     <AuthWrapper>
@@ -38,7 +36,7 @@ const CreatePassword = () => {
         className="w-full mb-4 flex flex-col justify-center items-center"
         variants={authDefaultVariants}
       >
-        <CreatePasswordForm />
+        <CreatePasswordForm oob={oob} />
       </motion.div>
     </AuthWrapper>
   );

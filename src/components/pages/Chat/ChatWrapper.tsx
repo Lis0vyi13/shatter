@@ -5,6 +5,7 @@ import useActiveChat from "@/hooks/useActiveChat";
 import useActions from "@/hooks/useActions";
 
 import Block from "@/components/ui/Block";
+import { Badge } from "@/components/ui/shadcn/badge";
 import ChatDetails from "./ChatDetails";
 import Chat from "./Chat";
 
@@ -43,9 +44,9 @@ const ChatWrapper = ({ id }: { id?: string }) => {
           className={`flex bg-white rounded-3xl rounded-l-none w-full gap-2`}
         >
           <div className="chat flex bg-gray bg-opacity-30 rounded-r-3xl p-4 justify-center items-center flex-col w-full px-3 flex-1">
-            <span className="px-4 py-2 text-xs text-[0.9rem] bg-dark text-white rounded-2xl">
+            <Badge className="px-4 py-2 font-[400] text-[0.8rem] text-white">
               Choose who you would like to write to
-            </span>
+            </Badge>
           </div>
         </div>
       )}

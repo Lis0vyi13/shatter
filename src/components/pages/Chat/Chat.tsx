@@ -7,7 +7,6 @@ import ChatMain from "./ChatMain";
 import ChatFooter from "./ChatFooter";
 
 import { IChat } from "@/types/chat";
-import { TEST_MESSAGES } from "./Chat.constants";
 
 const Chat = ({ data }: { data: IChat | null }) => {
   const [value, setValue] = useState<string>("");
@@ -25,7 +24,7 @@ const Chat = ({ data }: { data: IChat | null }) => {
   return (
     <>
       <ChatHeader data={data} user={user} usersOnline={usersOnline} />
-      <ChatMain data={data} user={user} messages={TEST_MESSAGES} />
+      <ChatMain data={data} user={user} />
       <ChatFooter
         value={value}
         onChangeHandler={onChangeHandler}

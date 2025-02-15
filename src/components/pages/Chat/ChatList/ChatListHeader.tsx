@@ -41,6 +41,7 @@ const ChatListHeader = ({
       {usersOnline?.length != 0 && (
         <div className="mt-3 overflow-hidden">
           <UsersOnlineList
+            listRef={listRef}
             setParticipants={setUsersOnline}
             data={usersOnline}
           />

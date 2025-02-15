@@ -11,8 +11,8 @@ export interface SelectedDate {
 
 interface BirthdayPickerProps {
   className?: string;
-  value: SelectedDate;
-  onChange: Dispatch<SetStateAction<SelectedDate>>;
+  value: SelectedDate | null;
+  onChange: Dispatch<SetStateAction<SelectedDate | null>>;
 }
 
 const months = [
@@ -48,8 +48,8 @@ const BirthdayPicker = ({
   ];
 
   useEffect(() => {
-    const monthIndex = months.indexOf(value.month) + 1;
-    const year = parseInt(value.year, 10);
+    const monthIndex = months.indexOf(value?.month || "January") + 1;
+    const year = parseInt(value?.year || "2025", 10);
     const daysInMonth = getDaysInMonth(monthIndex, year);
     const newDays = Array.from({ length: daysInMonth }, (_, i) =>
       (i + 1).toString(),
@@ -57,21 +57,20 @@ const BirthdayPicker = ({
 
     setDays(newDays);
 
-    if (!newDays.includes(value.day)) {
-      onChange((prev) => ({
-        ...prev,
-        day: newDays[newDays.length - 1],
-      }));
+    if (!newDays.includes(value?.day || "1")) {
+      onChange((prev) =>
+        prev ? { ...prev, day: newDays[newDays.length - 1] } : null,
+      );
     }
-  }, [onChange, value.day, value.month, value.year]);
+  }, [onChange, value, value?.day, value?.month, value?.year]);
 
   return (
     <Picker
       wheelMode="normal"
       value={{
-        day: value.day,
-        month: value.month,
-        year: value.year,
+        day: value?.day || "1",
+        month: value?.month || "January",
+        year: value?.year || "2025",
       }}
       onChange={onChange}
       className={cn("text-[14px]", className)}

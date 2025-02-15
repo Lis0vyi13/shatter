@@ -17,6 +17,7 @@ const useSidebarActions = (
     setSearchInputValue,
     setDebouncedSearchInputValue,
     setActiveChat,
+    setOnlineParticipants,
   } = useActions();
   const [loading, setLoading] = useState(false);
 
@@ -48,6 +49,7 @@ const useSidebarActions = (
       setChats(null);
       setFavorites(null);
       setActiveChat("");
+      setOnlineParticipants(null);
 
       const currentUser = auth.currentUser;
 

@@ -31,7 +31,6 @@ const ChatList = ({
   listRef,
 }: IChatList) => {
   const currentUser = useUser();
-
   const debouncedSearchValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue,
   );

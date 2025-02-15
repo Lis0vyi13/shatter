@@ -13,11 +13,11 @@ import { FaArrowRightLong } from "react-icons/fa6";
 
 import { authInputClassName, CREATE_PASSWORD_INPUTS } from "../Auth.constants";
 
-const CreatePasswordForm = () => {
+const CreatePasswordForm = ({ oob }: { oob: string | null }) => {
   const navigate = useNavigate();
   const loadingBarRef = useRef<LoadingBarRef>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const { handleSubmit } = useCreatePassword(loadingBarRef);
+  const { handleSubmit } = useCreatePassword(loadingBarRef, oob);
   const [isPending, setIsPending] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,11 +51,22 @@ const CreatePasswordForm = () => {
         onKeyDown={(e) => handleEnterKey(e, submitButtonRef)}
         className="mt-4 w-full px-4 xs:px-0 xs:w-[270px] flex flex-col gap-3 max-w-full"
       >
-        {CREATE_PASSWORD_INPUTS.map((input) => (
-          <Fragment key={input.name}>
-            <AuthInput className={authInputClassName} {...input} />
+        {oob ? (
+          <Fragment>
+            <AuthInput
+              className={authInputClassName}
+              {...CREATE_PASSWORD_INPUTS.find(
+                (data) => data.name === "password",
+              )}
+            />
           </Fragment>
-        ))}
+        ) : (
+          CREATE_PASSWORD_INPUTS.map((input) => (
+            <Fragment key={input.name}>
+              <AuthInput className={authInputClassName} {...input} />
+            </Fragment>
+          ))
+        )}
         <Button
           ref={submitButtonRef}
           className="text-dark flex justify-center hover:bg-gray text-[14px] py-3 items-center gap-1 mt-6 bg-white rounded-2xl"

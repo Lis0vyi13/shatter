@@ -9,17 +9,6 @@ export default {
   ],
   darkMode: ["class"],
   theme: {
-    colors: {
-      transparent: "transparent",
-      dark: "#0d0e12",
-      gray: "#979797",
-      blue: "#7678ed",
-      lightBlue: "#dcdcff",
-      orange: "#ff7a55",
-      white: "#f9fafc",
-      skeleton: "#434343",
-      separator: "#323232",
-    },
     extend: {
       backgroundImage: {
         home: "url('/home.jpg')",
@@ -30,6 +19,15 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        transparent: "transparent",
+        dark: "#0d0e12",
+        gray: "#979797",
+        blue: "#7678ed",
+        lightBlue: "#dcdcff",
+        orange: "#ff7a55",
+        white: "#f9fafc",
+        skeleton: "#434343",
+        separator: "#323232",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

@@ -1,17 +1,16 @@
 import { cn } from "@/utils";
 
+import EmptyChat from "./EmptyChat";
 import Message from "./Message";
 import MessageSkeleton from "./skeletons/Message.skeleton";
 
-import { IChat, IMessage } from "@/types/chat";
+import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 
 const ChatMain = ({
-  messages,
   data,
   user,
 }: {
-  messages: IMessage[];
   data: IChat | null;
   user: IUser | null;
 }) => {
@@ -23,17 +22,22 @@ const ChatMain = ({
       )}
     >
       {data ? (
-        messages.map((m) => {
-          // когда сообщения будут работать убрать проп messages и получить из data
-          return (
-            <Message
-              participantTitle={user && user.uid ? data.title[user?.uid] : ""}
-              participantAvatar={data.avatar}
-              key={m.id}
-              data={m}
-            />
-          );
-        })
+        data.messages.length > 0 ? (
+          data.messages.map((m) => {
+            return (
+              <Message
+                participantTitle={user && user.uid ? data.title[user?.uid] : ""}
+                participantAvatar={data.avatar}
+                key={m.id}
+                data={m}
+              />
+            );
+          })
+        ) : (
+          <div className="-mt-6 h-full flex">
+            <EmptyChat />
+          </div>
+        )
       ) : (
         <>
           {Array.from({ length: 6 }).map((_, index) => (

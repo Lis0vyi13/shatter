@@ -8,6 +8,7 @@ import renderChatListItem from "./utils/renderChatListItem";
 import NotFound from "./NotFound";
 
 import { IChat } from "@/types/chat";
+import { AnimatePresence } from "framer-motion";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -56,7 +57,7 @@ const ChatListItems = ({
   }
 
   return (
-    <>
+    <AnimatePresence>
       {pinnedChats.length > 0 && (
         <Droppable droppableId="pinnedChatsDroppable">
           {(provided) => (
@@ -97,7 +98,7 @@ const ChatListItems = ({
           }),
         )}
       </ul>
-    </>
+    </AnimatePresence>
   );
 };
 

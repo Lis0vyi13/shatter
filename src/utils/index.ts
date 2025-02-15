@@ -64,7 +64,7 @@ export const scrollToChatLink = (
     `a[href="/c/${activeChat}"]`,
   );
   if (targetElement) {
-    targetElement.scrollIntoView({ block: "nearest" });
+    targetElement.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 };
 

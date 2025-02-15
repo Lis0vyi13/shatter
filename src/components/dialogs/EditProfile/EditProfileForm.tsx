@@ -4,15 +4,15 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/shadcn/popover";
+} from "@/components/ui/shadcn/popoverDialog";
 import EditProfileFormItem from "./EditProfileFormItem";
 import Input from "@/components/ui/Inputs/Input";
 import BirthdayPicker from "@/components/ui/BirthdayPicker";
 import CustomPhoneInput from "@/components/ui/CustomPhoneInput";
+import EditProfileButtons from "./EditProfileButtons";
 
 import { IUser } from "@/types/user";
 import useEditProfileForm from "./hooks/useEditProfileForm";
-import EditProfileButtons from "./EditProfileButtons";
 
 const inputClassName =
   "text-left transition-all border-none bg-transparent placeholder:text-white text-white outline-separator px-2 py-2 text-[12px] focus:outline-gray";
@@ -36,7 +36,6 @@ const EditProfileForm = ({
     handleSubmit,
     isLoading,
   } = useEditProfileForm(onSubmit, user);
-
   return (
     user && (
       <form onSubmit={handleSubmit} className="mt-3 text-[12px]">
@@ -68,19 +67,25 @@ const EditProfileForm = ({
           </EditProfileFormItem>
           <EditProfileFormItem name="Date of Birth">
             <Popover modal>
-              <PopoverTrigger asChild>
-                <div className="w-[70%]">
-                  <Input
-                    className={cn(
-                      "cursor-pointer hover:bg-separator",
-                      inputClassName,
-                    )}
-                    name={"birthday"}
-                    value={getFormattedBirthday(birthday)}
-                    placeholder="Pick a Date"
-                    type="button"
-                  />
-                </div>
+              <PopoverTrigger className="w-[70%]">
+                <Input
+                  className={cn(
+                    "cursor-pointer hover:bg-separator",
+                    inputClassName,
+                  )}
+                  name={"birthday"}
+                  onClick={() => {
+                    if (!birthday)
+                      setBirthday({
+                        day: "1",
+                        month: "January",
+                        year: "2025",
+                      });
+                  }}
+                  value={birthday ? getFormattedBirthday(birthday) : ""}
+                  placeholder="Pick a Date"
+                  type="button"
+                />
               </PopoverTrigger>
               <PopoverContent className="p-0 bg-dark text-white border-none outline-none">
                 <BirthdayPicker value={birthday} onChange={setBirthday} />

@@ -9,7 +9,8 @@ import { SelectedDate } from "@/components/ui/BirthdayPicker";
 
 import { IUser } from "@/types/user";
 
-const getDateFromTimestamp = (timestamp: number) => {
+const getDateFromTimestamp = (timestamp: number | null) => {
+  if (!timestamp) return null;
   const date = new Date(timestamp);
 
   const day = date.getDate().toString();
@@ -42,28 +43,29 @@ const getTimestampFromDate = (birthday: SelectedDate) => {
 interface IData {
   name: string;
   username: string;
-  birthday: number;
+  birthday: number | null;
   phoneNumber: string;
-  [key: string]: string | number;
+  [key: string]: string | number | null;
 }
 const useEditProfileForm = (onSubmit: () => void, user: IUser | null) => {
   const today = new Date();
   today.setHours(2, 0, 0, 0);
-  const timestampToday = today.getTime();
 
-  const initialBirthday = getDateFromTimestamp(
-    user?.birthday || timestampToday,
-  );
+  const initialBirthday = user?.birthday
+    ? getDateFromTimestamp(user.birthday)
+    : null;
 
   const initialData: IData = {
     name: user?.displayName || "",
     username: user?.username || "@",
-    birthday: user?.birthday || timestampToday,
+    birthday: user?.birthday || null,
     phoneNumber: user?.phoneNumber || "",
   };
   const [name, setName] = useState(user?.displayName || "");
   const [username, setUsername] = useState(user?.username || "@");
-  const [birthday, setBirthday] = useState<SelectedDate>(initialBirthday);
+  const [birthday, setBirthday] = useState<SelectedDate | null>(
+    initialBirthday,
+  );
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useActions();
@@ -76,7 +78,7 @@ const useEditProfileForm = (onSubmit: () => void, user: IUser | null) => {
     const currentData: IData = {
       name,
       username,
-      birthday: getTimestampFromDate(birthday),
+      birthday: birthday ? getTimestampFromDate(birthday) : null,
       phoneNumber,
     };
 

@@ -84,8 +84,8 @@ export const resetPassword = async (email: string): Promise<void> => {
   const auth = getAuth();
 
   const actionCodeSettings = {
-    url: import.meta.env.VITE_APP_URL + "login",
-    handleCodeInApp: false,
+    url: import.meta.env.VITE_APP_URL + "/create-password",
+    handleCodeInApp: true,
   };
 
   try {
