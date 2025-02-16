@@ -1,19 +1,27 @@
+import { useState } from "react";
+
 import useSidebarItems from "./useSidebarItems";
 import useSidebarActions from "./useSidebarActions";
 
 import { IFolder } from "@/types/sidebar";
 
 const useSidebar = (initialFolders: IFolder[] | null) => {
-  const { sidebarItems, setSidebarItems } = useSidebarItems(initialFolders);
-  const { handleItemClick, handleLogoClick, handleLogout, loading } =
-    useSidebarActions(setSidebarItems);
+  const [activeIcon, setActiveIcon] = useState("0");
+
+  const handleClick = (id: string) => {
+    setActiveIcon(id);
+  };
+
+  const { sidebarItems } = useSidebarItems(initialFolders);
+  const { handleLogoClick, handleLogout, loading } = useSidebarActions();
 
   return {
     sidebarItems,
-    handleItemClick,
     handleLogoClick,
     handleLogout,
     loading,
+    activeIcon,
+    handleClick,
   };
 };
 

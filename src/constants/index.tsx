@@ -13,7 +13,6 @@ export const sidebarIcons: IFolder[] = [
     Icon: <IoChatbox />,
     title: "All chats",
     type: "all",
-    isActive: true,
     unreaded: 0,
   },
   {
@@ -21,7 +20,6 @@ export const sidebarIcons: IFolder[] = [
     Icon: <RiInboxUnarchiveLine />,
     title: "Archive chats",
     type: "archive",
-    isActive: false,
     unreaded: 0,
   },
 ];
@@ -29,18 +27,17 @@ export const sidebarIcons: IFolder[] = [
 export const settings: ISettings[] = [
   {
     Icon: <FaUser />,
+    id: "2",
     title: "Profile",
-    isActive: false,
   },
   {
     Icon: <CgOptions />,
+    id: "3",
     title: "Edit",
-    isActive: false,
   },
 ];
 
 export const logOutIcon: ILogoutIcon = {
   Icon: <BiLogOut />,
   title: "Log out",
-  isActive: false,
 };

@@ -9,6 +9,7 @@ import { FaFolder } from "react-icons/fa";
 type TSidebarIconProps = (IFolder | ISettings | ILogoutIcon) & {
   onClick: () => void;
   href?: string;
+  isActive: boolean;
 };
 
 const SidebarIcon = ({

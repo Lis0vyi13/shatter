@@ -18,92 +18,87 @@ import { MdOutlineCleaningServices, MdDeleteOutline } from "react-icons/md";
 
 import { IChat } from "@/types/chat";
 
-interface IChatListItemMenu {
+interface IChatListItemMenuProps {
   data: IChat;
   children: ReactNode;
   onDelete: (chatId: string) => void;
+}
+
+interface IMenuItem {
+  icon: ReactNode;
+  label: string;
+  action: () => void;
+  isDanger?: boolean;
+  separator?: boolean;
 }
 
 export function ChatListItemMenu({
   data,
   onDelete,
   children,
-}: IChatListItemMenu) {
-  const labelWithIconClassName =
-    "absolute left-[2rem] top-1/2 -translate-y-1/2";
+}: IChatListItemMenuProps) {
   const user = useUser();
   const { openChat, doTogglePinChat, doDeleteChat } = useChatActions();
 
-  const menuItems = useMemo(
-    () => [
+  const menuItems = useMemo(() => {
+    const items: IMenuItem[] = [
       {
         icon: <FaRegFolderOpen className="text-[15px]" />,
         label: "Open",
-        separator: true,
         action: () => openChat(data.id),
       },
       {
         icon: <TiPin className="text-[16px]" />,
         label: user && data.isPin.includes(user.uid) ? "Unpin" : "Pin",
-        separator: false,
-        action: async () => {
-          await doTogglePinChat(data.id);
-        },
+        action: () => doTogglePinChat(data.id),
+        separator: true,
       },
       {
         icon: <RiInboxUnarchiveLine className="text-[16px]" />,
         label: "Archive",
-        separator: true,
         action: () => {},
       },
       {
         icon: <MdOutlineCleaningServices className="text-[16px]" />,
         label: "Clear history",
-        separator: false,
         action: () => {},
+        separator: data.members.length !== 1,
       },
-      {
+    ];
+
+    if (data.members.length !== 1) {
+      items.push({
         icon: <MdDeleteOutline className="text-[16px] text-[#ee242b]" />,
         label: "Delete chat",
+        action: () => doDeleteChat(data.id, onDelete),
         isDanger: true,
-        separator: false,
-        action: async () => {
-          await doDeleteChat(data.id, onDelete);
-        },
-      },
-    ],
-    [
-      data.id,
-      data.isPin,
-      doDeleteChat,
-      doTogglePinChat,
-      onDelete,
-      openChat,
-      user,
-    ],
-  );
+      });
+    }
+
+    return items;
+  }, [data, user, openChat, doTogglePinChat, doDeleteChat, onDelete]);
 
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-56 border-none">
-        {menuItems.map((item, index) => (
-          <div key={index}>
-            <ContextMenuItem onClick={item.action}>
-              <div className="flex items-center">
-                {item.icon}
-                <p
-                  className={`${labelWithIconClassName} ${
-                    item.isDanger ? "text-[#ee242b]" : ""
-                  }`}
-                >
-                  {item.label}
-                </p>
-              </div>
-            </ContextMenuItem>
-            {item.separator && <ContextMenuSeparator />}
-          </div>
-        ))}
+        {menuItems.map(
+          ({ icon, label, action, separator, isDanger }, index) => (
+            <div key={index}>
+              <ContextMenuItem onClick={action}>
+                <div className="flex items-center">
+                  {icon}
+                  <p
+                    className={`absolute left-[2rem] top-1/2 -translate-y-1/2 ${isDanger ? "text-[#ee242b]" : ""}`}
+                  >
+                    {label}
+                  </p>
+                </div>
+              </ContextMenuItem>
+              {separator && <ContextMenuSeparator />}
+            </div>
+          ),
+        )}
       </ContextMenuContent>
     </ContextMenu>
   );

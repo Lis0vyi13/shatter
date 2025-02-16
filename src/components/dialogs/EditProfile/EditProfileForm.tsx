@@ -91,9 +91,9 @@ const EditProfileForm = ({
                   />
                 </PopoverTrigger>
                 {birthday && (
-                  <div className="absolute top-[3px] right-1">
-                    <Icon isDark>
-                      <X onClick={() => setBirthday(null)} size={18} />
+                  <div className="absolute top-[2px] right-1">
+                    <Icon onClick={() => setBirthday(null)} isDark>
+                      <X size={19} />
                     </Icon>
                   </div>
                 )}

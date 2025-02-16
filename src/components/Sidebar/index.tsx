@@ -16,7 +16,8 @@ const Sidebar = () => {
   const folders = useFolders();
   const {
     sidebarItems,
-    handleItemClick,
+    handleClick,
+    activeIcon,
     handleLogoClick,
     handleLogout,
     loading,
@@ -29,7 +30,10 @@ const Sidebar = () => {
   return (
     <section className="flex flex-1 min-w-[92px] overflow-auto custom-scrollbar px-2 flex-col justify-between gap-4 items-center py-4">
       <Link
-        onClick={handleLogoClick}
+        onClick={() => {
+          handleLogoClick();
+          handleClick("0");
+        }}
         className="mt-1 transition-all duration-300 hover:scale-110 active:scale-90"
         to="/c"
       >
@@ -41,8 +45,9 @@ const Sidebar = () => {
             <li>
               {sidebarItems?.map((iconData, i) => (
                 <SidebarIcon
-                  onClick={() => handleItemClick(iconData.id || "0")}
-                  key={i}
+                  onClick={() => handleClick(iconData.id || "0")}
+                  isActive={iconData.id === activeIcon}
+                  key={iconData.title + i}
                   {...iconData}
                 />
               ))}
@@ -62,15 +67,17 @@ const Sidebar = () => {
             iconData.title === "Profile" ? (
               <EditProfileDialog key={i}>
                 <SidebarIcon
-                  onClick={() => handleItemClick(iconData.id || "0")}
-                  key={i}
+                  onClick={() => handleClick(iconData.id || "0")}
+                  isActive={iconData.id === activeIcon}
+                  key={iconData.title + i}
                   {...iconData}
                 />
               </EditProfileDialog>
             ) : (
               <SidebarIcon
-                onClick={() => handleItemClick(iconData.id || "0")}
-                key={i}
+                onClick={() => handleClick(iconData.id || "0")}
+                isActive={iconData.id === activeIcon}
+                key={iconData.title + i}
                 {...iconData}
               />
             ),
@@ -81,11 +88,16 @@ const Sidebar = () => {
         {loading ? (
           <SidebarIcon
             onClick={handleLogout}
+            isActive={false}
             {...logOutIcon}
             Icon={<CircleLoader className="-mt-2" />}
           />
         ) : (
-          <SidebarIcon onClick={handleLogout} {...logOutIcon} />
+          <SidebarIcon
+            onClick={handleLogout}
+            {...logOutIcon}
+            isActive={false}
+          />
         )}
       </div>
     </section>

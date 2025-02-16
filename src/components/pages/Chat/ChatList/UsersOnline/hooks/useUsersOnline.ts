@@ -13,7 +13,6 @@ const useUsersOnline = (data: IChat[] | null) => {
   >(null);
   const { setOnlineParticipants: setReduxOnlineParticipants } = useActions();
   const user = useUser();
-
   useEffect(() => {
     const fetchChatParticipants = async () => {
       if (!data || !user) return;
@@ -55,7 +54,8 @@ const useUsersOnline = (data: IChat[] | null) => {
     };
 
     fetchChatParticipants();
-  }, [data, setReduxOnlineParticipants, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   return [chatParticipantsData, setChatParticipantData] as const;
 };

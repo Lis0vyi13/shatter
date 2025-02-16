@@ -5,6 +5,8 @@ import Button from "@/components/ui/Buttons/Button";
 import Title from "@/components/ui/Title";
 import Logo from "@/components/common/Logo";
 
+import { fadeIn } from "@/constants/animations";
+
 const Home = () => {
   return (
     <>
@@ -34,8 +36,7 @@ const Home = () => {
         </Title>
         <motion.h2
           className="text-center mt-12 max-w-[700px] leading-6 font-[400] text-[14px] xs:text-[16px]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          {...fadeIn}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
           Shatter is a communication application between friends, family and

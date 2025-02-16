@@ -1,13 +1,17 @@
+import { motion } from "framer-motion";
+
 import Icon from "@/components/ui/Icon";
 import Title from "@/components/ui/Title";
+import ChatTitleSkeleton from "./skeletons/ChatTitle.skeleton";
 
 import { CiSearch } from "react-icons/ci";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoMdMore } from "react-icons/io";
 import { IoCallOutline } from "react-icons/io5";
+
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
-import ChatTitleSkeleton from "./skeletons/ChatTitle.skeleton";
+import { fadeIn } from "@/constants/animations";
 
 interface IChatHeader {
   data: IChat | null;
@@ -15,7 +19,10 @@ interface IChatHeader {
   usersOnline: unknown[];
 }
 const ChatHeader = ({ data, user, usersOnline }: IChatHeader) => (
-  <header className="chat-header pb-4 bg-white flex justify-between items-center">
+  <motion.header
+    {...fadeIn}
+    className="chat-header pb-4 bg-white flex justify-between items-center"
+  >
     <div className="flex items-center gap-3">
       <Icon className="block mdLg:hidden">
         <FaArrowLeftLong className=" text-[22px]" />
@@ -42,7 +49,7 @@ const ChatHeader = ({ data, user, usersOnline }: IChatHeader) => (
         <IoMdMore />
       </Icon>
     </div>
-  </header>
+  </motion.header>
 );
 
 export default ChatHeader;

@@ -1,15 +1,11 @@
-import { SetStateAction, useCallback, useState } from "react";
+import { useState } from "react";
 import { ref, set } from "firebase/database";
 import { signOut } from "firebase/auth";
 import { auth, dbRealtime } from "@/firebase/firebaseConfig";
 
 import useActions from "@/hooks/useActions";
 
-import { IFolder } from "@/types/sidebar";
-
-const useSidebarActions = (
-  setSidebarItems: (value: SetStateAction<IFolder[]>) => void,
-) => {
+const useSidebarActions = () => {
   const {
     logout,
     setChats,
@@ -20,19 +16,6 @@ const useSidebarActions = (
     setOnlineParticipants,
   } = useActions();
   const [loading, setLoading] = useState(false);
-
-  const handleItemClick = useCallback(
-    (folderId: string) => {
-      setSidebarItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === folderId
-            ? { ...item, isActive: true }
-            : { ...item, isActive: false },
-        ),
-      );
-    },
-    [setSidebarItems],
-  );
 
   const handleLogoClick = () => {
     setSearchInputValue("");
@@ -69,7 +52,7 @@ const useSidebarActions = (
     }
   };
 
-  return { handleItemClick, handleLogoClick, handleLogout, loading };
+  return { handleLogoClick, handleLogout, loading };
 };
 
 export default useSidebarActions;

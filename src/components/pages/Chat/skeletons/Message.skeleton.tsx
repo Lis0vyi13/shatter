@@ -1,9 +1,16 @@
-import { Skeleton } from "@/components/ui/shadcn/skeleton";
+import { motion } from "framer-motion";
 import { cn } from "@/utils";
+
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
+
+import { fadeIn } from "@/constants/animations";
 
 interface IMessageSkeletonProps {
   isOwnMessage?: boolean;
 }
+
+const messageClassName =
+  "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl shadow-lg";
 
 const MessageSkeleton = ({ isOwnMessage = false }: IMessageSkeletonProps) => {
   const wrapperClassName = cn(
@@ -11,12 +18,12 @@ const MessageSkeleton = ({ isOwnMessage = false }: IMessageSkeletonProps) => {
     isOwnMessage && "justify-end self-end flex-row-reverse pr-1",
   );
 
-  const messageClassName = cn(
-    "message relative max-w-[300px] px-4 py-2 pt-3 rounded-2xl shadow-lg",
-  );
-
   return (
-    <div className={wrapperClassName}>
+    <motion.div
+      {...fadeIn}
+      transition={{ delay: 0.2 }}
+      className={wrapperClassName}
+    >
       <Skeleton className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px] rounded-xl self-end bg-dark bg-opacity-10" />
 
       <div
@@ -28,7 +35,7 @@ const MessageSkeleton = ({ isOwnMessage = false }: IMessageSkeletonProps) => {
         <Skeleton className="h-[14px] w-3/4 mb-2 bg-gray bg-opacity-30" />
         <Skeleton className="h-[14px] w-1/2 mb-2 bg-gray bg-opacity-30" />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

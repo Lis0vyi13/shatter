@@ -1,14 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
+
 import Logo from "../common/Logo";
+
+import { fadeIn } from "@/constants/animations";
 
 const FullScreenLoader = () => {
   return (
     <AnimatePresence>
       <motion.div
+        key={"fullScreenLoader"}
         className="fixed transition-all inset-0 flex flex-col items-center justify-center bg-black"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        {...fadeIn}
         transition={{ duration: 0.5 }}
       >
         <motion.div
@@ -22,9 +24,7 @@ const FullScreenLoader = () => {
         </motion.div>
         <motion.p
           className="text-white text-lg mt-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          {...fadeIn}
           transition={{ duration: 1 }}
         >
           Loading...

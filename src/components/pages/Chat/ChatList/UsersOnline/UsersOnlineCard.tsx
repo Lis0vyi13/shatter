@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { motion } from "framer-motion";
 
 import useActiveChat from "@/hooks/useActiveChat";
 import { cn, getLanguage } from "@/utils";
@@ -13,7 +14,9 @@ const UsersOnlineCard = memo(({ data }: { data: IParticipantOnline }) => {
   const titleLang = getLanguage(data.title.split(" ")[0]);
 
   return (
-    <div
+    <motion.div
+      exit={{ y: 100 }}
+      transition={{ duration: 0.3 }}
       className={cn(
         "relative w-14 overflow-x-auto rounded-xl transition-all bg-transparent duration-300 select-none",
         activeChat === data.chatId
@@ -42,7 +45,7 @@ const UsersOnlineCard = memo(({ data }: { data: IParticipantOnline }) => {
           {data.title.split(" ")[0]}
         </Title>
       </div>
-    </div>
+    </motion.div>
   );
 });
 

@@ -4,7 +4,6 @@ export interface IFolder {
   id: string;
   Icon?: ReactElement;
   title: string;
-  isActive: boolean;
   type: "all" | "archive";
   unreaded: number;
   href?: string;
@@ -19,7 +18,6 @@ export interface ILogoutIcon {
   Icon: ReactElement;
   title: string;
   href?: string;
-  isActive: boolean;
 }
 
 export type TUnreadMessages = Record<string, number>;

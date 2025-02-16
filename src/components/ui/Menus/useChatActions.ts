@@ -17,17 +17,17 @@ import { IChat } from "@/types/chat";
 export const useChatActions = () => {
   const navigate = useNavigate();
   const user = useUser();
-  const { setActiveChat, setUser, setChats } = useActions();
+  const participantsList = useAppSelector(
+    (store) => store.chat.onlineParticipants,
+  );
+  const { setActiveChat, setOnlineParticipants, setUser, setChats } =
+    useActions();
   const chats = useChats();
   const activeChat = useAppSelector((store) => store.chat.activeChat);
 
   const openChat = (id: string) => {
     navigate(`/c/${id}`);
   };
-
-  // запинили (всегда последний)
-  // отпинили когда он последний
-  // отпинили когда он по середине
 
   const doTogglePinChat = useCallback(
     async (chatId: string) => {
@@ -122,16 +122,20 @@ export const useChatActions = () => {
     if (user) {
       try {
         onDelete(chatId);
+        if (participantsList) {
+          const updatedOnlineParticipants = participantsList.filter(
+            (participints) => participints.chatId != chatId,
+          );
+          setOnlineParticipants(updatedOnlineParticipants);
+        }
 
         if (chatId === activeChat) setActiveChat("");
 
-        const updatedChats = user.chats?.filter((id) => id != chatId);
-        const updatedUser = { ...user, chats: updatedChats };
-        setTimeout(async () => {
-          setUser(updatedUser);
-          const currentUser = await deleteChat(user.uid, chatId);
-          return currentUser?.updatedUser;
-        }, 400);
+        const currentUser = await deleteChat(user.uid, chatId);
+
+        if (currentUser?.updatedUser) {
+          setUser(currentUser.updatedUser);
+        }
       } catch (error) {
         console.log(error);
       } finally {

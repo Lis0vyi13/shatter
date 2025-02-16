@@ -9,6 +9,7 @@ import renderChatListItem from "./utils/renderChatListItem";
 import NotFound from "./NotFound";
 
 import { IChat } from "@/types/chat";
+import { fadeIn } from "@/constants/animations";
 
 interface ChatListItemsProps {
   chats: IChat[] | null;
@@ -57,15 +58,10 @@ const ChatListItems = ({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <motion.div {...fadeIn}>
       <AnimatePresence>
         {pinnedChats.length > 0 && (
-          <Droppable droppableId="pinnedChatsDroppable">
+          <Droppable key={"droppable"} droppableId="pinnedChatsDroppable">
             {(provided) => (
               <ul
                 className="list flex flex-col"
@@ -90,7 +86,7 @@ const ChatListItems = ({
           </Droppable>
         )}
 
-        <ul className="list flex flex-col">
+        <ul key={"undroppable"} className="list flex flex-col">
           {unpinnedChats.map((chat, index) =>
             renderChatListItem({
               chat,
