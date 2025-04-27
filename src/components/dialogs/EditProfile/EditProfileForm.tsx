@@ -99,7 +99,10 @@ const EditProfileForm = ({
                 )}
               </div>
 
-              <PopoverContent className="p-0 bg-dark text-white border-none outline-none">
+              <PopoverContent
+                side="top"
+                className="p-0 bg-dark text-white border-none outline-none"
+              >
                 <BirthdayPicker value={birthday} onChange={setBirthday} />
               </PopoverContent>
             </Popover>

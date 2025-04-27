@@ -25,8 +25,6 @@ const Profile = ({
   user: IUser | null;
   children?: ReactNode;
 }) => {
-  const { onPasswordChange, loading, error } = usePasswordChange();
-
   return (
     <DialogContent
       className={cn(

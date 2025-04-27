@@ -10,10 +10,11 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+import { db, dbRealtime } from "@/firebase/firebaseConfig";
 
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
+import { push, ref, serverTimestamp, update } from "firebase/database";
 
 export const createChat = async (chatData: IChat) => {
   try {
@@ -25,6 +26,40 @@ export const createChat = async (chatData: IChat) => {
     console.error("Error creating chat:", error);
     return { success: false, error: "Failed to create chat." };
   }
+};
+const generateChatId = (user1: string, user2: string) => {
+  return user1 < user2 ? `${user1}_${user2}` : `${user2}_${user1}`;
+};
+
+export const sendMessage = async (
+  senderId: string,
+  receiverId: string,
+  text: string,
+) => {
+  const chatId = generateChatId(senderId, receiverId);
+
+  const chatRef = ref(dbRealtime, `chats/${chatId}`);
+
+  await update(chatRef, {
+    members: { [senderId]: true, [receiverId]: true },
+    lastMessage: { text, timestamp: serverTimestamp() },
+  });
+
+  const messagesRef = ref(dbRealtime, `messages/${chatId}`);
+  console.log({
+    senderId,
+    receiverId,
+    text,
+    timestamp: serverTimestamp(),
+    type: "text",
+  });
+  await push(messagesRef, {
+    senderId,
+    receiverId,
+    text,
+    timestamp: serverTimestamp(),
+    type: "text",
+  });
 };
 
 export const createFavoritesChat = async (data: IChat | null) => {

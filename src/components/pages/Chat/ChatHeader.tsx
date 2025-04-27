@@ -7,7 +7,6 @@ import ChatTitleSkeleton from "./skeletons/ChatTitle.skeleton";
 import { CiSearch } from "react-icons/ci";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoMdMore } from "react-icons/io";
-import { IoCallOutline } from "react-icons/io5";
 
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
@@ -40,11 +39,6 @@ const ChatHeader = ({ data, user, usersOnline }: IChatHeader) => (
       <Icon>
         <CiSearch />
       </Icon>
-      {data?.chatType === "individual" && data?.members?.length === 2 && (
-        <Icon>
-          <IoCallOutline />
-        </Icon>
-      )}
       <Icon>
         <IoMdMore />
       </Icon>
