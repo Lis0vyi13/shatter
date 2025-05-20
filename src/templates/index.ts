@@ -8,7 +8,7 @@ import { IUser } from "@/types/user";
 
 export const createChatTemplate = (user: IUser, participant: IUser): IChat => ({
   id: uuidv4(),
-  members: [user.uid, participant.uid],
+  members: { [user.uid]: true, [participant.uid]: false },
   title: {
     [user.uid]: participant.displayName,
     [participant.uid]: user.displayName,
@@ -51,7 +51,7 @@ export const createFavoritesChatTemplate = async (
     const favoritesChat: IChat = {
       id: chatId,
       title: { [userId]: "Favorites" },
-      members: [userId],
+      members: { userId: true },
       messages: [],
       lastMessage: null,
       avatar: "/favorites.png",

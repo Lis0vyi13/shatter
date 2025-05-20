@@ -13,15 +13,17 @@ export const sidebarIcons: IFolder[] = [
     Icon: <IoChatbox />,
     title: "All chats",
     type: "all",
+    href: "/c",
     unreaded: 0,
   },
-  {
-    id: "1",
-    Icon: <RiInboxUnarchiveLine />,
-    title: "Archive chats",
-    type: "archive",
-    unreaded: 0,
-  },
+  // {
+  //   id: "1",
+  //   Icon: <RiInboxUnarchiveLine />,
+  //   title: "Archive chats",
+  //   type: "archive",
+  //   href: "/archive",
+  //   unreaded: 0,
+  // },
 ];
 
 export const settings: ISettings[] = [

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { getUserStatus } from "@/services/user";
+import { getUserById, getUserStatus } from "@/services/user";
 import { getLanguage, getTimeAgo } from "@/utils";
 
 import Avatar from "@/components/common/Avatar";
@@ -10,6 +10,7 @@ import ChatListItemStatus from "./ChatListItemStatus";
 
 import { IChat } from "@/types/chat";
 import { IUser, IUserStatus } from "@/types/user";
+import { useLastMessage } from "@/hooks/useLastMessage";
 
 interface IChatListItemContent {
   user: IUser | null;
@@ -19,12 +20,20 @@ interface IChatListItemContent {
 
 const ChatListItemContent = (props: IChatListItemContent) => {
   const [userStatus, setUserStatus] = useState<IUserStatus | null>(null);
+  const [participant, setParticipant] = useState<IUser | null>(null);
   const { chat, user } = props;
-  const chatTitle = user && chat ? chat.title[user.uid] : "User";
+
+  const lastMessage = useLastMessage(chat?.id || null);
+
+  const chatTitle =
+    user && (participant || chat)
+      ? (participant?.displayName || chat?.title[user.uid])!
+      : "User";
 
   const participantId = useMemo(() => {
-    if (!chat || !user) return;
-    return chat.members.find((id) => id !== user.uid);
+    if (!chat || !user || !chat.members || "userId" in chat.members) return;
+    const memberIds = Object.keys(chat.members);
+    return memberIds.find((id) => id !== user.uid);
   }, [chat, user]);
 
   useEffect(() => {
@@ -33,16 +42,22 @@ const ChatListItemContent = (props: IChatListItemContent) => {
       const status = await getUserStatus(participantId);
       setUserStatus(status);
     };
+
+    const getUser = async () => {
+      if (!participantId) return;
+      const participant = await getUserById(participantId!);
+      setParticipant(participant);
+    };
     fetchUserStatus();
-  }, [participantId, chat?.members]);
+    getUser();
+  }, [participantId]);
 
   const titleLang = getLanguage(chatTitle);
-
   return chat ? (
     <>
       <Avatar
         className="min-h-[48px] max-h-[48px] max-w-[48px] min-w-[48px]"
-        src={chat.avatar}
+        src={participant?.photoUrl || ""}
         participant={participantId}
         title={chatTitle}
       />
@@ -57,15 +72,27 @@ const ChatListItemContent = (props: IChatListItemContent) => {
               message: `was ${getTimeAgo(userStatus.updatedAt)}`,
               id: chat.id,
               chatType: chat.chatType,
+              text: lastMessage?.text || "",
+              senderId: lastMessage?.senderId || "",
+              type: lastMessage?.type || "text",
+              timestamp: lastMessage?.timestamp || 0,
             }}
           />
         ) : (
           <LastMessage
-            data={{ ...chat.lastMessage, chatType: chat.chatType, id: chat.id }}
+            data={{
+              ...lastMessage,
+              chatType: chat.chatType,
+              id: chat.id,
+              text: lastMessage?.text || "",
+              senderId: lastMessage?.senderId || "",
+              type: lastMessage?.type || "text",
+              timestamp: lastMessage?.timestamp || 0,
+            }}
           />
         )}
       </div>
-      <ChatListItemStatus {...props} />
+      <ChatListItemStatus {...props} time={lastMessage?.timestamp!} />
     </>
   ) : null;
 };

@@ -9,24 +9,34 @@ import { getUserById } from "@/services/user";
 import ChatWrapper from "@/components/pages/Chat/ChatWrapper";
 
 import { IChat } from "@/types/chat";
+import useUserChatsListener from "@/hooks/useUserChatsListener";
 
 const ChatRoomPage = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("Loading...");
-
   useEffect(() => {
     const fetchMetadata = async () => {
+      if (!id) {
+        return;
+      }
       const user = auth.currentUser;
-      const chat: IChat | null = await getChatById(id as string);
-      const participantId = chat?.members.filter((uid) => uid !== user?.uid)[0];
+      const chat: IChat | null = await getChatById(id);
+      const participantId = chat?.members
+        ? Object.keys(chat.members).filter(
+            (uid) => uid !== user?.uid && user?.uid != "0",
+          )[0]
+        : undefined;
       const participant =
-        chat && participantId ? await getUserById(participantId) : null;
-
+        chat && participantId && participantId != "0"
+          ? await getUserById(participantId)
+          : null;
       setTitle(participant ? participant.displayName : "Favorites");
     };
 
     fetchMetadata();
   }, [id]);
+
+  useUserChatsListener();
 
   return (
     <>

@@ -39,15 +39,15 @@ const Sidebar = () => {
       >
         <Logo width={32} height={32} />
       </Link>
-      <div className="flex flex-col gap-3 justify-center">
+      <div className="flex flex-col gap-3 justify-center w-[90%]">
         <ul className={sidebarIconsListClassName}>
           {sidebarItems.length > 0 ? (
             <li>
               {sidebarItems?.map((iconData, i) => (
                 <SidebarIcon
-                  onClick={() => handleClick(iconData.id || "0")}
-                  isActive={iconData.id === activeIcon}
-                  key={iconData.title + i}
+                  onClick={() => handleClick(iconData?.id || "0")}
+                  isActive={iconData?.id === activeIcon}
+                  key={iconData?.title + i}
                   {...iconData}
                 />
               ))}

@@ -1,5 +1,5 @@
 import { MutableRefObject, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/redux/app/hooks";
 import {
   Command,
@@ -59,7 +59,8 @@ const SearchUserDialog = ({
     () =>
       data
         ? data.filter((chat) => {
-            if (user) return chat.title[user?.uid] !== "Favorites";
+            if (user && chat.title)
+              return chat?.title?.[user?.uid] !== "Favorites";
           })
         : null,
     [data, user],
@@ -80,10 +81,11 @@ const SearchUserDialog = ({
   };
 
   const handleSelectChat = async (chat: IChat) => {
+    const path = chat.isArchived ? "/archive" : "/c";
     try {
       if (chat.chatType === "none") {
         handleCreateNewChat(chat);
-        navigate("/c/" + chat.id);
+        navigate(path + "/" + chat.id);
       } else {
         handleSetActiveChat(chat.id);
         scrollToChatLink(listRef, chat.id);

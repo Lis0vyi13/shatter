@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 
 interface Chat {
   id: string;
-  members: Record<string, boolean>;
+  members: string[];
+  [key: string]: any; // для гнучкості
 }
 
 const useDbChats = (userId: string) => {
@@ -17,16 +18,18 @@ const useDbChats = (userId: string) => {
       chatsRef,
       (snapshot) => {
         const data = snapshot.val() as Record<string, Chat> | null;
-
         if (data) {
           const userChats = Object.entries(data)
-            .filter(([, chat]) => chat?.members?.[userId])
-            .map(([, chat]) => {
-              const { members, ...rest } = chat;
-              return { members, ...rest };
-            });
-
+            .filter(
+              ([, chat]) =>
+                Array.isArray(chat.members) && chat.members.includes(userId),
+            )
+            .map(([_, chat]) => ({
+              ...chat,
+            }));
           setChats(userChats);
+        } else {
+          setChats([]);
         }
       },
       (error) => {

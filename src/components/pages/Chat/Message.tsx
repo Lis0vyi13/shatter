@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn, formatTimestampToDate } from "@/utils";
 import useUser from "@/hooks/useUser";
 
 import Avatar from "@/components/common/Avatar";
@@ -27,7 +27,6 @@ const Message = ({
     ? currentUser.displayName || ""
     : participantTitle || "";
   const avatar = isOwnMessage ? currentUser.photoUrl || "" : participantAvatar;
-
   const wrapperClassName = cn(
     "message-block flex gap-2 w-fit",
     isOwnMessage && "justify-end self-end flex-row-reverse pr-1",
@@ -58,9 +57,13 @@ const Message = ({
       />
 
       <div className={messageClassName}>
-        <p className="text-[12px] leading-[18px] font-[300]">{data.text}</p>
+        <p className="text-[12px] leading-[18px] break-words font-[300]">
+          {data.text}
+        </p>
         <div className="flex mt-[2px] items-center justify-end text-sm text-gray-200">
-          <span className="text-[11px] font-[400]">09:27</span>
+          <span className="text-[11px] font-[400]">
+            {formatTimestampToDate(data.timestamp)}
+          </span>
         </div>
         <div className={bubbleWrapperClassName}>
           <div className={bubbleClassName} />

@@ -49,7 +49,7 @@ const ChatAccessGuard = ({ children }: ChatAccessGuardProps) => {
           const chatData = chatDoc.data() as IChat;
           hasAccess =
             chatData.members.length === 1 ||
-            chatData.members.includes(currentUser.uid);
+            chatData.members?.includes(currentUser.uid);
         } else if (isFavorite) {
           hasAccess = true;
         }

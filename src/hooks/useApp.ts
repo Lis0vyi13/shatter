@@ -2,14 +2,12 @@
 
 import { useEffect } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth, db } from "@/firebase/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { auth, dbRealtime } from "@/firebase/firebaseConfig";
+import { ref, get } from "firebase/database";
 
 import { createUser, monitorUserConnection } from "@/services/user";
-
 import useActions from "./useActions";
 import { createFavoritesChatTemplate } from "@/templates";
-
 import { IUser } from "@/types/user";
 
 export const useApp = () => {
@@ -28,9 +26,13 @@ export const useApp = () => {
 
         await createFavoritesChatTemplate(user.uid);
 
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
-        setUser(userDoc.data() as IUser);
+        const userRef = ref(dbRealtime, `users/${user.uid}`);
+        const userSnapshot = await get(userRef);
+        if (userSnapshot.exists()) {
+          setUser(userSnapshot.val() as IUser);
+        } else {
+          console.error(`User with uid ${user.uid} not found.`);
+        }
       } catch (error) {
         console.error("Error handling user authentication:", error);
       }

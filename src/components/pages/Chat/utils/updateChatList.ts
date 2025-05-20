@@ -13,7 +13,7 @@ export const updateChatList = ({
 }: UpdateChatListParams) => {
   const { pinnedChats, regularChats } = chats.reduce(
     (acc, chat) => {
-      if (userId && chat.isPin.includes(userId)) {
+      if (userId && chat.isPin?.includes(userId)) {
         acc.pinnedChats.push(chat);
       } else {
         acc.regularChats.push(chat);
@@ -24,7 +24,7 @@ export const updateChatList = ({
   );
 
   if (favoriteChat) {
-    const targetArray = favoriteChat.isPin.includes(userId || "")
+    const targetArray = favoriteChat.isPin?.includes(userId || "")
       ? pinnedChats
       : regularChats;
     targetArray.push(favoriteChat);

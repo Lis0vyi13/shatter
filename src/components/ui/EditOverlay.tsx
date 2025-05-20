@@ -1,23 +1,30 @@
-import { MouseEventHandler, ReactNode, useState } from "react";
-
+import { MouseEventHandler, ReactNode, useId, useState } from "react";
 import { cn } from "@/utils";
-
 import { Edit } from "lucide-react";
 
 interface IEditOverlay {
   onClick?: MouseEventHandler<HTMLDivElement>;
+  onUpload?: (file: File) => void;
   children: ReactNode;
   className?: string;
   isRounded?: boolean;
 }
 
 const EditOverlay = ({
-  onClick,
+  onUpload,
   children,
   className,
   isRounded,
 }: IEditOverlay) => {
   const [isHover, setIsHover] = useState(false);
+  const inputId = useId(); // 🔑 уникальный ID
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && onUpload) {
+      onUpload(file);
+    }
+  };
 
   return (
     <div
@@ -28,7 +35,6 @@ const EditOverlay = ({
         isRounded && "rounded-full",
         className,
       )}
-      onClick={onClick}
     >
       <div
         className={cn(
@@ -38,16 +44,21 @@ const EditOverlay = ({
         )}
       />
       <label
-        htmlFor="imgInput"
+        htmlFor={inputId}
         className={cn(
           "absolute cursor-pointer inset-0 z-10",
           isRounded && "rounded-full",
         )}
       >
-        <input id="imgInput" className="hidden" type="file" accept="image/*" />
+        <input
+          id={inputId}
+          className="hidden"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
       </label>
       {children}
-
       <Edit
         size={22}
         className={cn(

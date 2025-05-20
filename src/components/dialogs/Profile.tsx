@@ -14,6 +14,7 @@ import Button from "../ui/Buttons/Button";
 
 import { Lock, X } from "lucide-react";
 import { IUser } from "@/types/user";
+import { updateUser, uploadImage } from "@/services/user";
 
 const buttonClassName =
   "text-[11px] py-[2px] px-3 rounded-md border border-separator hover:bg-separator inline-flex items-center";
@@ -25,6 +26,13 @@ const Profile = ({
   user: IUser | null;
   children?: ReactNode;
 }) => {
+  const handleUpload = async (file: File, type: "avatar" | "banner") => {
+    if (!user) return;
+    const url = await uploadImage(file, user.uid, type);
+    await updateUser(user.uid, {
+      [type === "avatar" ? "photoUrl" : "banner"]: url,
+    });
+  };
   return (
     <DialogContent
       className={cn(
@@ -32,14 +40,18 @@ const Profile = ({
       )}
     >
       <div className="h-[115px] rounded-t-sm rounded-b-2xl overflow-hidden">
-        <EditOverlay>
+        <EditOverlay onUpload={(file) => handleUpload(file, "banner")}>
           <Banner src={user?.banner || ""} />
         </EditOverlay>
       </div>
 
       <div className="relative px-4">
         <div className="flex w-full gap-2 justify-between -mt-12">
-          <EditOverlay isRounded className="w-16 h-16">
+          <EditOverlay
+            onUpload={(file) => handleUpload(file, "avatar")}
+            isRounded
+            className="w-16 h-16"
+          >
             <Avatar
               className="text-[24px] border-[3px] border-[#0d0e12]"
               src={user?.photoUrl || ""}

@@ -43,12 +43,13 @@ const getTimestampFromDate = (birthday: SelectedDate) => {
 };
 
 interface IData {
-  name: string;
+  displayName: string;
   username: string;
   birthday: number | null;
   phoneNumber: string;
   [key: string]: string | number | null;
 }
+
 const useEditProfileForm = (onSubmit: () => void, user: IUser | null) => {
   const today = new Date();
   today.setHours(2, 0, 0, 0);
@@ -58,7 +59,7 @@ const useEditProfileForm = (onSubmit: () => void, user: IUser | null) => {
     : null;
 
   const initialData: IData = {
-    name: user?.displayName || "",
+    displayName: user?.displayName || "",
     username: user?.username || "@",
     birthday: user?.birthday || null,
     phoneNumber: user?.phoneNumber || "",
@@ -78,7 +79,7 @@ const useEditProfileForm = (onSubmit: () => void, user: IUser | null) => {
     setIsLoading(true);
 
     const currentData: IData = {
-      name,
+      displayName: name,
       username,
       birthday: birthday ? getTimestampFromDate(birthday) : null,
       phoneNumber,

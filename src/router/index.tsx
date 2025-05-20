@@ -63,6 +63,15 @@ export const router = createBrowserRouter(
               element: <ArchivePage />,
             },
             {
+              path: "archive/:id",
+              element: (
+                <ChatAccessGuard>
+                  <ChatRoomPage />
+                </ChatAccessGuard>
+              ),
+            },
+
+            {
               path: "c/:id",
               element: (
                 <ChatAccessGuard>

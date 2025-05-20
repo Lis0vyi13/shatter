@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAppSelector } from "@/redux/app/hooks";
 
@@ -9,7 +9,6 @@ import useUser from "@/hooks/useUser";
 import ChatListItemContent from "./ChatListItemContent";
 
 import { IChat } from "@/types/chat";
-
 interface IChatListItemProps extends IChat {
   isActive: boolean;
   setChat: () => Promise<void> | void;
@@ -20,7 +19,7 @@ const ChatListItem = memo((props: IChatListItemProps) => {
   const { isActive, setChat, index, ...chat } = props;
   const user = useUser();
   const isFavorite = chat.id === user?.favorites;
-  const isUserChatMember = user?.chats.includes(chat.id) || isFavorite;
+  const isUserChatMember = user?.chats?.includes(chat.id) || isFavorite;
   const searchInputDebouncedValue = useAppSelector(
     (store) => store.search.searchInput.debouncedValue,
   );
@@ -32,6 +31,10 @@ const ChatListItem = memo((props: IChatListItemProps) => {
     `chat-list-item cursor-pointer flex gap-2 p-2 rounded-xl w-full transition-colors`,
     isActive ? "bg-lightBlue" : "bg-white hover:bg-blue hover:bg-opacity-15",
   );
+
+  const { pathname } = useLocation();
+  const isArchiveChat = pathname.includes("archive");
+  const path = isArchiveChat ? "/archive" : "/c";
 
   return (
     <motion.div
@@ -45,7 +48,11 @@ const ChatListItem = memo((props: IChatListItemProps) => {
       }}
     >
       {isUserChatMember ? (
-        <Link to={`/c/${chat.id}`} onClick={setChat} className={itemClassName}>
+        <Link
+          to={`${path}/${chat.id}`}
+          onClick={setChat}
+          className={itemClassName}
+        >
           <ChatListItemContent {...chatItemContentProps} />
         </Link>
       ) : (

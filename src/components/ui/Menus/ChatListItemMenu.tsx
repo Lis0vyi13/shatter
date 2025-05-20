@@ -13,10 +13,10 @@ import {
 
 import { FaRegFolderOpen } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
-import { RiInboxUnarchiveLine } from "react-icons/ri";
 import { MdOutlineCleaningServices, MdDeleteOutline } from "react-icons/md";
 
 import { IChat } from "@/types/chat";
+import { clearChatHistory } from "@/services/chat";
 
 interface IChatListItemMenuProps {
   data: IChat;
@@ -49,28 +49,24 @@ export function ChatListItemMenu({
       },
       {
         icon: <TiPin className="text-[16px]" />,
-        label: user && data.isPin.includes(user.uid) ? "Unpin" : "Pin",
+        label: user && data.isPin?.includes(user.uid) ? "Unpin" : "Pin",
         action: () => doTogglePinChat(data.id),
         separator: true,
       },
       {
-        icon: <RiInboxUnarchiveLine className="text-[16px]" />,
-        label: "Archive",
-        action: () => {},
-      },
-      {
         icon: <MdOutlineCleaningServices className="text-[16px]" />,
         label: "Clear history",
-        action: () => {},
-        separator: data.members.length !== 1,
+        action: () => clearChatHistory(data.id),
+        separator: Object.keys(data.members).length !== 1,
       },
     ];
 
-    if (data.members.length !== 1) {
+    if (Object.keys(data.members).length !== 1) {
       items.push({
         icon: <MdDeleteOutline className="text-[16px] text-[#ee242b]" />,
         label: "Delete chat",
-        action: () => doDeleteChat(data.id, onDelete),
+        action: () =>
+          doDeleteChat(data.id, Object.keys(data.members), onDelete),
         isDanger: true,
       });
     }

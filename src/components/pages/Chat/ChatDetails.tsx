@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { cn } from "@/utils";
 
@@ -14,15 +14,15 @@ interface IChatDetails {
 }
 
 const ChatDetails = ({ data }: IChatDetails) => {
-  const [isInfoVisible, setIsInfoVisible] = useState(true);
-  const [isMembersVisible, setIsMembersVisible] = useState(true);
+  const [isInfoVisible] = useState(true);
+  const [isMembersVisible] = useState(true);
 
-  const toggleSetInfoVisible = useCallback(() => {
-    setIsInfoVisible((prev) => !prev);
-  }, []);
-  const toggleSetMembersVisible = useCallback(() => {
-    setIsMembersVisible((prev) => !prev);
-  }, []);
+  // const toggleSetInfoVisible = useCallback(() => {
+  //   setIsInfoVisible((prev) => !prev);
+  // }, []);
+  // const toggleSetMembersVisible = useCallback(() => {
+  //   setIsMembersVisible((prev) => !prev);
+  // }, []);
 
   const sectionClassName = cn(
     "chat-details flex flex-col h-full gap-2",
@@ -30,10 +30,10 @@ const ChatDetails = ({ data }: IChatDetails) => {
   );
 
   return (
-    (isInfoVisible || isMembersVisible) && (
+    (!isInfoVisible || !isMembersVisible) && (
       <div className="hidden xl:block">
         <section className={sectionClassName}>
-          {isInfoVisible && (
+          {/* {isInfoVisible && (
             <Block className="chat-info px-4 py-5 min-h-[54%]">
               <header>
                 <h1 className="text-[22px] font-[500] capitalize">Chat Info</h1>
@@ -69,7 +69,7 @@ const ChatDetails = ({ data }: IChatDetails) => {
                 handler={toggleSetMembersVisible}
               />
             </Block>
-          )}
+          )} */}
         </section>
       </div>
     )

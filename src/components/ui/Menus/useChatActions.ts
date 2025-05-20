@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   deleteChat,
   togglePinChat,
@@ -24,9 +24,12 @@ export const useChatActions = () => {
     useActions();
   const chats = useChats();
   const activeChat = useAppSelector((store) => store.chat.activeChat);
+  const { pathname } = useLocation();
+  const isArchiveChat = pathname.includes("archive");
+  const path = isArchiveChat ? "/archive" : "/c";
 
   const openChat = (id: string) => {
-    navigate(`/c/${id}`);
+    navigate(`${path}/${id}`);
   };
 
   const doTogglePinChat = useCallback(
@@ -37,14 +40,15 @@ export const useChatActions = () => {
 
       const updatedChats = chats.map((chat) => {
         if (chat.id === chatId) {
-          const isPinned = chat.isPin.includes(user.uid);
+          const currentIsPin = chat.isPin ?? [];
+          const isPinned = currentIsPin.includes(user.uid);
           if (isPinned) {
             chatOrderValue = chat.order?.[user.uid];
           }
 
           const updatedIsPin = isPinned
-            ? chat.isPin.filter((pinnedUid) => pinnedUid !== user.uid)
-            : [...chat.isPin, user.uid];
+            ? currentIsPin.filter((pinnedUid) => pinnedUid !== user.uid)
+            : [...currentIsPin, user.uid];
 
           return { ...chat, isPin: updatedIsPin };
         }
@@ -53,11 +57,11 @@ export const useChatActions = () => {
 
       const { pinnedChats, regularChats } = updatedChats.reduce(
         (acc, chat) => {
-          const isPinned = chat.isPin.includes(user?.uid);
+          const isPinned = (chat.isPin ?? []).includes(user.uid);
           const updatedChat = {
             ...chat,
             order: isPinned
-              ? { ...chat.order, [user?.uid]: acc.pinnedChats.length + 1 }
+              ? { ...chat.order, [user.uid]: acc.pinnedChats.length + 1 }
               : chat.order,
           };
 
@@ -74,7 +78,7 @@ export const useChatActions = () => {
       );
 
       const sortedPinnedChats = pinnedChats.sort(
-        (a, b) => (a.order?.[user?.uid] ?? 0) - (b.order?.[user?.uid] ?? 0),
+        (a, b) => (a.order?.[user.uid] ?? 0) - (b.order?.[user.uid] ?? 0),
       );
       const sortedRegularChats = regularChats.sort(
         (a, b) => b.updatedAt - a.updatedAt,
@@ -107,16 +111,9 @@ export const useChatActions = () => {
     [chats, setChats, user],
   );
 
-  const archiveChat = () => {
-    console.log("Archive clicked");
-  };
-
-  const clearChatHistory = () => {
-    console.log("Clear history clicked");
-  };
-
   const doDeleteChat = async (
     chatId: string,
+    members: string[],
     onDelete: (chatId: string) => void,
   ) => {
     if (user) {
@@ -131,7 +128,10 @@ export const useChatActions = () => {
 
         if (chatId === activeChat) setActiveChat("");
 
+        const participantId = members.find((member) => member != user.uid);
+
         const currentUser = await deleteChat(user.uid, chatId);
+        await deleteChat(participantId!, chatId);
 
         if (currentUser?.updatedUser) {
           setUser(currentUser.updatedUser);
@@ -144,11 +144,33 @@ export const useChatActions = () => {
     }
   };
 
+  // const archiveChat = async (chatId: string) => {
+  //   const chatRef = ref(dbRealtime, `chats/${chatId}`);
+  //   await update(chatRef, { isArchived: true });
+  //   toast.success("Chat archived successfully");
+  //   const snapshot = await get(chatRef);
+  //   if (snapshot.exists()) {
+  //     const restoredChat = snapshot.val();
+  //     const prevChats = chats?.filter((chat) => chat.id !== chatId);
+  //     setChats([...prevChats!, restoredChat]);
+  //   }
+  // };
+
+  // const unArchiveChat = async (chatId: string) => {
+  //   const chatRef = ref(dbRealtime, `chats/${chatId}`);
+  //   await update(chatRef, { isArchived: false });
+  //   toast.success("Chat unarchived successfully");
+  //   const snapshot = await get(chatRef);
+  //   if (snapshot.exists()) {
+  //     const restoredChat = snapshot.val();
+  //     const prevChats = chats?.filter((chat) => chat.id !== chatId);
+  //     setChats([...prevChats!, restoredChat]);
+  //   }
+  // };
+
   return {
     openChat,
     doTogglePinChat,
-    archiveChat,
-    clearChatHistory,
     doDeleteChat,
   };
 };

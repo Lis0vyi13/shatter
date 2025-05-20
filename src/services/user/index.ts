@@ -1,15 +1,5 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { User } from "firebase/auth";
-import { db, dbRealtime } from "@/firebase/firebaseConfig";
-import { auth } from "@/firebase/firebaseConfig";
+import { auth, dbRealtime, storage } from "@/firebase/firebaseConfig";
 import {
   get,
   getDatabase,
@@ -18,16 +8,19 @@ import {
   ref,
   serverTimestamp,
   set,
+  update,
 } from "firebase/database";
 
+import { ref as storageRef } from "firebase/storage";
 import { IUser, IUserStatus } from "@/types/user";
+import { getDownloadURL, uploadBytes } from "firebase/storage";
 
 export const createUser = async (user: User): Promise<IUser> => {
-  const userDocRef = doc(db, "users", user.uid);
+  const userRef = ref(dbRealtime, `users/${user.uid}`);
 
   try {
-    const userDoc = await getDoc(userDocRef);
-    if (!userDoc.exists()) {
+    const userSnapshot = await get(userRef);
+    if (!userSnapshot.exists()) {
       const userData: IUser = {
         uid: user.uid,
         email: user.email,
@@ -44,11 +37,11 @@ export const createUser = async (user: User): Promise<IUser> => {
         phoneNumber: "",
       };
 
-      await setDoc(userDocRef, userData);
+      await set(userRef, userData);
       return userData;
     }
 
-    return userDoc.data() as IUser;
+    return userSnapshot.val() as IUser;
   } catch (error) {
     console.error("Error creating user:", error);
     throw new Error("Error creating user. Please try again.");
@@ -57,15 +50,15 @@ export const createUser = async (user: User): Promise<IUser> => {
 
 export const updateUser = async (uid: string, updatedData: Partial<IUser>) => {
   try {
-    const userDocRef = doc(db, "users", uid);
+    const userRef = ref(dbRealtime, `users/${uid}`);
+    const userSnapshot = await get(userRef);
 
-    const userDoc = await getDoc(userDocRef);
-    if (!userDoc.exists()) {
+    if (!userSnapshot.exists()) {
       console.error(`User with uid ${uid} does not exist.`);
       return;
     }
 
-    await updateDoc(userDocRef, updatedData);
+    await update(userRef, updatedData);
 
     console.log(`User with uid ${uid} successfully updated.`);
   } catch (error) {
@@ -75,13 +68,15 @@ export const updateUser = async (uid: string, updatedData: Partial<IUser>) => {
 
 export const getUserById = async (uid: string): Promise<IUser | null> => {
   try {
-    const userDocRef = doc(db, "users", uid);
-    const userDoc = await getDoc(userDocRef);
-    if (!userDoc.exists) {
+    const userRef = ref(dbRealtime, `users/${uid}`);
+    const userSnapshot = await get(userRef);
+
+    if (!userSnapshot.exists()) {
       console.error(`User with uid ${uid} not found.`);
       return null;
     }
-    return userDoc.data() as IUser;
+
+    return userSnapshot.val() as IUser;
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
@@ -92,16 +87,19 @@ export const searchUsersByDisplayName = async (
   searchTerm: string,
 ): Promise<IUser[]> => {
   try {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef);
-    const querySnapshot = await getDocs(q);
+    const usersRef = ref(dbRealtime, "users");
+    const usersSnapshot = await get(usersRef);
+
+    if (!usersSnapshot.exists()) {
+      return [];
+    }
 
     const lowerSearchTerm = searchTerm.toLowerCase();
-    return querySnapshot.docs
-      .map((doc) => doc.data() as IUser)
-      .filter((userData) =>
-        userData.displayName?.toLowerCase().includes(lowerSearchTerm),
-      );
+    const usersData = usersSnapshot.val() as Record<string, IUser>;
+
+    return Object.values(usersData).filter((userData) =>
+      userData.displayName?.toLowerCase().includes(lowerSearchTerm),
+    );
   } catch (error) {
     console.error("Error searching users:", error);
     return [];
@@ -156,4 +154,14 @@ export const monitorUserConnection = () => {
       }
     });
   }
+};
+
+export const uploadImage = async (
+  file: File,
+  uid: string,
+  type: "avatar" | "banner",
+): Promise<string> => {
+  const fileRef = storageRef(storage, `users/${uid}/${type}-${Date.now()}`);
+  await uploadBytes(fileRef, file);
+  return await getDownloadURL(fileRef);
 };

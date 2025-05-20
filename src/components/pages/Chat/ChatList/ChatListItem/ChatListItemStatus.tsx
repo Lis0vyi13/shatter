@@ -9,15 +9,17 @@ import { TiPin } from "react-icons/ti";
 interface IChatListItemStatus {
   user: IUser | null;
   chat: IChat | null;
+  time: number;
   isUserChatMember: boolean;
 }
 
 const ChatListItemStatus = ({
   user,
   chat,
+  time,
   isUserChatMember,
 }: IChatListItemStatus) => {
-  const duration = chat ? formatTimestampToDate(chat.updatedAt) : null;
+  const duration = time ? formatTimestampToDate(time) : null;
 
   return (
     <div className="flex flex-col items-end gap-1 mt-[1px]">
@@ -30,7 +32,7 @@ const ChatListItemStatus = ({
         {user && chat && chat.unreadMessages[user.uid] > 0 && (
           <Counter>{chat?.unreadMessages[user.uid]}</Counter>
         )}
-        {user && chat?.isPin.includes(user.uid) && (
+        {user && chat?.isPin?.includes(user.uid) && (
           <TiPin className="text-blue text-[20px]" />
         )}
       </div>

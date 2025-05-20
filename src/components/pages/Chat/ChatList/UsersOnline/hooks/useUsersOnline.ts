@@ -21,13 +21,17 @@ const useUsersOnline = (data: IChat[] | null) => {
         data
           .filter((chat) => chat.id !== user?.favorites)
           .map(async (chat) => {
-            const participantId = chat.members[1];
-            const participant = await getUserById(participantId);
+            const memberIds = Object.keys(chat.members || {});
+            const participantId = memberIds.find((id) => id !== user.uid)!;
+            const participant =
+              participantId && participantId != "0"
+                ? await getUserById(participantId)
+                : null;
 
             return {
               chatId: chat.id,
               participant: participantId,
-              title: chat.title?.[user?.uid],
+              title: chat?.title?.[user?.uid],
               avatar: participant?.photoUrl as string,
               userStatus: null,
             };

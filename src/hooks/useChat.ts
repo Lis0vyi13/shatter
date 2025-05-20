@@ -11,25 +11,32 @@ export interface Message {
   isRead: boolean;
 }
 
-const generateChatId = (user1: string, user2: string) => {
-  return user1 < user2 ? `${user1}_${user2}` : `${user2}_${user1}`;
-};
-
-const useChat = (currentUserId: string, chatUserId: string) => {
+export const useChat = (
+  currentUserId: string,
+  chatUserId: string,
+  chatId: string,
+) => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const chatId = generateChatId(currentUserId, chatUserId);
+    if (!chatId) return;
+
     const messagesRef = ref(dbRealtime, `messages/${chatId}`);
+    setMessages([]);
+    setLoading(true);
 
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
+
       if (data) {
         const msgs: Message[] = Object.entries(data)
           .map(([id, msg]) => (msg ? { id, ...msg } : null))
-          .filter((msg): msg is Message => msg !== null);
+          .filter((msg): msg is Message => msg !== null)
+          .sort((a, b) => a.timestamp - b.timestamp);
 
         setMessages(msgs);
+        setLoading(false);
 
         msgs.forEach((msg) => {
           if (!msg.isRead && msg.receiverId === currentUserId) {
@@ -40,13 +47,12 @@ const useChat = (currentUserId: string, chatUserId: string) => {
         });
       } else {
         setMessages([]);
+        setLoading(false);
       }
     });
 
     return () => unsubscribe();
-  }, [currentUserId, chatUserId]);
+  }, [currentUserId, chatUserId, chatId]);
 
-  return messages;
+  return { messages, loading };
 };
-
-export default useChat;

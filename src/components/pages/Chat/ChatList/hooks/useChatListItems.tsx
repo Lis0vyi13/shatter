@@ -1,5 +1,5 @@
 import { MutableRefObject, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import useUser from "@/hooks/useUser";
 
@@ -25,6 +25,10 @@ const useChatListItems = ({
   const navigate = useNavigate();
   const [deletingChat, setDeletingChat] = useState("");
 
+  const { pathname } = useLocation();
+  const isArchiveChat = pathname.includes("archive");
+  const path = isArchiveChat ? "/archive" : "/c";
+
   const onDelete = async (chatId: string) => {
     setDeletingChat(chatId);
   };
@@ -33,7 +37,7 @@ const useChatListItems = ({
     if (!chats || !user) return { pinnedChats: [], unpinnedChats: [] };
     return chats.reduce(
       (acc, chat) => {
-        if (chat.isPin.includes(user.uid)) {
+        if (chat.isPin?.includes(user.uid)) {
           acc.pinnedChats.push(chat);
         } else {
           acc.unpinnedChats.push(chat);
@@ -48,7 +52,7 @@ const useChatListItems = ({
     chat.chatType === "none"
       ? async () => {
           await handleCreateNewChat(chat);
-          navigate(`/c/${chat.id}`);
+          navigate(`${path}/${chat.id}`);
         }
       : () => {
           handleSetActiveChat(chat.id);

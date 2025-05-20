@@ -29,11 +29,13 @@ const useChatList = () => {
         return;
       }
 
-      const data: IChat = { ...chatData, chatType: "individual" };
+      const data: IChat = { ...chatData };
+
+      const existingChats = Array.isArray(user?.chats) ? user!.chats : [];
 
       const updatedUser = {
         ...user,
-        chats: [...user.chats, chatData.id],
+        chats: [...existingChats, chatData.id],
       };
       setUser(updatedUser);
 
@@ -50,6 +52,7 @@ const useChatList = () => {
       setIsChatLoading(false);
     }
   };
+
   const setActiveChatHandler = useCallback(
     (id: string) => {
       if (searchValue != "") {

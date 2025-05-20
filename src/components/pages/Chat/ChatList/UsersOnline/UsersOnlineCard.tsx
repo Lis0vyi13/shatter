@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 import useActiveChat from "@/hooks/useActiveChat";
@@ -8,10 +8,24 @@ import Title from "@/components/ui/Title";
 import Avatar from "@/components/common/Avatar";
 
 import { IParticipantOnline } from "@/types/chat";
+import { IUser } from "@/types/user";
+import { getUserById } from "@/services/user";
 
 const UsersOnlineCard = memo(({ data }: { data: IParticipantOnline }) => {
   const activeChat = useActiveChat();
   const titleLang = getLanguage(data.title.split(" ")[0]);
+  const [participant, setParticipant] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const getParticipant = async () => {
+      if (!data) return;
+      const prt = await getUserById(data.participant);
+      setParticipant(prt);
+    };
+    getParticipant();
+  }, [data.participant]);
+
+  console.log(data, "sdasd");
 
   return (
     <motion.div
@@ -42,7 +56,7 @@ const UsersOnlineCard = memo(({ data }: { data: IParticipantOnline }) => {
               : "text-[11px]"
           }
         >
-          {data.title.split(" ")[0]}
+          {participant?.displayName}
         </Title>
       </div>
     </motion.div>

@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DropResult } from "@hello-pangea/dnd";
-import { db } from "@/firebase/firebaseConfig";
-import { doc, getDoc, writeBatch } from "firebase/firestore";
+import { ref, get, update } from "firebase/database";
 
 import useChats from "@/hooks/useChats";
 import useActions from "@/hooks/useActions";
 
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
+import { dbRealtime } from "@/firebase/firebaseConfig";
 
 export const useDragDropHandler = (
   user: IUser,
@@ -39,28 +39,35 @@ export const useDragDropHandler = (
 
     setChatsToUpdate(updatedState);
 
-    const batch = writeBatch(db);
+    const updates: Record<string, any> = {};
 
     for (const chatId in updatedState) {
       const collection = user.favorites === chatId ? "favorites" : "chats";
-      const chatRef = doc(db, collection, chatId);
+      const chatRef = ref(dbRealtime, `${collection}/${chatId}`);
 
       try {
-        const chatDoc = await getDoc(chatRef);
-        const chatData = chatDoc.data();
+        const chatSnapshot = await get(chatRef);
+        const chatData = chatSnapshot.val() as IChat | null;
 
-        batch.update(chatRef, {
-          order: { ...chatData?.order, [user.uid]: updatedState[chatId] },
-        });
+        if (!chatData) {
+          console.error(`Chat ${chatId} does not exist.`);
+          continue;
+        }
+
+        const currentOrder = chatData.order || {};
+        updates[`${collection}/${chatId}/order`] = {
+          ...currentOrder,
+          [user.uid]: updatedState[chatId],
+        };
       } catch (error) {
         console.error("Error updating chat order:", error);
       }
     }
 
     try {
-      await batch.commit();
+      await update(ref(dbRealtime), updates);
     } catch (error) {
-      console.error("Error committing batch update:", error);
+      console.error("Error committing updates:", error);
     }
   };
 
@@ -78,43 +85,51 @@ export const useDragDropHandler = (
   }, [chatsToUpdate]);
 
   useEffect(() => {
-    const chatsToUpdate =
+    const chatsToUpdateData =
       localStorage.getItem("chatsToUpdate") !== null
         ? JSON.parse(localStorage.getItem("chatsToUpdate")!)
         : null;
 
-    if (!chatsToUpdate) return;
+    if (!chatsToUpdateData) return;
 
     const shouldUpdate =
-      chats?.find((chat) => chat.id === Object.keys(chatsToUpdate)[0])?.order !=
-      chatsToUpdate[Object.keys(chatsToUpdate)[0]];
+      chats?.find((chat) => chat.id === Object.keys(chatsToUpdateData)[0])
+        ?.order?.[user.uid] !==
+      chatsToUpdateData[Object.keys(chatsToUpdateData)[0]];
 
     if (!shouldUpdate) return;
 
     const updateChatOrder = async () => {
-      const batch = writeBatch(db);
+      const updates: Record<string, any> = {};
 
-      for (const chatId in chatsToUpdate) {
+      for (const chatId in chatsToUpdateData) {
         const collection = user.favorites === chatId ? "favorites" : "chats";
-        const chatRef = doc(db, collection, chatId);
+        const chatRef = ref(dbRealtime, `${collection}/${chatId}`);
 
         try {
-          const chatDoc = await getDoc(chatRef);
-          const chatData = chatDoc.data();
+          const chatSnapshot = await get(chatRef);
+          const chatData = chatSnapshot.val() as IChat | null;
 
-          batch.update(chatRef, {
-            order: { ...chatData?.order, [user.uid]: chatsToUpdate[chatId] },
-          });
+          if (!chatData) {
+            console.error(`Chat ${chatId} does not exist.`);
+            continue;
+          }
+
+          const currentOrder = chatData.order || {};
+          updates[`${collection}/${chatId}/order`] = {
+            ...currentOrder,
+            [user.uid]: chatsToUpdateData[chatId],
+          };
         } catch (error) {
           console.error("Error updating chat order:", error);
         }
       }
 
       try {
-        await batch.commit();
+        await update(ref(dbRealtime), updates);
         localStorage.removeItem("chatsToUpdate");
       } catch (error) {
-        console.error("Error committing batch update:", error);
+        console.error("Error committing updates:", error);
       }
     };
 

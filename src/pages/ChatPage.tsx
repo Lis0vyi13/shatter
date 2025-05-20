@@ -1,8 +1,10 @@
 import { Helmet } from "react-helmet-async";
 
 import ChatWrapper from "@/components/pages/Chat/ChatWrapper";
+import useUserChatsListener from "@/hooks/useUserChatsListener";
 
 const ChatPage = () => {
+  useUserChatsListener();
   return (
     <>
       <Helmet>

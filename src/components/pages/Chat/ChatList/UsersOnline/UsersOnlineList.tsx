@@ -1,5 +1,5 @@
 import { Dispatch, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppSelector } from "@/redux/app/hooks";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -51,6 +51,10 @@ const UsersOnlineList = ({
     return () => container.removeEventListener("wheel", handleWheel);
   }, [usersOnlineListRef]);
 
+  const { pathname } = useLocation();
+  const isArchiveChat = pathname.includes("archive");
+  const path = isArchiveChat ? "/archive" : "/c";
+
   return (
     <section
       ref={usersOnlineListRef}
@@ -75,7 +79,7 @@ const UsersOnlineList = ({
                 >
                   <Link
                     className="rounded-full w-fit h-fit"
-                    to={`/c/${chat.chatId}`}
+                    to={`${path}/${chat.chatId}`}
                   >
                     <UsersOnlineCard data={chat} />
                   </Link>
@@ -93,7 +97,7 @@ const UsersOnlineList = ({
                   <Link
                     className="rounded-full w-fit h-fit"
                     onClick={() => scrollToChatLink(listRef, chat.chatId)}
-                    to={`/c/${chat.chatId}`}
+                    to={`${path}/${chat.chatId}`}
                   >
                     <UsersOnlineCard data={chat} />
                   </Link>

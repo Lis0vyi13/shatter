@@ -1,10 +1,11 @@
-import { auth } from "@/firebase/firebaseConfig";
+import { auth, dbRealtime } from "@/firebase/firebaseConfig";
 import {
   linkWithCredential,
   EmailAuthProvider,
   updateProfile,
   User,
 } from "firebase/auth";
+import { ref, update } from "firebase/database";
 import { toast } from "sonner";
 
 interface LinkPasswordForm {
@@ -28,24 +29,29 @@ export const linkGoogleWithPassword = async ({
     const credential = EmailAuthProvider.credential(userData.email, password);
 
     const { user: linkedUser } = await linkWithCredential(
-      auth.currentUser as User,
+      auth.currentUser!,
       credential,
     );
 
     await updateProfile(linkedUser, {
       displayName: username,
     });
+
+    const userRef = ref(dbRealtime, `users/${linkedUser.uid}`);
+    await update(userRef, {
+      displayName: username,
+      email: linkedUser.email,
+    });
+
     localStorage.removeItem("googleUserData");
 
     toast.success("Account linked successfully with email and password.");
-  } catch (error) {
-    if (error instanceof Error) {
-      const message =
-        error.message === "auth/email-already-in-use"
-          ? "This email is already in use with another account."
-          : error.message;
+  } catch (error: any) {
+    const message =
+      error.code === "auth/email-already-in-use"
+        ? "This email is already in use with another account."
+        : error.message;
 
-      toast.error(message);
-    }
+    toast.error(message);
   }
 };

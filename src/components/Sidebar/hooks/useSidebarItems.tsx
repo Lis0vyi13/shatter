@@ -53,11 +53,7 @@ const useSidebarItems = (initialFolders: IFolder[] | null) => {
       if (storedFolders) {
         try {
           const parsedFolders = JSON.parse(storedFolders);
-          fullSidebarItems = [
-            sidebarIcons[0],
-            ...parsedFolders,
-            sidebarIcons[1],
-          ];
+          fullSidebarItems = [sidebarIcons[0], ...parsedFolders];
         } catch (error) {
           console.error("Invalid data in localStorage:", error);
         }
@@ -66,11 +62,7 @@ const useSidebarItems = (initialFolders: IFolder[] | null) => {
           ...folder,
           href: `/${folder.id}`,
         }));
-        fullSidebarItems = [
-          sidebarIcons[0],
-          ...transformedFolders,
-          sidebarIcons[1],
-        ];
+        fullSidebarItems = [sidebarIcons[0], ...transformedFolders];
         localStorage.setItem("folders", JSON.stringify(transformedFolders));
       }
 

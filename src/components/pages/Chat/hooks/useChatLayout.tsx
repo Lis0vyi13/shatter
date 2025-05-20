@@ -9,7 +9,6 @@ import { updateChatList } from "../utils/updateChatList";
 const useChatLayout = () => {
   const { setChats, setFavorites } = useActions();
   const user = useUser();
-
   useEffect(() => {
     const initializeChats = async () => {
       if (!user || !user.uid) return;
@@ -20,9 +19,7 @@ const useChatLayout = () => {
         const favoriteChat = favoriteChatId
           ? await getFavoriteChat(favoriteChatId)
           : null;
-
         const currentChats = await fetchChats(userChats);
-
         const sortedChats = updateChatList({
           chats: currentChats,
           favoriteChat,

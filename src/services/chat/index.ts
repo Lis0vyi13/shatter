@@ -1,58 +1,43 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  runTransaction,
-  setDoc,
-  updateDoc,
-  where,
-  writeBatch,
-} from "firebase/firestore";
-import { db, dbRealtime } from "@/firebase/firebaseConfig";
-
+import { dbRealtime } from "@/firebase/firebaseConfig";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
-import { push, ref, serverTimestamp, update } from "firebase/database";
+import {
+  get,
+  push,
+  ref,
+  remove,
+  serverTimestamp,
+  set,
+  update,
+} from "firebase/database";
 
 export const createChat = async (chatData: IChat) => {
   try {
-    const chatDocRef = doc(db, "chats", chatData.id);
-    await setDoc(chatDocRef, chatData);
+    const data: IChat = { ...chatData, chatType: "individual", isPin: [] };
+    const chatRef = ref(dbRealtime, `chats/${chatData.id}`);
+    await set(chatRef, data);
 
-    return { success: true, data: chatData };
+    return { success: true, data: data };
   } catch (error) {
     console.error("Error creating chat:", error);
     return { success: false, error: "Failed to create chat." };
   }
-};
-const generateChatId = (user1: string, user2: string) => {
-  return user1 < user2 ? `${user1}_${user2}` : `${user2}_${user1}`;
 };
 
 export const sendMessage = async (
   senderId: string,
   receiverId: string,
   text: string,
+  chatId: string,
 ) => {
-  const chatId = generateChatId(senderId, receiverId);
-
   const chatRef = ref(dbRealtime, `chats/${chatId}`);
 
   await update(chatRef, {
     members: { [senderId]: true, [receiverId]: true },
-    lastMessage: { text, timestamp: serverTimestamp() },
+    lastMessage: { text, timestamp: serverTimestamp(), senderId },
   });
 
   const messagesRef = ref(dbRealtime, `messages/${chatId}`);
-  console.log({
-    senderId,
-    receiverId,
-    text,
-    timestamp: serverTimestamp(),
-    type: "text",
-  });
   await push(messagesRef, {
     senderId,
     receiverId,
@@ -60,33 +45,48 @@ export const sendMessage = async (
     timestamp: serverTimestamp(),
     type: "text",
   });
+  try {
+    const userRef = ref(dbRealtime, `users/${receiverId}`);
+    const userSnapshot = await get(userRef);
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.val();
+      const userChats = Array.isArray(userData.chats) ? userData.chats : [];
+
+      if (!userChats.includes(chatId)) {
+        await addChatToUser(receiverId, chatId);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const createFavoritesChat = async (data: IChat | null) => {
   if (!data) return null;
 
-  const chatDocRef = doc(db, "favorites", data.id);
-  const chatDocSnap = await getDoc(chatDocRef);
+  const chatRef = ref(dbRealtime, `favorites/${data.id}`);
+  const chatSnapshot = await get(chatRef);
 
-  if (!chatDocSnap.exists()) {
-    await setDoc(chatDocRef, data);
+  if (!chatSnapshot.exists()) {
+    await set(chatRef, data);
   }
 
-  return chatDocSnap.data() as IChat;
+  const chatData = chatSnapshot.val();
+  return chatData as IChat;
 };
 
 export const getFavoriteChat = async (
   chatId: string,
 ): Promise<IChat | null> => {
   try {
-    const chatDocRef = doc(db, "favorites", chatId);
-    const chatDocSnap = await getDoc(chatDocRef);
+    const chatRef = ref(dbRealtime, `favorites/${chatId}`);
+    const chatSnapshot = await get(chatRef);
 
-    if (!chatDocSnap.exists()) {
+    if (!chatSnapshot.exists()) {
       return null;
     }
 
-    return chatDocSnap.data() as IChat;
+    return chatSnapshot.val() as IChat;
   } catch (error) {
     console.error("Error getting favorite chat:", error);
     return null;
@@ -95,37 +95,16 @@ export const getFavoriteChat = async (
 
 export const getChatById = async (chatId: string): Promise<IChat | null> => {
   try {
-    const chatDocRef = doc(db, "chats", chatId);
-    const chatDocSnap = await getDoc(chatDocRef);
+    const chatRef = ref(dbRealtime, `chats/${chatId}`);
+    const chatSnapshot = await get(chatRef);
 
-    if (!chatDocSnap.exists()) {
+    if (!chatSnapshot.exists()) {
       return null;
     }
-
-    return chatDocSnap.data() as IChat;
+    return chatSnapshot.val() as IChat;
   } catch (error) {
     console.error("Error getting chat by ID:", error);
     return null;
-  }
-};
-
-export const getAllChats = async (chatsId: string[]): Promise<IChat[]> => {
-  try {
-    if (!chatsId.length) return [];
-
-    const chatsRef = collection(db, "chats");
-    const q = query(chatsRef, where("id", "in", chatsId));
-
-    const snapshot = await getDocs(q);
-    const chats = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as IChat[];
-
-    return chats;
-  } catch (error) {
-    console.error("Error fetching all chats:", error);
-    return [];
   }
 };
 
@@ -134,29 +113,35 @@ export const togglePinChat = async (
   chatId: string,
   collectionName: "favorites" | "chats" = "chats",
 ): Promise<void> => {
-  await runTransaction(db, async (transaction) => {
-    const chatDocRef = doc(db, collectionName, chatId);
-    const chatDocSnap = await transaction.get(chatDocRef);
+  const chatRef = ref(dbRealtime, `${collectionName}/${chatId}`);
 
-    if (!chatDocSnap.exists()) {
-      throw new Error("Chat document does not exist.");
-    }
+  const chatSnapshot = await get(chatRef);
 
-    const chatData = chatDocSnap.data() as IChat;
-    const isPinned = chatData.isPin?.includes(uid) ?? false;
+  if (!chatSnapshot.exists()) {
+    throw new Error("Chat document does not exist.");
+  }
 
-    const updatedIsPin = isPinned
-      ? chatData.isPin.filter((pinnedUid) => pinnedUid !== uid)
-      : [...(chatData.isPin || []), uid];
+  const chatData: IChat = chatSnapshot.val();
 
-    transaction.update(chatDocRef, { isPin: updatedIsPin });
-  });
+  const isPin = Array.isArray(chatData.isPin) ? chatData.isPin : [];
+  const isPinned = isPin.includes(uid);
+
+  const updatedIsPin = isPinned
+    ? isPin.filter((pinnedUid) => pinnedUid !== uid)
+    : [...isPin, uid];
+
+  const updatedChatData = {
+    ...chatData,
+    isPin: updatedIsPin,
+  };
+
+  await set(chatRef, updatedChatData);
 };
 
 export const updateChatOrder = async (updatedPinnedChats: IChat) => {
   try {
-    const chatRef = doc(db, "chats", updatedPinnedChats.id);
-    await updateDoc(chatRef, { order: updatedPinnedChats.order });
+    const chatRef = ref(dbRealtime, `chats/${updatedPinnedChats.id}`);
+    await update(chatRef, { order: updatedPinnedChats.order });
   } catch (error) {
     console.error("Error updating chat order:", error);
     throw error;
@@ -165,14 +150,13 @@ export const updateChatOrder = async (updatedPinnedChats: IChat) => {
 
 export const updateChatOrders = async (updatedPinnedChats: IChat[]) => {
   try {
-    const batch = writeBatch(db);
+    const updates: Record<string, any> = {};
 
     updatedPinnedChats.forEach((chat) => {
-      const chatRef = doc(db, "chats", chat.id);
-      batch.update(chatRef, { order: chat.order });
+      updates[`chats/${chat.id}/order`] = chat.order;
     });
 
-    await batch.commit();
+    await update(ref(dbRealtime), updates);
 
     console.log("Pinned chat orders updated successfully.");
   } catch (error) {
@@ -183,23 +167,25 @@ export const updateChatOrders = async (updatedPinnedChats: IChat[]) => {
 
 export const addChatToUser = async (uid: string, chatId: string) => {
   try {
-    const userDocRef = doc(db, "users", uid);
-    const userDocSnap = await getDoc(userDocRef);
+    const userRef = ref(dbRealtime, `users/${uid}`);
+    const userSnapshot = await get(userRef);
 
-    if (!userDocSnap.exists()) {
+    if (!userSnapshot.exists()) {
       console.error(`User with uid ${uid} not found.`);
       return { success: false, error: "User not found." };
     }
 
-    const userData = userDocSnap.data() as IUser;
-    const existingChats = userData.chats || [];
+    const userData = userSnapshot.val() as IUser;
+    const existingChats: string[] = Array.isArray(userData.chats)
+      ? userData.chats
+      : [];
 
     if (!existingChats.includes(chatId)) {
       const updatedChats = [...existingChats, chatId];
-      await updateDoc(userDocRef, { chats: updatedChats });
+      await update(userRef, { chats: updatedChats });
 
-      const updatedUserDocSnap = await getDoc(userDocRef);
-      const updatedUser = updatedUserDocSnap.data() as IUser;
+      const updatedUserSnapshot = await get(userRef);
+      const updatedUser = updatedUserSnapshot.val() as IUser;
 
       return { success: true, updatedUser };
     } else {
@@ -212,17 +198,15 @@ export const addChatToUser = async (uid: string, chatId: string) => {
 };
 
 export const deleteChat = async (uid: string, chatId: string) => {
-  const batch = writeBatch(db);
-
   try {
-    const userDocRef = doc(db, "users", uid);
-    const userDocSnap = await getDoc(userDocRef);
+    const userRef = ref(dbRealtime, `users/${uid}`);
+    const userSnapshot = await get(userRef);
 
-    if (!userDocSnap.exists()) {
+    if (!userSnapshot.exists()) {
       throw new Error(`User with uid ${uid} does not exist`);
     }
 
-    const userData = userDocSnap.data() as IUser;
+    const userData = userSnapshot.val() as IUser;
     const existingChats = userData.chats || [];
 
     if (!existingChats.includes(chatId)) {
@@ -230,15 +214,15 @@ export const deleteChat = async (uid: string, chatId: string) => {
     }
 
     const updatedChats = existingChats.filter((id) => id !== chatId);
-    const chatDocRef = doc(db, "chats", chatId);
 
-    batch.update(userDocRef, { chats: updatedChats });
-    batch.delete(chatDocRef);
+    const updates: Record<string, any> = {};
+    updates[`users/${uid}/chats`] = updatedChats;
+    updates[`chats/${chatId}`] = null;
 
-    await batch.commit();
+    await update(ref(dbRealtime), updates);
 
-    const updatedUserDocSnap = await getDoc(userDocRef);
-    const updatedUser = updatedUserDocSnap.data() as IUser;
+    const updatedUserSnapshot = await get(userRef);
+    const updatedUser = updatedUserSnapshot.val() as IUser;
 
     return { success: true, updatedUser };
   } catch (error) {
@@ -256,12 +240,78 @@ export const deleteChat = async (uid: string, chatId: string) => {
 export const fetchChats = async (userChats: string[]): Promise<IChat[]> => {
   if (!userChats || userChats.length === 0) return [];
 
-  const chatsSnapshot = await getDocs(
-    query(collection(db, "chats"), where("id", "in", userChats.slice(0, 30))),
-  );
+  const chats: IChat[] = [];
+  const chatPromises = userChats.slice(0, 30).map(async (chatId) => {
+    const chatRef = ref(dbRealtime, `chats/${chatId}`);
+    const chatSnapshot = await get(chatRef);
+    if (chatSnapshot.exists()) {
+      const chatData = chatSnapshot.val();
+      chats.push({
+        id: chatId,
+        ...chatData,
+      });
+    }
+  });
 
-  return chatsSnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as IChat[];
+  await Promise.all(chatPromises);
+  return chats;
+};
+
+export const deleteMessage = async (chatId: string, messageId: string) => {
+  const messagesRef = ref(dbRealtime, `messages/${chatId}`);
+
+  const snapshot = await get(messagesRef);
+  if (!snapshot.exists()) return;
+
+  const messages = snapshot.val();
+  const messagesArray = Object.entries(messages).map(([id, data]: any) => ({
+    id,
+    ...data,
+  }));
+
+  const messageToDelete = ref(dbRealtime, `messages/${chatId}/${messageId}`);
+  await remove(messageToDelete);
+
+  const remainingMessages = messagesArray
+    .filter((msg) => msg.id !== messageId)
+    .sort((a, b) => b.timestamp - a.timestamp);
+
+  const chatRef = ref(dbRealtime, `chats/${chatId}`);
+  if (remainingMessages.length > 0) {
+    const last = remainingMessages[0];
+    await update(chatRef, {
+      lastMessage: {
+        text: last.text,
+        timestamp: last.timestamp,
+        senderId: last.senderId,
+      },
+    });
+  } else {
+    await update(chatRef, {
+      lastMessage: null,
+    });
+  }
+};
+
+export const clearChatHistory = async (chatId: string) => {
+  try {
+    const messagesRef = ref(dbRealtime, `messages/${chatId}`);
+    await remove(messagesRef);
+
+    const chatRef = ref(dbRealtime, `chats/${chatId}`);
+    await update(chatRef, {
+      lastMessage: null,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error clearing chat history:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown error while clearing chat history",
+    };
+  }
 };
