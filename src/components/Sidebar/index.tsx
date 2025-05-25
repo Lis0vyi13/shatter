@@ -10,7 +10,7 @@ import SidebarIcon from "./SidebarIcon";
 import SkeletonSidebarIcon from "./SidebarIcon.skeleton";
 import Logo from "../common/Logo";
 
-import { logOutIcon, settings } from "@/constants";
+import { logOutIcon, settings, sidebarIcons } from "@/constants";
 
 const Sidebar = () => {
   const folders = useFolders();
@@ -41,24 +41,16 @@ const Sidebar = () => {
       </Link>
       <div className="flex flex-col gap-3 justify-center w-[90%]">
         <ul className={sidebarIconsListClassName}>
-          {sidebarItems.length > 0 ? (
-            <li>
-              {sidebarItems?.map((iconData, i) => (
-                <SidebarIcon
-                  onClick={() => handleClick(iconData?.id || "0")}
-                  isActive={iconData?.id === activeIcon}
-                  key={iconData?.title + i}
-                  {...iconData}
-                />
-              ))}
-            </li>
-          ) : (
-            <>
-              {Array.from({ length: 3 }).map((_, index) => (
-                <SkeletonSidebarIcon key={index} />
-              ))}
-            </>
-          )}
+          <li>
+            {sidebarIcons?.map((iconData, i) => (
+              <SidebarIcon
+                onClick={() => handleClick(iconData?.id || "0")}
+                isActive={iconData?.id === activeIcon}
+                key={iconData?.title + i}
+                {...iconData}
+              />
+            ))}
+          </li>
         </ul>
 
         <hr className="border-white border-opacity-40 border-1 w-3/5 self-center" />
