@@ -1,9 +1,9 @@
 import { auth, dbRealtime } from "@/firebase/firebaseConfig";
+import { FirebaseError } from "firebase/app";
 import {
   linkWithCredential,
   EmailAuthProvider,
   updateProfile,
-  User,
 } from "firebase/auth";
 import { ref, update } from "firebase/database";
 import { toast } from "sonner";
@@ -46,12 +46,31 @@ export const linkGoogleWithPassword = async ({
     localStorage.removeItem("googleUserData");
 
     toast.success("Account linked successfully with email and password.");
-  } catch (error: any) {
-    const message =
-      error.code === "auth/email-already-in-use"
-        ? "This email is already in use with another account."
-        : error.message;
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      let message = "";
 
-    toast.error(message);
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          message = "This email is already in use with another account.";
+          break;
+        case "auth/invalid-credential":
+          message = "The provided credential is invalid.";
+          break;
+        case "auth/user-mismatch":
+          message = "The provided credentials do not match the current user.";
+          break;
+        case "auth/weak-password":
+          message = "The password is too weak.";
+          break;
+        default:
+          message = error.message;
+      }
+
+      toast.error(message);
+    } else {
+      console.error("Unexpected error:", error);
+      toast.error("Something went wrong. Please try again later.");
+    }
   }
 };

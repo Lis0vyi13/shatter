@@ -23,9 +23,7 @@ const UsersOnlineCard = memo(({ data }: { data: IParticipantOnline }) => {
       setParticipant(prt);
     };
     getParticipant();
-  }, [data.participant]);
-
-  console.log(data, "sdasd");
+  }, [data, data.participant]);
 
   return (
     <motion.div

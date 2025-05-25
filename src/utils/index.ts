@@ -41,6 +41,7 @@ export const isGoogleProviderLinked = (user: User | null): boolean => {
 export const shouldRedirect = () => {
   const user = auth.currentUser;
   const hasGoogleProvider = isGoogleProviderLinked(user);
+
   return (
     (hasGoogleProvider || user?.emailVerified) &&
     !localStorage.getItem("googleUserData")

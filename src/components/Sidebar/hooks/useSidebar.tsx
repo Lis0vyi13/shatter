@@ -15,7 +15,7 @@ const useSidebar = (initialFolders: IFolder[] | null) => {
 
   useEffect(() => {
     setActiveIcon(isArchiveChat ? "1" : "0");
-  }, []);
+  }, [isArchiveChat]);
 
   const handleClick = (id: string) => {
     setActiveIcon(id);

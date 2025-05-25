@@ -53,7 +53,6 @@ interface IData {
 const useEditProfileForm = (onSubmit: () => void, user: IUser | null) => {
   const today = new Date();
   today.setHours(2, 0, 0, 0);
-
   const initialBirthday = user?.birthday
     ? getDateFromTimestamp(user.birthday)
     : null;

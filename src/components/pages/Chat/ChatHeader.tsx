@@ -45,30 +45,29 @@ const ChatHeader = ({
   usersOnline,
   onDelete = () => {},
 }: IChatHeader) => {
-  if (!data) return null;
   const { doTogglePinChat, doDeleteChat } = useChatActions();
   const [participant, setParticipant] = useState<IUser | null>(null);
 
-  const participantId = useMemo(
-    () => Object.keys(data.members).find((id) => id != user?.uid),
-    [data.members],
-  );
-
-  const title =
-    data.members && Object.keys(data.members).length === 1
-      ? data?.title[user?.uid!]
-      : participant?.displayName;
+  const participantId = useMemo(() => {
+    if (!data || !user?.uid) return null;
+    return Object.keys(data.members).find((id) => id !== user.uid) || null;
+  }, [data, user?.uid]);
 
   useEffect(() => {
     const getUser = async () => {
-      if (!data) return;
-
-      if (!participantId) return;
+      if (!data || !participantId) return;
       const participant = await getUserById(participantId);
       setParticipant(participant);
     };
     getUser();
-  }, [participantId]);
+  }, [data, participantId]);
+
+  if (!data || !user) return null;
+
+  const title =
+    data.members && Object.keys(data.members).length === 1
+      ? data?.title?.[user.uid]
+      : participant?.displayName;
 
   const menuItems: IMenuItem[] = [
     {

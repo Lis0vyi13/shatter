@@ -10,11 +10,16 @@ import {
   updatePassword,
   User,
 } from "firebase/auth";
-import { actionCodeSettings, auth } from "@/firebase/firebaseConfig";
+import {
+  actionCodeSettings,
+  auth,
+  dbRealtime,
+} from "@/firebase/firebaseConfig";
 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import { toast } from "sonner";
+import { ref, update } from "firebase/database";
 
 export type ProgressHandler = React.Dispatch<React.SetStateAction<number>>;
 
@@ -55,11 +60,17 @@ export const createUserAccount = async (
       password,
     );
     handleProgress(40);
-
     await updateProfile(user, { displayName });
+    const userRef = ref(dbRealtime, `users/${user.uid}`);
+    await update(userRef, {
+      displayName,
+    });
+
     handleProgress(70);
 
-    await sendEmailVerification(user, { url: actionCodeSettings.url + "c" });
+    await sendEmailVerification(user, {
+      url: actionCodeSettings.url + "/" + "login",
+    });
     handleProgress(90);
 
     handleProgress(100);

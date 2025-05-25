@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 interface Chat {
   id: string;
   members: string[];
-  [key: string]: any; // для гнучкості
+  [key: string]: unknown;
 }
 
 const useDbChats = (userId: string) => {
@@ -24,7 +24,7 @@ const useDbChats = (userId: string) => {
               ([, chat]) =>
                 Array.isArray(chat.members) && chat.members.includes(userId),
             )
-            .map(([_, chat]) => ({
+            .map(([, chat]) => ({
               ...chat,
             }));
           setChats(userChats);

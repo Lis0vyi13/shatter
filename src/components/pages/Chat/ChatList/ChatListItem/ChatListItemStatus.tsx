@@ -9,7 +9,7 @@ import { TiPin } from "react-icons/ti";
 interface IChatListItemStatus {
   user: IUser | null;
   chat: IChat | null;
-  time: number;
+  time: number | undefined;
   isUserChatMember: boolean;
 }
 

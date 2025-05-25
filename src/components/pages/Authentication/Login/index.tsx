@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { handleSocialAuth } from "@/services/auth/socialAuth";
@@ -9,10 +10,31 @@ import LoginForm from "./LoginForm";
 
 import { authDefaultVariants } from "@/constants/animations";
 import { AUTH_SERVICES } from "../Auth.constants";
+import { applyActionCode } from "firebase/auth";
+import { auth } from "@/firebase/firebaseConfig";
+import { toast } from "sonner";
 
 const Login = ({ pathname }: { pathname: string | null }) => {
   const isLoginPage = pathname === "login";
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const oobCode = params.get("oobCode");
+    if (!oobCode) return;
+
+    applyActionCode(auth, oobCode)
+      .then(() => {
+        toast.success(
+          "Your email has been verified successfully! You can now log in.",
+        );
+        navigate("/c", { replace: true });
+      })
+      .catch((error) => {
+        console.error("Email verification error:", error);
+        toast.error("Email verification failed or is already verified.");
+      });
+  }, [navigate]);
 
   return (
     <AuthWrapper className={isLoginPage ? "-ml-[100%]" : ""}>

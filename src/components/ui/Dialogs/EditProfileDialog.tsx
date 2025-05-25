@@ -16,6 +16,7 @@ import EditProfileForm from "@/components/dialogs/EditProfile/EditProfileForm";
 const EditProfileDialog = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useUser();
+  const [isUploading, setIsUploading] = useState(false);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -27,8 +28,16 @@ const EditProfileDialog = ({ children }: { children: ReactNode }) => {
         <DialogTitle></DialogTitle>
         <DialogDescription></DialogDescription>
 
-        <Profile user={user}>
-          <EditProfileForm onSubmit={() => setIsOpen(false)} user={user} />
+        <Profile
+          isUploading={isUploading}
+          setIsUploading={setIsUploading}
+          user={user}
+        >
+          <EditProfileForm
+            loading={isUploading}
+            onSubmit={() => setIsOpen(false)}
+            user={user}
+          />
 
           {/* <section className="flex justify-end mt-4 text-[12px]">
             <div className="flex gap-2 w-fit">

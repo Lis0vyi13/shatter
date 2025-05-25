@@ -39,7 +39,7 @@ export const useDragDropHandler = (
 
     setChatsToUpdate(updatedState);
 
-    const updates: Record<string, any> = {};
+    const updates: Record<string, unknown> = {};
 
     for (const chatId in updatedState) {
       const collection = user.favorites === chatId ? "favorites" : "chats";
@@ -100,7 +100,7 @@ export const useDragDropHandler = (
     if (!shouldUpdate) return;
 
     const updateChatOrder = async () => {
-      const updates: Record<string, any> = {};
+      const updates: Record<string, unknown> = {};
 
       for (const chatId in chatsToUpdateData) {
         const collection = user.favorites === chatId ? "favorites" : "chats";

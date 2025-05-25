@@ -2,18 +2,7 @@ import { useState } from "react";
 
 import { cn } from "@/utils";
 
-import Block from "@/components/ui/Block";
-import Delete from "@/components/ui/Delete";
-import ChatDetailsItem from "./ChatDetailsItem";
-
-import { IChat, IChatInfo } from "@/types/chat";
-import { CHAT_DETAILS } from "./Chat.constants";
-
-interface IChatDetails {
-  data: IChat | null;
-}
-
-const ChatDetails = ({ data }: IChatDetails) => {
+const ChatDetails = () => {
   const [isInfoVisible] = useState(true);
   const [isMembersVisible] = useState(true);
 

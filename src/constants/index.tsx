@@ -1,7 +1,5 @@
 import { IoChatbox } from "react-icons/io5";
-import { RiInboxUnarchiveLine } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
-import { CgOptions } from "react-icons/cg";
 import { BiLogOut } from "react-icons/bi";
 
 import { ILogoutIcon, IFolder, ISettings } from "@/types/sidebar";
@@ -31,11 +29,6 @@ export const settings: ISettings[] = [
     Icon: <FaUser />,
     id: "2",
     title: "Profile",
-  },
-  {
-    Icon: <CgOptions />,
-    id: "3",
-    title: "Edit",
   },
 ];
 

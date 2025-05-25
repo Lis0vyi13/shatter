@@ -1,13 +1,13 @@
-import { MouseEventHandler, ReactNode, useId, useState } from "react";
+import { ReactNode, useId, useState } from "react";
 import { cn } from "@/utils";
 import { Edit } from "lucide-react";
 
 interface IEditOverlay {
-  onClick?: MouseEventHandler<HTMLDivElement>;
   onUpload?: (file: File) => void;
   children: ReactNode;
   className?: string;
   isRounded?: boolean;
+  loading?: boolean;
 }
 
 const EditOverlay = ({
@@ -15,9 +15,10 @@ const EditOverlay = ({
   children,
   className,
   isRounded,
+  loading,
 }: IEditOverlay) => {
   const [isHover, setIsHover] = useState(false);
-  const inputId = useId(); // 🔑 уникальный ID
+  const inputId = useId();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -59,13 +60,15 @@ const EditOverlay = ({
         />
       </label>
       {children}
-      <Edit
-        size={22}
-        className={cn(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all",
-          isHover ? "opacity-100" : "opacity-0",
-        )}
-      />
+      {!loading && (
+        <Edit
+          size={22}
+          className={cn(
+            "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all",
+            isHover ? "opacity-100" : "opacity-0",
+          )}
+        />
+      )}
     </div>
   );
 };

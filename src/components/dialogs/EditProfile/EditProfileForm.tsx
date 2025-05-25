@@ -22,9 +22,11 @@ const inputClassName =
 const EditProfileForm = ({
   onSubmit,
   user,
+  loading,
 }: {
   onSubmit: () => void;
   user: IUser | null;
+  loading?: boolean;
 }) => {
   const {
     username,
@@ -115,7 +117,7 @@ const EditProfileForm = ({
               />
             </div>
           </EditProfileFormItem>
-          <EditProfileButtons isLoading={isLoading} />
+          <EditProfileButtons isLoading={isLoading || loading} />
         </ul>
       </form>
     )

@@ -6,7 +6,6 @@ import useActions from "@/hooks/useActions";
 
 import Block from "@/components/ui/Block";
 import { Badge } from "@/components/ui/shadcn/badge";
-import ChatDetails from "./ChatDetails";
 import Chat from "./Chat";
 
 import { IChat } from "@/types/chat";
@@ -37,7 +36,7 @@ const ChatWrapper = ({ id }: { id?: string }) => {
               <Chat data={activeChat} />
             </div>
           </div>
-          <ChatDetails data={activeChat} />
+          {/* <ChatDetails data={activeChat} /> */}
         </>
       ) : (
         <div

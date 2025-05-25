@@ -18,7 +18,7 @@ export const signUpAction: TSignUpAction = async (
   setIsSubmitted,
 ) => {
   const data = {
-    username: formData.get("email") as string | null,
+    username: formData.get("username") as string | null,
     email: formData.get("email") as string | null,
     password: formData.get("password") as string | null,
   };

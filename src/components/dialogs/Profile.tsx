@@ -1,9 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { DialogClose, DialogContent, DialogTitle } from "../ui/shadcn/dialog";
 import { Badge } from "../ui/shadcn/badge";
 
 import { cn, getLanguage } from "@/utils";
-import { usePasswordChange } from "@/hooks/usePasswordChange";
 
 import Avatar from "@/components/common/Avatar";
 import EditOverlay from "../ui/EditOverlay";
@@ -12,36 +11,66 @@ import Icon from "../ui/Icon";
 import ProfileInfoList from "./ProfileInfoList";
 import Button from "../ui/Buttons/Button";
 
-import { Lock, X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { IUser } from "@/types/user";
 import { updateUser, uploadImage } from "@/services/user";
 
 const buttonClassName =
-  "text-[11px] py-[2px] px-3 rounded-md border border-separator hover:bg-separator inline-flex items-center";
+  "text-[11px] py-[2px] px-3 rounded-md border border-separator inline-flex items-center";
 
 const Profile = ({
   user,
+  isUploading,
+  setIsUploading,
   children,
 }: {
   user: IUser | null;
+  isUploading: boolean;
+  setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
   children?: ReactNode;
 }) => {
+  const [uploadingType, setUploadingType] = useState<
+    "avatar" | "banner" | null
+  >(null);
+  const [avatarUrl, setAvatarUrl] = useState(user?.photoUrl || "");
+  const [bannerUrl, setBannerUrl] = useState(user?.banner || "");
+
   const handleUpload = async (file: File, type: "avatar" | "banner") => {
     if (!user) return;
-    const url = await uploadImage(file, user.uid, type);
-    await updateUser(user.uid, {
-      [type === "avatar" ? "photoUrl" : "banner"]: url,
-    });
+    setIsUploading(true);
+    setUploadingType(type);
+    try {
+      const url = await uploadImage(file, user.uid, type);
+      await updateUser(user.uid, {
+        [type === "avatar" ? "photoUrl" : "banner"]: url,
+      });
+      if (type === "avatar") setAvatarUrl(url);
+      else setBannerUrl(url);
+    } catch (e) {
+      console.error("Upload failed:", e);
+    } finally {
+      setIsUploading(false);
+      setUploadingType(null);
+    }
   };
+
   return (
     <DialogContent
       className={cn(
         "text-white bg-[#0d0e12] py-1 pb-3 px-1 outline-none border-none overflow-hidden",
       )}
     >
-      <div className="h-[115px] rounded-t-sm rounded-b-2xl overflow-hidden">
-        <EditOverlay onUpload={(file) => handleUpload(file, "banner")}>
-          <Banner src={user?.banner || ""} />
+      <div className="h-[115px] rounded-t-sm rounded-b-2xl overflow-hidden relative">
+        <EditOverlay
+          loading={isUploading}
+          onUpload={(file) => handleUpload(file, "banner")}
+        >
+          <Banner src={bannerUrl} />
+          {isUploading && uploadingType === "banner" && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <Loader2 className="animate-spin w-5 h-5 text-white" />
+            </div>
+          )}
         </EditOverlay>
       </div>
 
@@ -50,25 +79,32 @@ const Profile = ({
           <EditOverlay
             onUpload={(file) => handleUpload(file, "avatar")}
             isRounded
-            className="w-16 h-16"
+            className="w-16 h-16 relative"
           >
             <Avatar
               className="text-[24px] border-[3px] border-[#0d0e12]"
-              src={user?.photoUrl || ""}
+              src={avatarUrl}
               title={user?.displayName || ""}
             />
+            {isUploading && uploadingType === "avatar" && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-full">
+                <Loader2 className="animate-spin w-4 h-4 text-white" />
+              </div>
+            )}
           </EditOverlay>
-          <div className="mt-10">
-            <button className="pointer-events-none w-0 h-0" />
 
-            <Button className={buttonClassName}>
+          <div className="mt-10">
+            <Button
+              className={cn(buttonClassName, "hover:bg-separator")}
+              disabled={isUploading}
+            >
               <div className="inline-flex items-center gap-1">
-                <Lock size={12} />
                 <span className="leading-7">Change Password</span>
               </div>
             </Button>
           </div>
         </div>
+
         <div className="flex items-center gap-2 mt-4">
           <DialogTitle
             lang={getLanguage(user?.displayName || "")}
@@ -82,6 +118,7 @@ const Profile = ({
         </div>
 
         <span className="mt-1 text-gray text-[11px]">{user?.email}</span>
+
         <div className="mt-5 border-b border-separator pb-4">
           <ProfileInfoList user={user} />
         </div>

@@ -92,7 +92,7 @@ const ChatListItemContent = (props: IChatListItemContent) => {
           />
         )}
       </div>
-      <ChatListItemStatus {...props} time={lastMessage?.timestamp!} />
+      <ChatListItemStatus {...props} time={lastMessage?.timestamp} />
     </>
   ) : null;
 };

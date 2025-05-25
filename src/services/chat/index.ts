@@ -1,4 +1,5 @@
 import { dbRealtime } from "@/firebase/firebaseConfig";
+import { Message } from "@/hooks/useChat";
 import { IChat } from "@/types/chat";
 import { IUser } from "@/types/user";
 import {
@@ -150,15 +151,13 @@ export const updateChatOrder = async (updatedPinnedChats: IChat) => {
 
 export const updateChatOrders = async (updatedPinnedChats: IChat[]) => {
   try {
-    const updates: Record<string, any> = {};
+    const updates: Record<string, unknown> = {};
 
     updatedPinnedChats.forEach((chat) => {
       updates[`chats/${chat.id}/order`] = chat.order;
     });
 
     await update(ref(dbRealtime), updates);
-
-    console.log("Pinned chat orders updated successfully.");
   } catch (error) {
     console.error("Error updating pinned chat orders:", error);
     throw error;
@@ -215,7 +214,7 @@ export const deleteChat = async (uid: string, chatId: string) => {
 
     const updatedChats = existingChats.filter((id) => id !== chatId);
 
-    const updates: Record<string, any> = {};
+    const updates: Record<string, unknown> = {};
     updates[`users/${uid}/chats`] = updatedChats;
     updates[`chats/${chatId}`] = null;
 
@@ -263,11 +262,14 @@ export const deleteMessage = async (chatId: string, messageId: string) => {
   const snapshot = await get(messagesRef);
   if (!snapshot.exists()) return;
 
-  const messages = snapshot.val();
-  const messagesArray = Object.entries(messages).map(([id, data]: any) => ({
-    id,
-    ...data,
-  }));
+  const messagesData = snapshot.val() as Record<string, Omit<Message, "id">>;
+
+  const messagesArray: Message[] = Object.entries(messagesData).map(
+    ([id, data]) => ({
+      id,
+      ...data,
+    }),
+  );
 
   const messageToDelete = ref(dbRealtime, `messages/${chatId}/${messageId}`);
   await remove(messageToDelete);

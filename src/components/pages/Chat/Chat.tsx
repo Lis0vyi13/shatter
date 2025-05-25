@@ -8,9 +8,9 @@ import ChatMain from "./ChatMain";
 import { IChat } from "@/types/chat";
 import Input from "@/components/ui/Inputs/Input";
 import Icon from "@/components/ui/Icon";
-import { GrAttachment, GrSend } from "react-icons/gr";
+import { GrSend } from "react-icons/gr";
 import { FaRegSmile } from "react-icons/fa";
-import { deleteChat, sendMessage } from "@/services/chat";
+import { sendMessage } from "@/services/chat";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 const Chat = ({ data }: { data: IChat | null }) => {
@@ -53,16 +53,6 @@ const Chat = ({ data }: { data: IChat | null }) => {
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setValue((prev) => prev + emojiData.emoji);
-  };
-
-  const onDelete = async () => {
-    if (!user || !data) return;
-    const participantId = Object.keys(data.members)?.find(
-      (member) => member != user.uid,
-    );
-
-    await deleteChat(user.uid, data.id);
-    await deleteChat(participantId!, data.id);
   };
 
   return (
